@@ -1,0 +1,68 @@
+.game-board {
+	position: relative;
+	display: flex;
+	flex-direction: row;
+}
+
+.game-board > .game-col {
+	display: flex;
+	flex-direction: column;
+}
+
+.game-board > .game-col > .game-cell {
+	--border-size: 5px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+
+	width: 150px;
+	height: 75px;
+
+	background-color: blue;
+	border: var(--border-size) solid black;
+	box-sizing: border-box;
+
+	/* border-collapse doesn't work here, so we do some negative margins */
+	/* border-collapse: collapse; */
+	margin: calc(-1*var(--border-size)) 0 0 calc(-1*var(--border-size));
+}
+
+.game-board > .game-col > .game-cell > p {
+	font-size: 36px;
+	font-weight: bold;
+	color: yellow;
+}
+
+.game-board > .selected-card {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-color: aqua;
+
+	display: flex; /* flex when shown */
+	align-items: center;
+	justify-content: center;
+
+	transform-origin: center;
+    animation: appear 1s forwards;
+}
+
+.game-board > .selected-card > .question-box {
+	width: fit-content;
+	height: fit-content;
+	background-color: azure;
+}
+
+@keyframes appear {
+    0% {
+        transform: scale(0) rotateY(180deg);
+    }
+    50% {
+        transform: scale(.75) rotateY(90deg);
+    }
+    100% {
+        transform: scale(1) rotateY(0deg);
+    }
+}
