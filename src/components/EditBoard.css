@@ -1,0 +1,19 @@
+.edit-board {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+}
+
+.edit-board > .value-container {
+	align-items: center;
+	justify-content: center;
+	display: flex;
+	flex-direction: row;
+}
+
+.edit-board .selected-card .search-box {
+	overflow: scroll;
+	max-height: 100px;
+	background-color: antiquewhite;
+}

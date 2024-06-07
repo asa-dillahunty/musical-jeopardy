@@ -25,6 +25,9 @@ export async function searchTracks(query, accessToken) {
 		}
 	});
 	const data = await response.json();
+	// if data.error
+	// if data.error.message ==="The access token expired"
+	console.log(data);
 	return data.tracks.items;
 
 // // Example usage

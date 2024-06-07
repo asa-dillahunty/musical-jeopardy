@@ -2,6 +2,9 @@
 	position: relative;
 	display: flex;
 	flex-direction: row;
+
+	width: min-content;
+	height: min-content;
 }
 
 .game-board > .game-col {
@@ -25,6 +28,19 @@
 	/* border-collapse doesn't work here, so we do some negative margins */
 	/* border-collapse: collapse; */
 	margin: calc(-1*var(--border-size)) 0 0 calc(-1*var(--border-size));
+}
+
+.game-board > .game-col > .game-cell:first-child {
+	margin-top: 0;
+}
+.game-board > .game-col > .game-cell:last-child {
+	margin-bottom: 0;
+}
+.game-board > .game-col:first-child > .game-cell {
+	margin-left: 0;
+}
+.game-board > .game-col:last-child > .game-cell {
+	margin-right: 0;
 }
 
 .game-board > .game-col > .game-cell > p {
