@@ -17,3 +17,22 @@
 	max-height: 100px;
 	background-color: antiquewhite;
 }
+
+.edit-board .game-board > .game-col > .game-cell > textarea {
+	font-size: 14px;
+	font-weight: bold;
+	color: yellow;
+	border: none;
+	background-color: transparent;
+	width: var(--cell-width);
+	height: var(--cell-height);
+	text-align: center;
+	align-content: center;
+	outline: none;
+	box-sizing: border-box;
+	resize:none;
+}
+
+.edit-board .game-board > .game-col > .game-cell > input:focus {
+	border-bottom: 2px solid white;
+}

@@ -14,12 +14,15 @@
 
 .game-board > .game-col > .game-cell {
 	--border-size: 5px;
+	--cell-width: 150px;
+	--cell-height: 75px;
+
 	display: flex;
 	align-items: center;
 	justify-content: center;
 
-	width: 150px;
-	height: 75px;
+	width: var(--cell-width);
+	height: var(--cell-height);
 
 	background-color: blue;
 	border: var(--border-size) solid black;

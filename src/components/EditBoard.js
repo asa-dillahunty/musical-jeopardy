@@ -45,7 +45,7 @@ function getBoard(boardID) {
 
 function createGrid(oldGrid) {
 	const boardGrid = Array(6).fill().map( () => 
-		Array(5).fill(undefined)
+		Array(6).fill(undefined)
 	);
 	if (!oldGrid) return boardGrid;
 	// else fill with old values
@@ -76,15 +76,23 @@ function EditBoard({ boardID, token }) {
 		})
 	}
 
-	const selectTrack = (track) => {
-		// gotta reset the board
-		console.log(track.uri);
+	const changeBoardGridValue = (i, j, val) => {
 		const newBoard = {...board};
 		const newGrid = createGrid(board.grid);
 
-		newGrid[selectedCard.i][selectedCard.j] = track.uri;
+		newGrid[i][j] = val;
 		newBoard.grid = newGrid;
 		setBoard(newBoard);
+	}
+
+	const selectTrack = (track) => {
+		// gotta reset the board
+		console.log(track.uri);
+		changeBoardGridValue(selectedCard.i, selectedCard.j, track.uri);
+	}
+
+	const setCategoryValue = (col, val) => {
+		changeBoardGridValue(col, 0, val);
 	}
 
 	useEffect(() => {
@@ -152,14 +160,24 @@ function EditBoard({ boardID, token }) {
 					i < cols &&
 					<div className='game-col' key={`col-${i}`}>
 						{board.grid[i] && board.grid[i].map( (_val, j) => 
-							j < rows &&
-							<div 
-								key={`cell-${i}-${j}`} 
-								className='game-cell' 
-								onClick={() => setSelectedCard({i,j})}
-							>
-								<p>{'$'+100*(j+1)*multiplier}</p>
-							</div>
+							j <= rows && // j === 0 is categories, add 1 to adjust for categories
+							( j === 0 ?
+								<div className='game-cell'>
+									<textarea
+										placeholder='Category'
+										onChange={(e) => changeBoardGridValue(i, 0, e.target.value)}
+										value={board.grid[i][j]}
+									/>
+								</div> 
+							:
+								<div 
+									key={`cell-${i}-${j}`} 
+									className='game-cell' 
+									onClick={() => setSelectedCard({i,j})}
+								>
+									<p>{'$'+100*(j)*multiplier}</p>
+								</div>
+							)
 						)}
 					</div>
 				)}
