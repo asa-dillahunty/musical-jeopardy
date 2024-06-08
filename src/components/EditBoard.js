@@ -47,6 +47,14 @@ function createGrid(oldGrid) {
 	const boardGrid = Array(6).fill().map( () => 
 		Array(6).fill(undefined)
 	);
+	
+	boardGrid[0][0] = "Sultans in the Sky";
+	boardGrid[1][0] = "Grey Beards are Coming";
+	boardGrid[2][0] = "Chungus";
+	boardGrid[3][0] = "Emily Ray, Or Bell";
+	boardGrid[4][0] = "Meet Your Creatures";
+	boardGrid[5][0] = "Alphabetically";
+
 	if (!oldGrid) return boardGrid;
 	// else fill with old values
 	for (let i=0;i<boardGrid.length;i++) {
@@ -54,10 +62,11 @@ function createGrid(oldGrid) {
 			boardGrid[i][j] = oldGrid[i][j];
 		}
 	}
+
 	return boardGrid;
 }
 
-function EditBoard({ boardID, token }) {
+function EditBoard({ boardID, token, preview }) {
 	const [selectedCard, setSelectedCard] = useState({ });
 	const [board, setBoard] = useState();
 	const [cols, setCols] = useState();
@@ -122,6 +131,26 @@ function EditBoard({ boardID, token }) {
 
 	}, [selectedCard, board, setSearchResults]);
 
+	console.log(preview);
+	if (preview) {
+		return (
+			<div className='edit-board'>
+				<div className="game-board">
+					{board && board.grid.map( (_val, i) =>
+						i < cols &&
+						<div className='game-col' key={`col-${i}`}>
+							{board.grid[i] && board.grid[i].map( (_val, j) => 
+								j < 1 && // just display categories for preview
+								<div key={`cell-${i}-${j}`} className='game-cell category'>
+									<p>{board.grid[i][j]}</p>
+								</div> 
+							)}
+						</div>
+					)}
+				</div>
+			</div>
+		);
+	}
 	return (
 		<div className='edit-board'>
 			<div className='value-container'>
@@ -162,7 +191,7 @@ function EditBoard({ boardID, token }) {
 						{board.grid[i] && board.grid[i].map( (_val, j) => 
 							j <= rows && // j === 0 is categories, add 1 to adjust for categories
 							( j === 0 ?
-								<div className='game-cell'>
+								<div key={`cell-${i}-${j}`} className='game-cell'>
 									<textarea
 										placeholder='Category'
 										onChange={(e) => changeBoardGridValue(i, 0, e.target.value)}

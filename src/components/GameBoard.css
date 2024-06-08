@@ -52,6 +52,10 @@
 	color: yellow;
 }
 
+.game-board > .game-col > .game-cell.category > p {
+	font-size: 14px;
+}
+
 .game-board > .selected-card {
 	position: absolute;
 	top: 0;
