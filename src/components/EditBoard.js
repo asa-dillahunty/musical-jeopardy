@@ -17,6 +17,8 @@ import { searchTracks } from './spotifyAPI';
 // what's the board object look like?
 /* 
 	Board = {
+		id: string,
+		name: string,
 		cols: int,
 		rows: int,
 		grid: string[cols][rows] = trackUri,
@@ -26,53 +28,8 @@ import { searchTracks } from './spotifyAPI';
 	}
 */
 
-function getBoard(boardID) {
-	if (!boardID) {
-		// new board
-		const boardGrid = createGrid();
-
-		const newBoard = {
-			cols: 6,
-			rows: 5,
-			grid: boardGrid,
-			multiplier: 1,
-			dailyDoubles: 1,
-		};
-
-		return newBoard;
-	}
-}
-
-function createGrid(oldGrid) {
-	const boardGrid = Array(6).fill().map( () => 
-		Array(6).fill(undefined)
-	);
-	
-	boardGrid[0][0] = "Sultans in the Sky";
-	boardGrid[1][0] = "Grey Beards are Coming";
-	boardGrid[2][0] = "Chungus";
-	boardGrid[3][0] = "Emily Ray, Or Bell";
-	boardGrid[4][0] = "Meet Your Creatures";
-	boardGrid[5][0] = "Alphabetically";
-
-	if (!oldGrid) return boardGrid;
-	// else fill with old values
-	for (let i=0;i<boardGrid.length;i++) {
-		for (let j=0;j<boardGrid[i].length;j++) {
-			boardGrid[i][j] = oldGrid[i][j];
-		}
-	}
-
-	return boardGrid;
-}
-
-function EditBoard({ boardID, token, preview }) {
+function EditBoard({ board, token, preview, updateBoard, setSelectedBoard }) {
 	const [selectedCard, setSelectedCard] = useState({ });
-	const [board, setBoard] = useState();
-	const [cols, setCols] = useState();
-	const [rows, setRows] = useState();
-	const [multiplier, setMultiplier] = useState();
-	const [dailyDoubles, setDailyDoubles] = useState();
 
 	const [queryVal, setQueryVal] = useState("");
 	const [searchResults, setSearchResults] = useState([]);
@@ -85,34 +42,37 @@ function EditBoard({ boardID, token, preview }) {
 		})
 	}
 
-	const changeBoardGridValue = (i, j, val) => {
-		const newBoard = {...board};
-		const newGrid = createGrid(board.grid);
-
-		newGrid[i][j] = val;
-		newBoard.grid = newGrid;
-		setBoard(newBoard);
-	}
-
 	const selectTrack = (track) => {
+		console.log("here", track, track.name, track.artists[0].name);
+		board.grid[selectedCard.i][selectedCard.j] = track;
+		updateBoard();
 		// gotta reset the board
 		console.log(track.uri);
-		changeBoardGridValue(selectedCard.i, selectedCard.j, track.uri);
+	}
+
+	const setCols = (val) => {
+		board.cols = val;
+		updateBoard();
+	}
+
+	const setRows = (val) => {
+		board.rows = val;
+		updateBoard();
+	}
+
+	const setMultiplier = (val) => {
+		board.multiplier = val;
+		updateBoard();
+	}
+	const setDailyDoubles = (val) => {
+		board.dailyDoubles = val;
+		updateBoard();
 	}
 
 	const setCategoryValue = (col, val) => {
-		changeBoardGridValue(col, 0, val);
+		board.grid[col][0] = val;
+		updateBoard();
 	}
-
-	useEffect(() => {
-		const newBoard = getBoard(boardID);
-		setBoard(newBoard);
-		setCols(newBoard.cols);
-		setRows(newBoard.rows);
-		setMultiplier(newBoard.multiplier);
-		setDailyDoubles(newBoard.dailyDoubles);
-		
-	}, [boardID, setBoard, setCols, setRows,])
 
 	useEffect(() => {
 		if (selectedCard.i === undefined) {
@@ -131,13 +91,15 @@ function EditBoard({ boardID, token, preview }) {
 
 	}, [selectedCard, board, setSearchResults]);
 
-	console.log(preview);
+	// console.log(preview,board);
+	if (!board) return; // maybe return a skeleton
 	if (preview) {
 		return (
-			<div className='edit-board'>
+			<div className='edit-board preview'>
+				<p> { board.name } </p>
 				<div className="game-board">
 					{board && board.grid.map( (_val, i) =>
-						i < cols &&
+						i < board.cols &&
 						<div className='game-col' key={`col-${i}`}>
 							{board.grid[i] && board.grid[i].map( (_val, j) => 
 								j < 1 && // just display categories for preview
@@ -153,32 +115,35 @@ function EditBoard({ boardID, token, preview }) {
 	}
 	return (
 		<div className='edit-board'>
+			<div>
+				<button onClick={() => setSelectedBoard(null)}>Done</button>
+			</div>
 			<div className='value-container'>
 				<NumberInput
 					label={"Columns"}
-					value={cols}
+					value={board.cols}
 					setValue={setCols}
 					maxVal={6}
 					minVal={3}
 				/>
 				<NumberInput
 					label={"Rows"}
-					value={rows}
+					value={board.rows}
 					setValue={setRows} 
 					maxVal={5}
 					minVal={3}
 				/>
 				<NumberInput
 					label={"Multiplier"}
-					value={multiplier}
+					value={board.multiplier}
 					setValue={setMultiplier} 
 					maxVal={3}
 					minVal={1}
 				/>
 				<NumberInput
 					label={"Daily Doubles"}
-					value={dailyDoubles}
-					setValue={setDailyDoubles} 
+					value={board.dailyDoubles}
+					setValue={setDailyDoubles}
 					maxVal={3}
 					minVal={1}
 				/>
@@ -186,27 +151,37 @@ function EditBoard({ boardID, token, preview }) {
 
 			<div className="game-board">
 				{board && board.grid.map( (_val, i) =>
-					i < cols &&
+					i < board.cols &&
 					<div className='game-col' key={`col-${i}`}>
 						{board.grid[i] && board.grid[i].map( (_val, j) => 
-							j <= rows && // j === 0 is categories, add 1 to adjust for categories
+							j <= board.rows && // j === 0 is categories, add 1 to adjust for categories
 							( j === 0 ?
 								<div key={`cell-${i}-${j}`} className='game-cell'>
 									<textarea
 										placeholder='Category'
-										onChange={(e) => changeBoardGridValue(i, 0, e.target.value)}
+										onChange={(e) => setCategoryValue(i, e.target.value)}
 										value={board.grid[i][j]}
 									/>
 								</div> 
+							: (board.grid[i][j] ? 
+								<div 
+									key={`cell-${i}-${j}`} 
+									className='game-cell populated' 
+									onClick={() => setSelectedCard({i,j})}
+								>
+									<p>{'$'+100*(j)*(board.multiplier)}</p>
+									<p>{board.grid[i][j].name}</p>
+									<p>{board.grid[i][j].artists[0].name}</p>
+								</div>
 							:
 								<div 
 									key={`cell-${i}-${j}`} 
 									className='game-cell' 
 									onClick={() => setSelectedCard({i,j})}
 								>
-									<p>{'$'+100*(j)*multiplier}</p>
+									<p>{'$'+100*(j)*(board.multiplier)}</p>
 								</div>
-							)
+							))
 						)}
 					</div>
 				)}
@@ -223,7 +198,7 @@ function EditBoard({ boardID, token, preview }) {
 								) }
 							</div>
 							{ board.grid[selectedCard.i][selectedCard.j] && 
-								<p>{board.grid[selectedCard.i][selectedCard.j]}</p>
+								<p>{board.grid[selectedCard.i][selectedCard.j].name}</p>
 							}
 							<button onClick={() => setSelectedCard({})}>close</button>
 						</div>

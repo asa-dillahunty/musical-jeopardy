@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import GameBoard from './GameBoard';
 import EditBoard from './EditBoard';
+import EditGame from './EditGame';
 
 function Menu ({ token, page, setPage }) {
 	switch(page) {
@@ -10,7 +11,7 @@ function Menu ({ token, page, setPage }) {
 			)
 		case "build":
 			return (
-				<EditBoard token={token} />
+				<EditGame gameID={""} token={token} />
 			);
 		default: // menu
 			return (

@@ -5,6 +5,11 @@
 	align-items: center;
 }
 
+.edit-board.preview:hover {
+	background-color: whitesmoke;
+	cursor: pointer;
+}
+
 .edit-board > .value-container {
 	align-items: center;
 	justify-content: center;
@@ -16,6 +21,20 @@
 	overflow: scroll;
 	max-height: 100px;
 	background-color: antiquewhite;
+}
+
+
+.edit-board .game-board > .game-col > .game-cell.populated {
+	align-items: flex-start;
+}
+
+.edit-board .game-board > .game-col > .game-cell.populated > p:first-child {
+	font-size: 10px;
+}
+
+.edit-board .game-board > .game-col > .game-cell.populated > p {
+	font-size: 12px;
+	margin: 0px 0px;
 }
 
 .edit-board .game-board > .game-col > .game-cell > textarea {

@@ -30,3 +30,7 @@
 	height: 30px;
 	width: 30px;
 }
+
+.compact-number-inputs > .number-input-button-container > svg:hover {
+	cursor: pointer;
+}
