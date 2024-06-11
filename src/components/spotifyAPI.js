@@ -1,9 +1,9 @@
 const clientId = '88ad68ab4d984a1d9e77d8b1377651ab';
-const redirectUri = 'http://localhost:3000/';
 const scopes = 'user-read-playback-state user-modify-playback-state';
 
 export function spotifyLogin() {
-	const authUrl = `https://accounts.spotify.com/authorize?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=${encodeURIComponent(scopes)}&response_type=token`;
+	const redirectUrl = window.location.origin + "/";
+	const authUrl = `https://accounts.spotify.com/authorize?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUrl)}&scope=${encodeURIComponent(scopes)}&response_type=token`;
 	window.location = authUrl;
 }
 
