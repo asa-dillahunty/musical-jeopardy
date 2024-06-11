@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import GameBoard from './GameBoard';
-import EditBoard from './EditBoard';
 import EditGame from './EditGame';
 
 function Menu ({ token, page, setPage }) {

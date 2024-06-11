@@ -43,7 +43,6 @@ function EditBoard({ board, token, preview, updateBoard, setSelectedBoard }) {
 	}
 
 	const selectTrack = (track) => {
-		console.log("here", track, track.name, track.artists[0].name);
 		board.grid[selectedCard.i][selectedCard.j] = track;
 		updateBoard();
 		// gotta reset the board
@@ -96,7 +95,6 @@ function EditBoard({ board, token, preview, updateBoard, setSelectedBoard }) {
 	if (preview) {
 		return (
 			<div className='edit-board preview'>
-				<p> { board.name } </p>
 				<div className="game-board">
 					{board && board.grid.map( (_val, i) =>
 						i < board.cols &&
@@ -192,9 +190,14 @@ function EditBoard({ board, token, preview, updateBoard, setSelectedBoard }) {
 							<input onChange={(e) => setQueryVal(e.target.value)} value={queryVal} /><AiOutlineSearch onClick={performQuery}/>
 							<div className='search-box'>
 								{ searchResults && searchResults.map( (val, index) => 
-									<p key={index} onClick={() => selectTrack(val)}>
-										{ val.name }
-									</p>
+									<div 
+										className="search-item"
+										onClick={() => selectTrack(val)}
+										key={index}
+									>
+										<p> { val.name } </p>
+										<p> { val.artists[0].name } </p>
+									</div>
 								) }
 							</div>
 							{ board.grid[selectedCard.i][selectedCard.j] && 

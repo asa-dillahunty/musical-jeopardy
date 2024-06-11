@@ -5,6 +5,10 @@
 	align-items: center;
 }
 
+.edit-board.preview {
+	margin: 30px 0px;
+}
+
 .edit-board.preview:hover {
 	background-color: whitesmoke;
 	cursor: pointer;
@@ -23,10 +27,21 @@
 	background-color: antiquewhite;
 }
 
-
-.edit-board .game-board > .game-col > .game-cell.populated {
-	align-items: flex-start;
+.edit-board .selected-card .search-box .search-item {
+	padding: 10px 0px;
 }
+
+.edit-board .selected-card .search-box .search-item p {
+	margin: 0;
+}
+
+.edit-board .selected-card .search-box .search-item:hover {
+	background-color: whitesmoke;
+}
+
+/* .edit-board .game-board > .game-col > .game-cell.populated {
+	align-items: flex-start;
+} */
 
 .edit-board .game-board > .game-col > .game-cell.populated > p:first-child {
 	font-size: 10px;

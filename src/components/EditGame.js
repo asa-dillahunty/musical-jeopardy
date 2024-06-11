@@ -53,8 +53,6 @@ function createNewBoard(index) {
 	const boardGrid = createGrid();
 	// generate an ID
 	const newBoard = {
-		id: "",
-		name: "New Board",
 		cols: 6,
 		rows: 5,
 		grid: boardGrid,
