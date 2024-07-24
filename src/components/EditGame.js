@@ -1,9 +1,8 @@
 import { useEffect, useState } from 'react';
 import './EditBoard.css';
 import NumberInput from './NumberInput';
-import { AiOutlineSearch } from 'react-icons/ai';
-import { searchTracks } from './spotifyAPI';
 import EditBoard from './EditBoard';
+import { useCreateGame, useGame, useUpdateGame } from '../util/firebaseAPIs';
 
 // what's the game object look like?
 /*
@@ -22,30 +21,30 @@ import EditBoard from './EditBoard';
 		cols: int,
 		rows: int,
 		grid: string[cols][rows] = trackUri,
+		// grid here was changes to an object because 
+		// firestore does not support nested arrays
 
 		multiplier: int,
 		dailyDoubles: int,
 	}
 */
 
-function getGame(gameID) {
-	if (!gameID) {
-		// new board
-		const boardList = Array(3)
-			.fill(undefined)
-			.map((_val,index) => createNewBoard(index));
+function getNewGame() {
+	
+	// new board
+	const boardList = Array(3)
+		.fill(undefined)
+		.map((_val,index) => createNewBoard(index));
 
-		// generate 3 boards
-		// boardList.map((val,index) => val = createNewBoard(index));
+	// generate 3 boards
+	// boardList.map((val,index) => val = createNewBoard(index));
 
-		const newGame = {
-			id:"Big Mode",
-			name: "First Game!",
-			numBoards: 2,
-			boards: boardList,
-		};
-		return newGame;
-	}
+	const newGame = {
+		name: "",
+		numBoards: 2,
+		boards: boardList,
+	};
+	return newGame;
 }
 
 function createNewBoard(index) {
@@ -64,16 +63,21 @@ function createNewBoard(index) {
 }
 
 function createGrid(oldGrid) {
-	const boardGrid = Array(6).fill().map( () => 
-		Array(6).fill(undefined)
-	);
+	const boardGrid = {};
+		
+	boardGrid[0] = Array(6).fill(undefined);
+	boardGrid[1] = Array(6).fill(undefined);
+	boardGrid[2] = Array(6).fill(undefined);
+	boardGrid[3] = Array(6).fill(undefined);
+	boardGrid[4] = Array(6).fill(undefined);
+	boardGrid[5] = Array(6).fill(undefined);
 	
-	boardGrid[0][0] = "Sultans in the Sky";
-	boardGrid[1][0] = "Grey Beards are Coming";
-	boardGrid[2][0] = "Chungus";
-	boardGrid[3][0] = "Emily Bell, Or Ray";
-	boardGrid[4][0] = "Meet Your Creatures";
-	boardGrid[5][0] = "Alphabetically";
+	boardGrid[0][0] = "";
+	boardGrid[1][0] = "";
+	boardGrid[2][0] = "";
+	boardGrid[3][0] = "";
+	boardGrid[4][0] = "";
+	boardGrid[5][0] = "";
 
 	if (!oldGrid) return boardGrid;
 	// else fill with old values
@@ -86,35 +90,97 @@ function createGrid(oldGrid) {
 	return boardGrid;
 }
 
-function EditGame({ gameID, token }) {
+function EditGame({ gameID, token, setChosenGameID }) {
 	const [game, setGame] = useState();
 	const [numBoards, setNumBoards] = useState();
 	const [selectedBoard, setSelectedBoard] = useState(null);
+	const [gameName, setGameName] = useState("");
 
-	const updateBoard = () => {
+	const { data: gameData, isLoading, isError } = useGame(gameID);
+	const createGameMutation = useCreateGame();
+	const updateGameMutation = useUpdateGame();
+
+	const updateGame = () => {
 		setGame( JSON.parse(JSON.stringify(game)) );
 	}
 
-	useEffect(() => {
-		const newGame = getGame(gameID);
-        setGame(newGame);
-		setNumBoards(newGame.numBoards);
-	}, [gameID, setGame, setNumBoards])
+	const printGame = () => {
+		console.log({name:gameName, ...game});
+	}
 
-    if (!game) return;
+	const saveGame = () => {
+		if (!gameID) {
+			createGameMutation.mutateAsync(game).then((gameID) => {
+				setChosenGameID(gameID);
+			});
+		} else {
+			updateGameMutation.mutateAsync(game).then(() => {
+				console.log("success");
+			});
+		}
+	}
+
+	useEffect(()=>{
+		if (game && gameName) {
+			game.name = gameName;
+			updateGame();
+		}
+	}, [gameName]);
+
+	useEffect(() => {
+		if (game && numBoards) {
+			game.numBoards = numBoards;
+			updateGame();
+		}
+	}, [numBoards]);
+
+	useEffect(() => {
+		if (!isLoading) {
+			if (gameData === null) {
+				const newGame = getNewGame(gameID);
+				setGame(newGame);
+				setNumBoards(newGame.numBoards);
+				setGameName(newGame.name);
+			} else {
+				setGame(gameData);
+				setNumBoards(gameData.numBoards);
+				setGameName(gameData.name);
+			}
+		}
+	}, [gameID, setGame, setNumBoards, setGameName, gameData, isLoading])
+
+	if (isLoading) {
+		return <p>Loading</p>
+	}
+	else if (isError) {
+		return <p>Some error. Contact site owner.</p>
+	}
+	else if (!game) {
+		return <p>Some error. Contact site owner.</p>
+	}
+
 	if (selectedBoard !== null) {
 		return (
 			<EditBoard
 				board={game.boards[selectedBoard]}
 				preview={false}
 				token={token}
-				updateBoard={updateBoard}
+				updateBoard={updateGame}
 				setSelectedBoard={setSelectedBoard}
 			/>
 		)
 	}
 	return (
 		<div className='edit-game'>
+			<div>
+				<input
+					onChange={(e) => setGameName(e.target.value)}
+					placeholder='Game Name'
+					value={gameName}
+				/>
+			</div>
+			<button onClick={saveGame}>Save Game</button>
+			<button onClick={printGame}>Pretend Save</button>
 			<div className='value-container'>
 				<NumberInput
 					label={"Number of Boards"}
@@ -130,7 +196,7 @@ function EditGame({ gameID, token }) {
                     ( index < numBoards && 
 						<div key={index} onClick={() => setSelectedBoard(index) }>
 							<EditBoard 
-								board={game.boards[index]}
+								board={val}
 								preview={true}
 							/>
 						</div>

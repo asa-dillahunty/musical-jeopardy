@@ -10,4 +10,9 @@ Some useful links for continuing the project:
 * [Start a Playback](https://developer.spotify.com/documentation/web-api/reference/start-a-users-playback)
 * [iFrame API](https://developer.spotify.com/documentation/embeds/tutorials/using-the-iframe-api)
 
+Some terminology for reading the code
+* **Session** - includes players, scores, game
+* **Game** - includes game boards, up to three
+* **Game Board** - singular board, contains the category titles, songs, score multiplier, daily double data for that board
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).

@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import './EditBoard.css';
 import NumberInput from './NumberInput';
 import { AiOutlineSearch } from 'react-icons/ai';
-import { searchTracks } from './spotifyAPI';
+import { searchTracks } from '../util/spotifyAPI';
 
 // what's the game object look like?
 /*
@@ -96,7 +96,7 @@ function EditBoard({ board, token, preview, updateBoard, setSelectedBoard }) {
 		return (
 			<div className='edit-board preview'>
 				<div className="game-board">
-					{board && board.grid.map( (_val, i) =>
+					{board && Object.keys(board.grid).map( (i) =>
 						i < board.cols &&
 						<div className='game-col' key={`col-${i}`}>
 							{board.grid[i] && board.grid[i].map( (_val, j) => 
@@ -148,7 +148,7 @@ function EditBoard({ board, token, preview, updateBoard, setSelectedBoard }) {
 			</div>
 
 			<div className="game-board">
-				{board && board.grid.map( (_val, i) =>
+				{board && Object.keys(board.grid).map( (i) =>
 					i < board.cols &&
 					<div className='game-col' key={`col-${i}`}>
 						{board.grid[i] && board.grid[i].map( (_val, j) => 

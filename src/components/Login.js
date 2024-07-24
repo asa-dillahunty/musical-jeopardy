@@ -1,5 +1,5 @@
 import React from 'react';
-import { spotifyLogin } from './spotifyAPI';
+import { spotifyLogin } from '../util/spotifyAPI';
 
 function Login() {
 	return (
