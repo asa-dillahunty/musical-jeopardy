@@ -1,0 +1,47 @@
+ul.game-selector-list {
+	list-style-type: none;
+	padding: 0;
+	margin: 0;
+}
+
+ul.game-selector-list li {
+	--li-border-width: 4px;
+
+	padding: 10px 15px;
+	margin: auto;
+	max-width: 300px;
+	background-color: var(--jeopardy-blue);
+	border: calc(var(--li-border-width)/2) solid black;
+	border-left-width: var(--li-border-width);
+	border-right-width: var(--li-border-width);
+
+	color: var(--jeopardy-yellow);
+	text-align: left;
+	font-weight: bold;
+}
+
+ul.game-selector-list li:first-child {
+	border-top-width: var(--li-border-width);
+}
+ul.game-selector-list li:last-child {
+	border-bottom-width: var(--li-border-width);
+}
+
+ul.game-selector-list li:hover {
+	opacity: .8;
+	cursor: pointer;
+}
+
+#new-game-button {
+	border-radius: 5px;
+	margin-top: 10px;
+	padding: 10px 10px;
+	background-color: var(--jeopardy-blue);
+	color: white;
+	font-weight: bold;
+}
+
+#new-game-button:hover {
+	opacity: .8;
+	cursor: pointer;
+}

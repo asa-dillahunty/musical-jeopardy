@@ -29,8 +29,12 @@ function GameSelector({ setPage, setChosenGameID, editing }) {
 						{game.name}
 					</li>
 				)}
-				{editing && <li onClick={() => selectGame("")}>New Game (+)</li>}
 			</ul>
+			{editing &&
+				<button id="new-game-button" onClick={() => selectGame("")}>
+					New Game (+)
+				</button>
+			}
 		</div>
 	);
 }
