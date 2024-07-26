@@ -2,6 +2,7 @@ import { useState } from 'react';
 import GameBoard from './GameBoard';
 import EditGame from './EditGame';
 import GameSelector from './GameSelector';
+import PlayGame from './PlayGame';
 
 function Menu ({ token, page, setPage }) {
 	const [chosenGameID, setChosenGameID] = useState();
@@ -9,10 +10,11 @@ function Menu ({ token, page, setPage }) {
 	switch(page) {
 		case menuOptions.playSelected:
 			return (
-				<GameBoard
+				<PlayGame
 					setPage={setPage}
 					gameID={chosenGameID}
 					token={token}
+					setChosenGameID={setChosenGameID}
 				/>
 			);
 		case menuOptions.playSelection:

@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
-import './EditBoard.css';
 import NumberInput from './NumberInput';
-import EditBoard from './EditBoard';
+import GameBoard from './GameBoard';
 import { useCreateGame, useGame, useUpdateGame } from '../util/firebaseAPIs';
 
 // what's the game object look like?
@@ -9,7 +8,7 @@ import { useCreateGame, useGame, useUpdateGame } from '../util/firebaseAPIs';
 	Game = {
 		id: string,
 		name: string,
-        numBoards: int,
+		numBoards: int,
 		boards: Boards[],
 	}
 */
@@ -161,12 +160,13 @@ function EditGame({ gameID, token, setChosenGameID }) {
 
 	if (selectedBoard !== null) {
 		return (
-			<EditBoard
+			<GameBoard
 				board={game.boards[selectedBoard]}
 				preview={false}
 				token={token}
 				updateBoard={updateGame}
 				setSelectedBoard={setSelectedBoard}
+				editing={true}
 			/>
 		)
 	}
@@ -193,15 +193,15 @@ function EditGame({ gameID, token, setChosenGameID }) {
 
 			<div className="game-board-list">
 				{ game.boards.map( (val, index) => 
-                    ( index < numBoards && 
+					( index < numBoards && 
 						<div key={index} onClick={() => setSelectedBoard(index) }>
-							<EditBoard 
+							<GameBoard 
 								board={val}
 								preview={true}
 							/>
 						</div>
 					)
-                ) }
+				) }
 			</div>
 		</div>
 	);

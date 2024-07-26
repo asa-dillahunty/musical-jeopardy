@@ -90,3 +90,76 @@
         transform: scale(1) rotateY(0deg);
     }
 }
+
+.edit-board {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+}
+
+.edit-board.preview {
+	margin: 30px 0px;
+}
+
+.edit-board.preview:hover {
+	background-color: whitesmoke;
+	cursor: pointer;
+}
+
+.edit-board > .value-container {
+	align-items: center;
+	justify-content: center;
+	display: flex;
+	flex-direction: row;
+}
+
+.edit-board .selected-card .search-box {
+	overflow: scroll;
+	max-height: 100px;
+	background-color: antiquewhite;
+}
+
+.edit-board .selected-card .search-box .search-item {
+	padding: 10px 0px;
+}
+
+.edit-board .selected-card .search-box .search-item p {
+	margin: 0;
+}
+
+.edit-board .selected-card .search-box .search-item:hover {
+	background-color: whitesmoke;
+}
+
+/* .edit-board .game-board > .game-col > .game-cell.populated {
+	align-items: flex-start;
+} */
+
+.edit-board .game-board > .game-col > .game-cell.populated > p:first-child {
+	font-size: 10px;
+}
+
+.edit-board .game-board > .game-col > .game-cell.populated > p {
+	font-size: 12px;
+	margin: 0px 0px;
+}
+
+.edit-board .game-board > .game-col > .game-cell > textarea {
+	font-size: 14px;
+	font-weight: bold;
+	color: yellow;
+	border: none;
+	background-color: transparent;
+	width: var(--cell-width);
+	height: var(--cell-height);
+	text-align: center;
+	align-content: center;
+	outline: none;
+	box-sizing: border-box;
+	resize:none;
+}
+
+.edit-board .game-board > .game-col > .game-cell > input:focus {
+	border-bottom: 2px solid white;
+}
