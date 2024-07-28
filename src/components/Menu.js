@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import GameBoard from './GameBoard';
 import EditGame from './EditGame';
 import GameSelector from './GameSelector';
 import PlayGame from './PlayGame';

@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import './GameBoard.css';
 import NumberInput from './NumberInput';
 import { AiOutlineSearch } from 'react-icons/ai';
-import { playTrack, searchTracks } from '../util/spotifyAPI';
+import { currentlyPlaying, playTrack, searchTracks } from '../util/spotifyAPI';
 
 // what's the game object look like?
 /*
@@ -37,11 +37,18 @@ if we are playing the game, we want here to be card
 	as well as eventually players, their scores, etc.
 */
 function PlayCard({ token, setSelectedCard, val }) {
+	const [progress, setProgress] = useState(0);
 	// start the music if not editing
 	const playSong = () => {
 		// learn how to use this:
 		// 		https://developer.spotify.com/documentation/embeds/tutorials/using-the-iframe-api
 		playTrack(val.uri, token);
+	}
+
+	const refreshDuration = () => {
+		currentlyPlaying(token).then((val) => {
+			setProgress(val.progress_ms);
+		});
 	}
 
 	return (
@@ -51,10 +58,12 @@ function PlayCard({ token, setSelectedCard, val }) {
 					<>
 						<p>{ val.name }</p>
 						<p>{ val.artists[0].name }</p>
+						<p>{progress}</p>
 					</>
 				}
 				<button onClick={() => setSelectedCard({})}>close</button>
 				<button onClick={playSong}>play song</button>
+				<button onClick={refreshDuration}>refresh</button>
 			</div>
 		</div>
 	);
@@ -112,7 +121,7 @@ function EditCard({ token, selectTrack, setSelectedCard, val }) {
 function BoardCell({ i, j, val, setVal, multiplier, header, editing, setSelectedCard }) {
 	if (header) {
 		return (
-			<div className='game-cell'>
+			<div className='game-cell category'>
 				<textarea
 					placeholder='Category'
 					onChange={(e) => setVal(i, e.target.value)}

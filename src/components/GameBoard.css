@@ -12,8 +12,13 @@
 	flex-direction: column;
 }
 
+.game-board > .game-col > .game-cell p,
+.game-board > .game-col > .game-cell textarea {
+	text-transform: UPPERCASE;
+}
+
 .game-board > .game-col > .game-cell {
-	--border-size: 5px;
+	--border-size: 2px;
 	--cell-width: 150px;
 	--cell-height: 75px;
 
@@ -25,36 +30,38 @@
 	width: var(--cell-width);
 	height: var(--cell-height);
 
-	background-color: blue;
+	background-color: var(--jeopardy-blue);
 	border: var(--border-size) solid black;
 	box-sizing: border-box;
+}
 
-	/* border-collapse doesn't work here, so we do some negative margins */
-	/* border-collapse: collapse; */
-	margin: calc(-1*var(--border-size)) 0 0 calc(-1*var(--border-size));
+.edit-board > .game-board > .game-col > .game-cell:hover {
+	cursor: pointer;
+	opacity: .8;
 }
 
 .game-board > .game-col > .game-cell:first-child {
-	margin-top: 0;
+	border-top-width: calc(2*var(--border-size));
 }
 .game-board > .game-col > .game-cell:last-child {
-	margin-bottom: 0;
+	border-bottom-width: calc(2*var(--border-size));
 }
 .game-board > .game-col:first-child > .game-cell {
-	margin-left: 0;
+	border-left-width: calc(2*var(--border-size));
 }
 .game-board > .game-col:last-child > .game-cell {
-	margin-right: 0;
+	border-right-width: calc(2*var(--border-size));
 }
 
 .game-board > .game-col > .game-cell > p {
 	font-size: 36px;
 	font-weight: bold;
-	color: yellow;
+	color: var(--jeopardy-yellow);
 }
 
 .game-board > .game-col > .game-cell.category > p {
 	font-size: 14px;
+	color: white;
 }
 
 .game-board > .selected-card {
@@ -148,7 +155,7 @@
 .edit-board .game-board > .game-col > .game-cell > textarea {
 	font-size: 14px;
 	font-weight: bold;
-	color: yellow;
+	color: white;
 	border: none;
 	background-color: transparent;
 	width: var(--cell-width);

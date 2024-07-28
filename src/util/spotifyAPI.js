@@ -47,3 +47,24 @@ export function playTrack(trackUri, accessToken) {
 		},
 	});
 }
+
+export async function currentlyPlaying(accessToken) {
+	// https://developer.spotify.com/documentation/web-api/reference/get-the-users-currently-playing-track
+	const response = await fetch(`https://api.spotify.com/v1/me/player/currently-playing`, {
+		headers: {
+			'Authorization': `Bearer ${accessToken}`,
+		},
+	});
+	const data = await response.json();
+	// if data.error
+	// if data.error.message ==="The access token expired"
+	console.log(data);
+
+	// useful items:
+	//	"timestamp": 0,
+	//	"progress_ms": 0,
+	//	"is_playing": false,
+	//	"item"
+
+	return data;
+}

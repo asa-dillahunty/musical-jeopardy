@@ -1,6 +1,6 @@
 :root {
-  --jeopardy-blue: blue;
-  --jeopardy-yellow: yellow;
+  --jeopardy-blue: rgb(0, 0, 137);
+  --jeopardy-yellow: rgb(255, 212, 70);
 }
 
 body {
