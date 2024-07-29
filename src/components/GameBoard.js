@@ -2,7 +2,8 @@ import { useEffect, useState } from 'react';
 import './GameBoard.css';
 import NumberInput from './NumberInput';
 import { AiOutlineSearch } from 'react-icons/ai';
-import { currentlyPlaying, playTrack, searchTracks } from '../util/spotifyAPI';
+import { playTrack, searchTracks } from '../util/spotifyAPI';
+import CurrentlyPlayingWidget from './CurrentlyPlayingWidget';
 
 // what's the game object look like?
 /*
@@ -36,18 +37,16 @@ if we are playing the game, we want here to be card
 	web playback tool, with some key items hidden, 
 	as well as eventually players, their scores, etc.
 */
-function PlayCard({ token, setSelectedCard, val }) {
-	const [progress, setProgress] = useState(0);
+function PlayCard({ token, setSelectedCard, val, refreshWidget }) {
 	// start the music if not editing
 	const playSong = () => {
-		// learn how to use this:
+		// maybe learn how to use this:
 		// 		https://developer.spotify.com/documentation/embeds/tutorials/using-the-iframe-api
-		playTrack(val.uri, token);
-	}
-
-	const refreshDuration = () => {
-		currentlyPlaying(token).then((val) => {
-			setProgress(val.progress_ms);
+		playTrack(val.uri, token).then(() => {
+			// we also want to trigger a refresh for the curr-playing-widget
+			// maybe on a delay?
+			// This is done because apparently Spotify is too slow
+			setTimeout(refreshWidget, 1000);
 		});
 	}
 
@@ -58,12 +57,10 @@ function PlayCard({ token, setSelectedCard, val }) {
 					<>
 						<p>{ val.name }</p>
 						<p>{ val.artists[0].name }</p>
-						<p>{progress}</p>
 					</>
 				}
 				<button onClick={() => setSelectedCard({})}>close</button>
 				<button onClick={playSong}>play song</button>
-				<button onClick={refreshDuration}>refresh</button>
 			</div>
 		</div>
 	);
@@ -120,16 +117,25 @@ function EditCard({ token, selectTrack, setSelectedCard, val }) {
 
 function BoardCell({ i, j, val, setVal, multiplier, header, editing, setSelectedCard }) {
 	if (header) {
-		return (
-			<div className='game-cell category'>
-				<textarea
-					placeholder='Category'
-					onChange={(e) => setVal(i, e.target.value)}
-					value={val}
-					disabled={!editing}
-				/>
-			</div> 
-		);
+		if (editing) {
+			return (
+				<div className='game-cell category'>
+					<textarea
+						placeholder='Category'
+						onChange={(e) => setVal(i, e.target.value)}
+						value={val}
+						disabled={!editing}
+					/>
+				</div> 
+			);
+		}
+		else {
+			return (
+				<div className='game-cell category'>
+					<p>{val}</p>
+				</div>
+			);
+		}
 	}
 	else {
 		if (editing) {
@@ -203,6 +209,11 @@ function BoardValueNumberInputs({ cols, setCols, rows, setRows, multiplier, setM
 
 function GameBoard({ board, token, preview, editing, updateBoard, setSelectedBoard }) {
 	const [selectedCard, setSelectedCard] = useState({ });
+	const [widgetNeedsRefresh, setWidgetNeedsRefresh] = useState(false);
+
+	const refreshWidget = () => {
+		setWidgetNeedsRefresh(!widgetNeedsRefresh);
+	}
 
 	const selectTrack = (track) => {
 		board.grid[selectedCard.i][selectedCard.j] = track;
@@ -240,7 +251,6 @@ function GameBoard({ board, token, preview, editing, updateBoard, setSelectedBoa
 		// should we do something when a card is selected?
 	}, [selectedCard]);
 
-	// console.log(preview,board);
 	if (!board) return; // maybe return a skeleton
 	if (preview) {
 		return (
@@ -251,9 +261,14 @@ function GameBoard({ board, token, preview, editing, updateBoard, setSelectedBoa
 						<div className='game-col' key={`col-${i}`}>
 							{board.grid[i] && board.grid[i].map( (_val, j) => 
 								j < 1 && // just display categories for preview
-								<div key={`cell-${i}-${j}`} className='game-cell category'>
-									<p>{board.grid[i][j]}</p>
-								</div> 
+								<BoardCell 
+									key={`cell-${i}-${j}`}
+									i={i}
+									j={j}
+									val={board.grid[i][j]}
+									header={j === 0}
+									editing={false}
+								/>
 							)}
 						</div>
 					)}
@@ -310,10 +325,18 @@ function GameBoard({ board, token, preview, editing, updateBoard, setSelectedBoa
 						token={token}
 						setSelectedCard={setSelectedCard}
 						val={board.grid[selectedCard.i][selectedCard.j]}
+						refreshWidget={refreshWidget}
 					/>)
 				}
 				
 			</div>
+			{!editing && 
+				<CurrentlyPlayingWidget
+					token={token}
+					widgetNeedsRefresh={widgetNeedsRefresh}
+					toggleRefresh={refreshWidget}
+				/>
+			}
 		</div>
 	);
 }

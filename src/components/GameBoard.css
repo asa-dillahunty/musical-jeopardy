@@ -40,6 +40,11 @@
 	opacity: .8;
 }
 
+.edit-board > .game-board > .game-col > .game-cell.category:hover {
+	cursor: inherit;
+	opacity: 1;
+}
+
 .game-board > .game-col > .game-cell:first-child {
 	border-top-width: calc(2*var(--border-size));
 }
