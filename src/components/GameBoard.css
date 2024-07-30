@@ -75,7 +75,6 @@
 	left: 0;
 	width: 100%;
 	height: 100%;
-	background-color: aqua;
 
 	display: flex; /* flex when shown */
 	align-items: center;
@@ -86,21 +85,172 @@
 }
 
 .game-board > .selected-card > .question-box {
-	width: fit-content;
-	height: fit-content;
-	background-color: azure;
+	width: 100%;
+	height: 100%;
+	background-color: var(--jeopardy-blue);
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+	position: relative;
+}
+
+.game-board > .selected-card > .question-box > p.empty-message {
+	color: white;
+}
+
+.game-board > .selected-card > .question-box .reveal-button {
+	font-size: 64px;
+	color: white;
+	transition: all .2s;
+	padding: 20px 30px;
+	border-radius: 100%;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translateX(-50%) translateY(-50%);
+}
+
+.game-board > .selected-card > .question-box .reveal-button:hover {
+	color: rgb(84, 84, 84);
+	cursor: pointer;
+}
+
+.game-board > .selected-card > .question-box .close-button {
+	position: absolute;
+	top: 0;
+	right: 0;
+	transform: translateX(-30%) translateY(30%);
+	color: var(--jeopardy-yellow);
+	font-size: 36px;
+	transition: all .2s;
+	z-index: 3;
+}
+
+.game-board > .selected-card > .question-box .close-button:hover {
+	opacity: .6;
+}
+
+.game-board > .selected-card > .question-box > .answer-box {
+	width: 100%;
+	height: 100%;
+	animation: fade-in 1s forwards;
+	box-sizing: border-box;
+	position: absolute;
+	top: 0;
+	left: 0;
+	overflow: hidden;
+}
+
+.game-board > .selected-card > .question-box > .answer-box > .song-card {
+	padding-top: 10px;
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	top: 0;
+	left: 0;
+	box-sizing: border-box;
+	z-index: 2;
+}
+
+#bg-wrap {
+	width: 100%;
+	height: 100%;
+	top: 0;
+	left: 0;
+	position: absolute;
+	overflow: hidden;
+	opacity: .4;
+}
+
+.game-board > .selected-card > .question-box > .answer-box > .background-image {
+	z-index: 1;
+	top: 0;
+	left: 0;
+	position: absolute;
+	width: 200%;
+	height: 100%;
+	/* Background sampled from css3patterns
+		https://projects.verou.me/css3patterns/#carbon */
+	/*
+		color 1: #151515
+		color 2: #222
+		color 3: #1b1b1b
+		color 4: #242424
+		color 5: #131313
+	*/
+	background:
+		linear-gradient(27deg, #151515 5px, transparent 5px) 0 5px,
+		linear-gradient(207deg, #151515 5px, transparent 5px) 10px 0px,
+		linear-gradient(27deg, #222 5px, transparent 5px) 0px 10px,
+		linear-gradient(207deg, #222 5px, transparent 5px) 10px 5px,
+		linear-gradient(90deg, #1b1b1b 10px, transparent 10px),
+		linear-gradient(#1d1d1d 25%, #1a1a1a 25%, #1a1a1a 50%, transparent 50%, transparent 75%, #242424 75%, #242424);
+	background-color: #131313;
+	background-size: 20px 20px;
+	animation: scroll 30s linear 0s infinite;
+}
+
+.game-board > .selected-card > .question-box > .answer-box > .song-card > .image-container {
+	height: 80%;
+	width: 100%;
+}
+
+.game-board > .selected-card > .question-box > .answer-box > .song-card > .text-container {
+	height: 20%;
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: space-evenly;
+}
+.game-board > .selected-card > .question-box > .answer-box > .song-card > .text-container > p {
+	padding: 0;
+	margin: 0;
+	color: var(--jeopardy-yellow);
+	font-weight: bold;
+	text-transform: UPPERCASE;
+}
+
+.game-board > .selected-card > .question-box > .answer-box > .song-card img {
+	max-height: 100%;
+	max-width: 100%;
+	height: auto;
+	width: auto;
+}
+
+.game-board > .selected-card > .question-box > .answer-box.hidden {
+	display: none;
 }
 
 @keyframes appear {
-    0% {
-        transform: scale(0) rotateY(180deg);
-    }
-    50% {
-        transform: scale(.75) rotateY(90deg);
-    }
-    100% {
-        transform: scale(1) rotateY(0deg);
-    }
+	0% {
+		transform: scale(0) rotateY(180deg);
+	}
+	50% {
+		transform: scale(.75) rotateY(90deg);
+	}
+	100% {
+		transform: scale(1) rotateY(0deg);
+	}
+}
+
+@keyframes fade-in {
+	0% {
+		opacity: 0;
+	}
+	100% {
+		opacity: 1;
+	}
+}
+
+@keyframes scroll {
+	0% {
+		left: -100%;
+	}
+	100% {
+		left: 0;
+	}
 }
 
 .edit-board {

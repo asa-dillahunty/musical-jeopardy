@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react';
 import './GameBoard.css';
 import NumberInput from './NumberInput';
-import { AiOutlineSearch } from 'react-icons/ai';
+import { AiFillCloseCircle, AiOutlineSearch } from 'react-icons/ai';
 import { playTrack, searchTracks } from '../util/spotifyAPI';
 import CurrentlyPlayingWidget from './CurrentlyPlayingWidget';
+import { FaEyeSlash } from 'react-icons/fa';
+import { SpotlightBackGround } from '../util/stolen';
 
 // what's the game object look like?
 /*
@@ -13,7 +15,6 @@ import CurrentlyPlayingWidget from './CurrentlyPlayingWidget';
 		boards: Boards[],
 	}
 */
-
 
 // what's the board object look like?
 /* 
@@ -38,8 +39,11 @@ if we are playing the game, we want here to be card
 	as well as eventually players, their scores, etc.
 */
 function PlayCard({ token, setSelectedCard, val, refreshWidget }) {
+	const [isAnswerVisible, setIsAnswerVisible] = useState(false);
+
 	// start the music if not editing
 	const playSong = () => {
+		if (!val) return;
 		// maybe learn how to use this:
 		// 		https://developer.spotify.com/documentation/embeds/tutorials/using-the-iframe-api
 		playTrack(val.uri, token).then(() => {
@@ -50,17 +54,50 @@ function PlayCard({ token, setSelectedCard, val, refreshWidget }) {
 		});
 	}
 
+	useEffect(() => {
+		playSong();
+	},[]);
+
+	if (!val) return (
+		<div className='selected-card'>
+			<div className="question-box">
+				<p className='empty-message'>Song not selected for game</p>
+				<AiFillCloseCircle className='close-button' onClick={() => setSelectedCard({})} />
+			</div>
+		</div>
+	);
+
+	const albImg = val.album.images[0];
+	let artistList = val.artists[0].name;
+	for (let i=1;i<val.artists.length;i++) {
+		artistList += `, ${val.artists[i].name}`;
+	}
+
 	return (
 		<div className='selected-card'>
 			<div className="question-box">
+				<SpotlightBackGround />
 				{ val &&
-					<>
-						<p>{ val.name }</p>
-						<p>{ val.artists[0].name }</p>
-					</>
+					<div className={`answer-box ${isAnswerVisible ? "" : "hidden"}`} >
+						<div className="song-card">
+							<div className='image-container'>
+								<img
+									height={albImg.height}
+									width={albImg.width}
+									src={albImg.url}
+									alt="album art"
+								/>
+							</div>
+							<div className='text-container'>
+								<p>{ val.name }</p>
+								<p>{ artistList }</p>
+							</div>
+						</div>
+						<div className="background-image"></div>
+					</div>
 				}
-				<button onClick={() => setSelectedCard({})}>close</button>
-				<button onClick={playSong}>play song</button>
+				{ !isAnswerVisible && <FaEyeSlash className='reveal-button' onClick={() => setIsAnswerVisible(true)}/> }
+				<AiFillCloseCircle className='close-button' onClick={() => setSelectedCard({})} />
 			</div>
 		</div>
 	);
