@@ -38,8 +38,13 @@ if we are playing the game, we want here to be card
 	web playback tool, with some key items hidden, 
 	as well as eventually players, their scores, etc.
 */
-function PlayCard({ token, setSelectedCard, val, refreshWidget }) {
+function PlayCard({ token, setSelectedCard, val, refreshWidget, revealCard }) {
 	const [isAnswerVisible, setIsAnswerVisible] = useState(false);
+
+	const showAnswer = () => {
+		revealCard();
+		setIsAnswerVisible(true);
+	}
 
 	// start the music if not editing
 	const playSong = () => {
@@ -96,7 +101,7 @@ function PlayCard({ token, setSelectedCard, val, refreshWidget }) {
 						<div className="background-image"></div>
 					</div>
 				}
-				{ !isAnswerVisible && <FaEyeSlash className='reveal-button' onClick={() => setIsAnswerVisible(true)}/> }
+				{ !isAnswerVisible && <FaEyeSlash className='reveal-button' onClick={showAnswer}/> }
 				<AiFillCloseCircle className='close-button' onClick={() => setSelectedCard({})} />
 			</div>
 		</div>
@@ -123,14 +128,16 @@ function EditCard({ token, selectTrack, setSelectedCard, val }) {
 
 	return (
 	// selectedCard.i !== undefined &&
-		<div className='selected-card'>
+		<div className='selected-card editing'>
 			<div className="question-box">
-				<input
-					onChange={(e) => setQueryVal(e.target.value)}
-					value={queryVal}
-					onKeyDown={onEnter}
-				/>
-				<AiOutlineSearch onClick={performQuery}/>
+				<div className="search-bar">
+					<input
+						onChange={(e) => setQueryVal(e.target.value)}
+						value={queryVal}
+						onKeyDown={onEnter}
+					/>
+					<AiOutlineSearch onClick={performQuery}/>
+				</div>
 				<div className='search-box'>
 					{ searchResults && searchResults.map( (val, index) => 
 						<div 
@@ -152,7 +159,7 @@ function EditCard({ token, selectTrack, setSelectedCard, val }) {
 	);
 }
 
-function BoardCell({ i, j, val, setVal, multiplier, header, editing, setSelectedCard }) {
+function BoardCell({ i, j, val, setVal, multiplier, header, editing, setSelectedCard, revealed }) {
 	if (header) {
 		if (editing) {
 			return (
@@ -197,6 +204,14 @@ function BoardCell({ i, j, val, setVal, multiplier, header, editing, setSelected
 			);
 		}
 		else {
+			if (revealed) return (
+				<div
+					className='game-cell revealed' 
+					onClick={() => setSelectedCard({i,j})}
+				>
+					<p>{val.name}</p>
+				</div>
+			);
 			return (
 				<div
 					className='game-cell' 
@@ -247,6 +262,22 @@ function BoardValueNumberInputs({ cols, setCols, rows, setRows, multiplier, setM
 function GameBoard({ board, token, preview, editing, updateBoard, setSelectedBoard }) {
 	const [selectedCard, setSelectedCard] = useState({ });
 	const [widgetNeedsRefresh, setWidgetNeedsRefresh] = useState(false);
+	const [revealedCards, setRevealedCards] = useState({});
+
+	const updateRevealed = () => {
+		setRevealedCards( JSON.parse(JSON.stringify(revealedCards)) );
+	}
+
+	const revealCard = (i,j) => {
+		if (!revealedCards[i]) revealedCards[i] = {};
+		revealedCards[i][j] = true;
+		updateRevealed();
+	}
+
+	const getRevealed = (i,j) => {
+		if (!revealedCards[i]) return false;
+		else return revealedCards[i][j] === true;
+	}
 
 	const refreshWidget = () => {
 		setWidgetNeedsRefresh(!widgetNeedsRefresh);
@@ -346,6 +377,7 @@ function GameBoard({ board, token, preview, editing, updateBoard, setSelectedBoa
 								header={j === 0}
 								editing={editing}
 								setSelectedCard={setSelectedCard}
+								revealed={getRevealed(i,j)}
 							/>
 						)}
 					</div>
@@ -363,6 +395,7 @@ function GameBoard({ board, token, preview, editing, updateBoard, setSelectedBoa
 						setSelectedCard={setSelectedCard}
 						val={board.grid[selectedCard.i][selectedCard.j]}
 						refreshWidget={refreshWidget}
+						revealCard={() => revealCard(selectedCard.i,selectedCard.j)}
 					/>)
 				}
 				

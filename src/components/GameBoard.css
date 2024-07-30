@@ -45,6 +45,10 @@
 	opacity: 1;
 }
 
+.game-board > .game-col > .game-cell.revealed > p {
+	font-size: 12px;
+}
+
 .game-board > .game-col > .game-cell:first-child {
 	border-top-width: calc(2*var(--border-size));
 }
@@ -66,6 +70,11 @@
 
 .game-board > .game-col > .game-cell.category > p {
 	font-size: 14px;
+	color: white;
+}
+
+.game-board > .selected-card.editing > .question-box {
+	background-color: rgb(35, 36, 124);
 	color: white;
 }
 
@@ -288,6 +297,7 @@
 
 .edit-board .selected-card .search-box .search-item p {
 	margin: 0;
+	color: black;
 }
 
 .edit-board .selected-card .search-box .search-item:hover {
