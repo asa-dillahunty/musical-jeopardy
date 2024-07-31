@@ -2,17 +2,22 @@ import './App.css';
 import { useEffect, useState } from 'react';
 import Login from './components/Login';
 import WebPlayback from './components/WebPlayback';
-import { getTokenFromUrl } from './util/spotifyAPI';
+import { getTokenFromUrl, getUserId } from './util/spotifyAPI';
 import Menu, { menuOptions } from './components/Menu';
 import { QueryClient, QueryClientProvider } from 'react-query';
 
 function App() {
 	const [token, setToken] = useState('');
+	const [userID, setUserID] = useState();
 	const [page, setPage] = useState('menu');
 
 	useEffect(() => {
 		const accessToken = getTokenFromUrl();
-		if (accessToken) setToken(accessToken);
+		if (!accessToken) return;
+		setToken(accessToken);
+		getUserId(accessToken).then((id) => {
+			setUserID(id);
+		});
 	}, []);
 	
 	const queryClient = new QueryClient();
@@ -25,7 +30,15 @@ function App() {
 					MUSICAL JEOPARDY
 				</header>
 				<main>
-					{ (token === '') ? <Login /> : <Menu token={token} page={page} setPage={setPage} /> }
+					{ (token === '') ? 
+						<Login /> : 
+						<Menu
+							token={token}
+							userID={userID}
+							page={page}
+							setPage={setPage}
+						/> 
+					}
 					{/* <WebPlayback token={token} /> */}
 				</main>
 			</div>

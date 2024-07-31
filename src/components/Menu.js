@@ -3,7 +3,7 @@ import EditGame from './EditGame';
 import GameSelector from './GameSelector';
 import PlayGame from './PlayGame';
 
-function Menu ({ token, page, setPage }) {
+function Menu ({ token, page, setPage, userID }) {
 	const [chosenGameID, setChosenGameID] = useState();
 
 	switch(page) {
@@ -20,6 +20,7 @@ function Menu ({ token, page, setPage }) {
 			return (
 				<GameSelector
 					setPage={setPage}
+					userID={userID}
 					setChosenGameID={setChosenGameID}
 					editing={false}
 				/>
@@ -28,6 +29,7 @@ function Menu ({ token, page, setPage }) {
 			return (
 				<EditGame
 					setPage={setPage}
+					userID={userID}
 					gameID={chosenGameID}
 					setChosenGameID={setChosenGameID}
 					token={token}
@@ -37,6 +39,7 @@ function Menu ({ token, page, setPage }) {
 			return (
 				<GameSelector
 					setPage={setPage}
+					userID={userID}
 					setChosenGameID={setChosenGameID}
 					editing={true}
 				/>

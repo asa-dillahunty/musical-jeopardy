@@ -89,7 +89,7 @@ function createGrid(oldGrid) {
 	return boardGrid;
 }
 
-function EditGame({ gameID, token, setChosenGameID }) {
+function EditGame({ gameID, token, setChosenGameID, userID }) {
 	const [game, setGame] = useState();
 	const [numBoards, setNumBoards] = useState();
 	const [selectedBoard, setSelectedBoard] = useState(null);
@@ -119,7 +119,7 @@ function EditGame({ gameID, token, setChosenGameID }) {
 		}
 	}
 
-	useEffect(()=>{
+	useEffect(() => {
 		if (game && gameName) {
 			game.name = gameName;
 			updateGame();
@@ -137,6 +137,7 @@ function EditGame({ gameID, token, setChosenGameID }) {
 		if (!isLoading) {
 			if (gameData === null) {
 				const newGame = getNewGame(gameID);
+				newGame.userID = userID;
 				setGame(newGame);
 				setNumBoards(newGame.numBoards);
 				setGameName(newGame.name);

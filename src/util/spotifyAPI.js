@@ -18,6 +18,17 @@ export function getTokenFromUrl() {
 	return params.access_token;
 }
 
+export async function getUserId(accessToken) {
+	const response = await fetch(`https://api.spotify.com/v1/me`, {
+		headers: {
+			'Authorization': `Bearer ${accessToken}`
+		}
+	});
+	const data = await response.json();
+	console.log(data);
+	return data.id;
+}
+
 export async function searchTracks(query, accessToken) {
 	const response = await fetch(`https://api.spotify.com/v1/search?q=${query}&type=track`, {
 		headers: {
