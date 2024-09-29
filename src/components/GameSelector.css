@@ -18,6 +18,7 @@ ul.game-selector-list li {
 	color: var(--jeopardy-yellow);
 	text-align: left;
 	font-weight: bold;
+	word-wrap: break-word;
 }
 
 ul.game-selector-list li:first-child {
@@ -44,4 +45,8 @@ ul.game-selector-list li:hover {
 #new-game-button:hover {
 	opacity: .8;
 	cursor: pointer;
+}
+
+section.selection-section {
+	padding-bottom: 30px;
 }

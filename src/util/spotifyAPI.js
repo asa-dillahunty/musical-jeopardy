@@ -49,6 +49,7 @@ export async function searchTracks(query, accessToken) {
 
 // Function to play a track
 export async function playTrack(trackUri, accessToken) {
+	console.log("playing track: ", trackUri);
 	const response = await fetch(`https://api.spotify.com/v1/me/player/play`, {
 		method: 'PUT',
 		body: JSON.stringify({ uris: [trackUri] }),
@@ -68,7 +69,6 @@ export async function getCurrentlyPlaying(accessToken) {
 			'Authorization': `Bearer ${accessToken}`,
 		},
 	});
-	console.log(response);
 	const data = await response.json();
 	// if data.error
 	// if data.error.message ==="The access token expired"
@@ -84,6 +84,7 @@ export async function getCurrentlyPlaying(accessToken) {
 }
 
 export async function pausePlayback(accessToken) {
+	console.log("calling pause function");
 	const response = await fetch(`https://api.spotify.com/v1/me/player/pause`, {
 		method: 'PUT',
 		headers: {
@@ -95,6 +96,7 @@ export async function pausePlayback(accessToken) {
 }
 
 export async function resumePlayback(accessToken) {
+	console.log("calling resume function");
 	const response = await fetch(`https://api.spotify.com/v1/me/player/play`, {
 		method: 'PUT',
 		headers: {

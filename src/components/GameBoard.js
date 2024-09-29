@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import './GameBoard.css';
 import NumberInput from './NumberInput';
 import { AiFillCloseCircle, AiOutlineSearch } from 'react-icons/ai';
@@ -6,6 +6,9 @@ import { playTrack, searchTracks } from '../util/spotifyAPI';
 import CurrentlyPlayingWidget from './CurrentlyPlayingWidget';
 import { FaEyeSlash } from 'react-icons/fa';
 import { SpotlightBackGround } from '../util/stolen';
+import { GiDoubleQuaver, GiRollingDices } from 'react-icons/gi';
+import { PlayerContainer } from './PlayGame';
+import { playersSignal, updatePlayerScore } from '../util/session';
 
 // what's the game object look like?
 /*
@@ -40,6 +43,7 @@ if we are playing the game, we want here to be card
 */
 function PlayCard({ token, setSelectedCard, val, refreshWidget, revealCard }) {
 	const [isAnswerVisible, setIsAnswerVisible] = useState(false);
+	const [startedPlaying, setStartedPlaying] = useState(false);
 
 	const showAnswer = () => {
 		revealCard();
@@ -49,6 +53,7 @@ function PlayCard({ token, setSelectedCard, val, refreshWidget, revealCard }) {
 	// start the music if not editing
 	const playSong = () => {
 		if (!val) return;
+		if (startedPlaying) return;
 		// maybe learn how to use this:
 		// 		https://developer.spotify.com/documentation/embeds/tutorials/using-the-iframe-api
 		playTrack(val.uri, token).then(() => {
@@ -57,11 +62,12 @@ function PlayCard({ token, setSelectedCard, val, refreshWidget, revealCard }) {
 			// This is done because apparently Spotify is too slow
 			setTimeout(refreshWidget, 1000);
 		});
+		setStartedPlaying(true);
 	}
 
 	useEffect(() => {
 		playSong();
-	},[]);
+	}, []);
 
 	if (!val) return (
 		<div className='selected-card'>
@@ -159,7 +165,7 @@ function EditCard({ token, selectTrack, setSelectedCard, val }) {
 	);
 }
 
-function BoardCell({ i, j, val, setVal, multiplier, header, editing, setSelectedCard, revealed }) {
+function BoardCell({ i, j, val, setVal, multiplier, header, editing, setSelectedCard, revealed, isDailyDouble }) {
 	if (header) {
 		if (editing) {
 			return (
@@ -192,6 +198,7 @@ function BoardCell({ i, j, val, setVal, multiplier, header, editing, setSelected
 						<p>{'$'+100*(j)*(multiplier)}</p>
 						<p>{val.name}</p>
 						<p>{val.artists[0].name}</p>
+						{isDailyDouble && <GiDoubleQuaver />}
 					</div>
 				:
 					<div
@@ -199,6 +206,7 @@ function BoardCell({ i, j, val, setVal, multiplier, header, editing, setSelected
 						onClick={() => setSelectedCard({i,j})}
 					>
 						<p>{'$'+100*(j)*(multiplier)}</p>
+						{isDailyDouble && <GiDoubleQuaver />}
 					</div>
 				)
 			);
@@ -224,7 +232,7 @@ function BoardCell({ i, j, val, setVal, multiplier, header, editing, setSelected
 	}	
 }
 
-function BoardValueNumberInputs({ cols, setCols, rows, setRows, multiplier, setMultiplier, dailyDoubles, setDailyDoubles }) {
+function BoardValueNumberInputs({ cols, setCols, rows, setRows, multiplier, setMultiplier, dailyDoubles, setDailyDoubles, randomizeDailyDoublePositions }) {
 	return (
 		<div className='value-container'>
 			<NumberInput
@@ -255,6 +263,7 @@ function BoardValueNumberInputs({ cols, setCols, rows, setRows, multiplier, setM
 				maxVal={3}
 				minVal={1}
 			/>
+			<GiRollingDices onClick={randomizeDailyDoublePositions}/>
 		</div>
 	)
 }
@@ -304,9 +313,44 @@ function GameBoard({ board, token, preview, editing, updateBoard, setSelectedBoa
 		board.multiplier = val;
 		updateBoard();
 	}
+
 	const setDailyDoubles = (val) => {
 		board.dailyDoubles = val;
 		updateBoard();
+	}
+
+	const randomizeDailyDoublePositions = () => {
+		if (!board.dailyDoublePositions) board.dailyDoublePositions = [];
+		for (let index=0; index<board.dailyDoubles; index++) {
+			// get i, get j
+			let i = Math.floor(Math.random() * board.rows);
+			let j = Math.floor(Math.random() * board.cols) + 1; // plus one to avoid categories
+			if (isDailyDouble(i, j)) {
+				// if already a daily double, try again
+				index -= 1;
+				continue;
+			}
+			 
+			if (board.dailyDoublePositions[index]) 
+				board.dailyDoublePositions[index] = { i, j };
+			else 
+				board.dailyDoublePositions.push({ i, j });
+		}
+		updateBoard();
+	}
+
+	const isDailyDouble = (i, j) => {
+		if (!board) return false
+		if (!board.dailyDoublePositions) return false;
+		i = parseInt(i);
+		// rows are strings because they are keys
+
+		for (let index=0; index < board.dailyDoubles; index++) {
+			const curr = board.dailyDoublePositions[index];
+			if (curr === undefined) break;
+			if (curr.i === i && curr.j === j) return true;
+		}
+		return false;
 	}
 
 	const setCategoryValue = (col, val) => {
@@ -318,6 +362,26 @@ function GameBoard({ board, token, preview, editing, updateBoard, setSelectedBoa
 		if (!selectedCard.i) return; // no selected card
 		// should we do something when a card is selected?
 	}, [selectedCard]);
+
+	const onClickPlayerFunc = (player, prevStatus) => {
+		const calcScore = Number.parseInt( selectedCard.j ) * board.multiplier * 100;
+
+		if (prevStatus === 'neutral') {
+			// it was a success, add the score
+			updatePlayerScore(player.index, playersSignal.value[player.index].score + calcScore)
+		}
+		else if (prevStatus === 'success') {
+			// it was a fail, but we just added ^. Subtract twice
+			updatePlayerScore(player.index, playersSignal.value[player.index].score - 2*calcScore)
+		}
+		else if (prevStatus === 'fail') {
+			// was a fail, but should be neutral, just add it back
+			updatePlayerScore(player.index, playersSignal.value[player.index].score + calcScore)
+		}
+		
+	}
+
+	const onClickPlayer = selectedCard.i ? onClickPlayerFunc : undefined;
 
 	if (!board) return; // maybe return a skeleton
 	if (preview) {
@@ -359,54 +423,59 @@ function GameBoard({ board, token, preview, editing, updateBoard, setSelectedBoa
 					setMultiplier={setMultiplier}
 					dailyDoubles={board.dailyDoubles}
 					setDailyDoubles={setDailyDoubles}
+					randomizeDailyDoublePositions={randomizeDailyDoublePositions}
 				/>
 			}
-			<div className="game-board">
-				{board && Object.keys(board.grid).map( (i) =>
-					i < board.cols &&
-					<div className='game-col' key={`col-${i}`}>
-						{board.grid[i] && board.grid[i].map( (_val, j) => 
-							j <= board.rows && // j === 0 is categories, add 1 to adjust for categories
-							<BoardCell 
-								key={`cell-${i}-${j}`}
-								i={i}
-								j={j}
-								val={board.grid[i][j]}
-								setVal={setCategoryValue}
-								multiplier={board.multiplier}
-								header={j === 0}
-								editing={editing}
-								setSelectedCard={setSelectedCard}
-								revealed={getRevealed(i,j)}
-							/>
-						)}
-					</div>
-				)}
-				{ // how do we display the selected card?
-					(selectedCard.i === undefined) ? <></> : (editing ? 
-					<EditCard
-						token={token}
-						selectTrack={selectTrack}
-						setSelectedCard={setSelectedCard}
-						val={board.grid[selectedCard.i][selectedCard.j]}
-					/> :
-					<PlayCard 
-						token={token}
-						setSelectedCard={setSelectedCard}
-						val={board.grid[selectedCard.i][selectedCard.j]}
-						refreshWidget={refreshWidget}
-						revealCard={() => revealCard(selectedCard.i,selectedCard.j)}
-					/>)
-				}
-				
+			<div className='game-board-and-sidebar'>
+				<div className="game-board">
+					{board && Object.keys(board.grid).map( (i) =>
+						i < board.cols &&
+						<div className='game-col' key={`col-${i}`}>
+							{board.grid[i] && board.grid[i].map( (_val, j) => 
+								j <= board.rows && // j === 0 is categories, add 1 to adjust for categories
+								<BoardCell 
+									key={`cell-${i}-${j}`}
+									i={i}
+									j={j}
+									val={board.grid[i][j]}
+									setVal={setCategoryValue}
+									multiplier={board.multiplier}
+									header={j === 0}
+									editing={editing}
+									setSelectedCard={setSelectedCard}
+									revealed={getRevealed(i,j)}
+									isDailyDouble={isDailyDouble(i,j)}
+								/>
+							)}
+						</div>
+					)}
+					{ // how do we display the selected card?
+						(selectedCard.i === undefined) ? <></> : (editing ? 
+						<EditCard
+							token={token}
+							selectTrack={selectTrack}
+							setSelectedCard={setSelectedCard}
+							val={board.grid[selectedCard.i][selectedCard.j]}
+						/> :
+						<PlayCard 
+							token={token}
+							setSelectedCard={setSelectedCard}
+							val={board.grid[selectedCard.i][selectedCard.j]}
+							refreshWidget={refreshWidget}
+							revealCard={() => revealCard(selectedCard.i,selectedCard.j)}
+						/>)
+					}
+				</div>
+				{ !editing && <PlayerContainer isPlaying isSidebar onClickPlayer={onClickPlayer}/> }
 			</div>
-			{!editing && 
+			{!editing && <>
 				<CurrentlyPlayingWidget
 					token={token}
 					widgetNeedsRefresh={widgetNeedsRefresh}
 					toggleRefresh={refreshWidget}
 				/>
-			}
+				<PlayerContainer isPlaying/>
+			</> }
 		</div>
 	);
 }

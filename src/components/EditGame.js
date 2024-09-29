@@ -20,7 +20,7 @@ import { useCreateGame, useGame, useUpdateGame } from '../util/firebaseAPIs';
 		cols: int,
 		rows: int,
 		grid: string[cols][rows] = trackUri,
-		// grid here was changes to an object because 
+		// grid here was changed to an object because 
 		// firestore does not support nested arrays
 
 		multiplier: int,

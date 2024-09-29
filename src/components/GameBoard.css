@@ -1,3 +1,17 @@
+.game-board-and-sidebar {
+	position: relative;
+	display: flex;
+	flex-direction: row;
+	width: min-content;
+	height: min-content;
+}
+
+.game-board-list {
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+}
+
 .game-board {
 	position: relative;
 	display: flex;
@@ -5,6 +19,7 @@
 
 	width: min-content;
 	height: min-content;
+	margin-right: auto;
 }
 
 .game-board > .game-col {
@@ -33,16 +48,27 @@
 	background-color: var(--jeopardy-blue);
 	border: var(--border-size) solid black;
 	box-sizing: border-box;
+
+	position: relative;
 }
 
-.edit-board > .game-board > .game-col > .game-cell:hover {
+.edit-board .game-board > .game-col > .game-cell:hover {
 	cursor: pointer;
 	opacity: .8;
 }
 
-.edit-board > .game-board > .game-col > .game-cell.category:hover {
+.edit-board .game-board > .game-col > .game-cell.category:hover {
 	cursor: inherit;
 	opacity: 1;
+}
+
+.game-board > .game-col > .game-cell > svg {
+	/* daily double sign when editing */
+	position: absolute;
+	/* z-index: 1; */
+	top: 0;
+	right: 0;
+	color: red;
 }
 
 .game-board > .game-col > .game-cell.revealed > p {
@@ -262,6 +288,10 @@
 	}
 }
 
+.preview-selector {
+	display: contents;
+}
+
 .edit-board {
 	display: flex;
 	flex-direction: column;
@@ -271,6 +301,7 @@
 
 .edit-board.preview {
 	margin: 30px 0px;
+	width: min-content;
 }
 
 .edit-board.preview:hover {
@@ -283,6 +314,14 @@
 	justify-content: center;
 	display: flex;
 	flex-direction: row;
+}
+
+.edit-board > .value-container > svg {
+	/* this is our dice! */
+	font-size: 30px;
+	color: rgb(119, 0, 0);
+	margin-left: -15px;
+	cursor: pointer;
 }
 
 .edit-board .selected-card .search-box {

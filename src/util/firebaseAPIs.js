@@ -1,6 +1,6 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
+import { getAnalytics, logEvent } from "firebase/analytics";
 import { collection, addDoc, doc, updateDoc, deleteDoc, getDocs, getFirestore, getDoc } from 'firebase/firestore';
 import { useMutation, useQuery, useQueryClient } from "react-query";
 // TODO: Add SDKs for Firebase products that you want to use
@@ -27,7 +27,12 @@ const GAMES_COLLECTION = 'games';
 const GAMES_QUERY_KEY = 'games_key';
 const gamesCollection = collection(db, GAMES_COLLECTION);
 
- const createGame = async (game) => {
+
+export function markEvent(eventIdentifier, eventParameters, eventCallOptions) {
+	logEvent(analytics, eventIdentifier, eventParameters, eventCallOptions);
+}
+
+const createGame = async (game) => {
 	console.log("creating game", game);
 	const docRef = await addDoc(gamesCollection, game);
 	return docRef.id;

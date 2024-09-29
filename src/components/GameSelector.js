@@ -1,15 +1,23 @@
 import './GameSelector.css';
 import { menuOptions } from './Menu';
-import { useGamesList } from '../util/firebaseAPIs';
+import { useDeleteGame, useGamesList } from '../util/firebaseAPIs';
+import { FaRegTrashCan } from 'react-icons/fa6';
 
 function GameSelector({ setPage, setChosenGameID, editing, userID }) {
 
 	const { data: gameList, isLoading, isError } = useGamesList();
+	const deleteGameMutation = useDeleteGame();
 
 	const selectGame = (gameID) => {
 		setChosenGameID(gameID);
 		if (editing) setPage(menuOptions.buildSelected);
 		else setPage(menuOptions.playSelected);
+	}
+
+	const handleDeleteGame = (e, gameID) => {
+		e.stopPropagation();
+		if (!window.confirm("Confirm Delete?")) return;
+		deleteGameMutation.mutateAsync(gameID);
 	}
 
 	if (isLoading) {
@@ -23,7 +31,7 @@ function GameSelector({ setPage, setChosenGameID, editing, userID }) {
 	const otherGames = gameList.filter((game) => game.userID !== userID);
 
 	return (
-		<div>
+		<section className='selection-section'>
 			<h2>Select a Game to {editing ? 'Edit' : 'Play'}!</h2>
 			<button onClick={() => setPage(menuOptions.mainMenu)}>Back</button>
 			<p>My Games</p>
@@ -31,6 +39,7 @@ function GameSelector({ setPage, setChosenGameID, editing, userID }) {
 				{myGames.map( (game, index) => 
 					<li key={index} onClick={() => selectGame(game.id)}>
 						{game.name}
+						{editing && <FaRegTrashCan onClick={(e) => handleDeleteGame(e, game.id)} /> }
 					</li>
 				)}
 			</ul>
@@ -47,7 +56,7 @@ function GameSelector({ setPage, setChosenGameID, editing, userID }) {
 					New Game (+)
 				</button>
 			}
-		</div>
+		</section>
 	);
 }
 
