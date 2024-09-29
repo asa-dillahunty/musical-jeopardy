@@ -116,7 +116,12 @@
 	justify-content: center;
 
 	transform-origin: center;
-    animation: appear 1s forwards;
+    animation: rotate-in 1s forwards;
+}
+
+.game-board > .selected-card.daily-double {
+	animation: appear-double 1.5s linear forwards;
+	/* animation: name duration timing-function delay iteration-count direction fill-mode; */
 }
 
 .game-board > .selected-card > .question-box {
@@ -258,12 +263,30 @@
 	display: none;
 }
 
-@keyframes appear {
+@keyframes rotate-in {
 	0% {
 		transform: scale(0) rotateY(180deg);
 	}
 	50% {
 		transform: scale(.75) rotateY(90deg);
+	}
+	100% {
+		transform: scale(1) rotateY(0deg);
+	}
+}
+
+@keyframes appear-double {
+	0% {
+		transform: scale(0) rotateY(360deg);
+	}
+	25% {
+		transform: scale(.5) rotateY(270deg);
+	}
+	50% {
+		transform: scale(.7) rotateY(180deg);
+	}
+	75% {
+		transform: scale(.9) rotateY(90deg);
 	}
 	100% {
 		transform: scale(1) rotateY(0deg);

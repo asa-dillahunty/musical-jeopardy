@@ -41,7 +41,7 @@ if we are playing the game, we want here to be card
 	web playback tool, with some key items hidden, 
 	as well as eventually players, their scores, etc.
 */
-function PlayCard({ token, setSelectedCard, val, refreshWidget, revealCard }) {
+function PlayCard({ token, setSelectedCard, val, refreshWidget, revealCard, isDailyDouble }) {
 	const [isAnswerVisible, setIsAnswerVisible] = useState(false);
 	const [startedPlaying, setStartedPlaying] = useState(false);
 
@@ -84,8 +84,9 @@ function PlayCard({ token, setSelectedCard, val, refreshWidget, revealCard }) {
 		artistList += `, ${val.artists[i].name}`;
 	}
 
+	const nameOfClass = isDailyDouble ? 'selected-card daily-double' : 'selected-card';
 	return (
-		<div className='selected-card'>
+		<div className={nameOfClass}>
 			<div className="question-box">
 				<SpotlightBackGround />
 				{ val &&
@@ -463,6 +464,7 @@ function GameBoard({ board, token, preview, editing, updateBoard, setSelectedBoa
 							val={board.grid[selectedCard.i][selectedCard.j]}
 							refreshWidget={refreshWidget}
 							revealCard={() => revealCard(selectedCard.i,selectedCard.j)}
+							isDailyDouble={isDailyDouble(selectedCard.i,selectedCard.j)}
 						/>)
 					}
 				</div>
