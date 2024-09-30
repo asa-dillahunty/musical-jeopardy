@@ -41,9 +41,15 @@ if we are playing the game, we want here to be card
 	web playback tool, with some key items hidden, 
 	as well as eventually players, their scores, etc.
 */
-function PlayCard({ token, setSelectedCard, val, refreshWidget, revealCard, isDailyDouble }) {
+function PlayCard(
+		{ 
+			token, setSelectedCard, val, refreshWidget, 
+			revealCard, isDailyDouble, selectedPlayer, setSelectedPlayer,
+			dailyDoubleWager, setDailyDoubleWager
+		}) {
 	const [isAnswerVisible, setIsAnswerVisible] = useState(false);
 	const [startedPlaying, setStartedPlaying] = useState(false);
+	const [placingWager, setPlacingWager] = useState(isDailyDouble);
 
 	const showAnswer = () => {
 		revealCard();
@@ -65,8 +71,23 @@ function PlayCard({ token, setSelectedCard, val, refreshWidget, revealCard, isDa
 		setStartedPlaying(true);
 	}
 
+	const finalizeWager = () => {
+		// playSong();
+		setPlacingWager(false)
+	}
+
+	const winWager = () => {
+		updatePlayerScore(selectedPlayer.index, playersSignal.value[selectedPlayer.index].score + dailyDoubleWager);
+		setSelectedCard({});
+	}
+
+	const loseWager = () => {
+		updatePlayerScore(selectedPlayer.index, playersSignal.value[selectedPlayer.index].score - dailyDoubleWager);
+		setSelectedCard({});
+	}
+
 	useEffect(() => {
-		playSong();
+		if (!isDailyDouble) playSong();
 	}, []);
 
 	if (!val) return (
@@ -82,6 +103,28 @@ function PlayCard({ token, setSelectedCard, val, refreshWidget, revealCard, isDa
 	let artistList = val.artists[0].name;
 	for (let i=1;i<val.artists.length;i++) {
 		artistList += `, ${val.artists[i].name}`;
+	}
+
+	const currentScore = selectedPlayer ? playersSignal.value[selectedPlayer.index].score : 0;
+	if (placingWager) {
+		return (
+			<div className="selected-card">
+				<div className='daily-double-card'>
+					<p>it's the daily double! place a wager!</p>
+					{ selectedPlayer ? <p>{selectedPlayer.name}</p> : <p>Select a player to wager in the sidebar!</p> }
+					{ selectedPlayer && <>
+						<NumberInput
+							label="wager $"
+							value={dailyDoubleWager}
+							setValue={setDailyDoubleWager}
+							maxVal={currentScore > 500 ? currentScore : 500}
+							minVal={0}
+						/>
+						<button onClick={finalizeWager}>Finalized wager</button>
+					</>}
+				</div>
+			</div>
+		);
 	}
 
 	const nameOfClass = isDailyDouble ? 'selected-card daily-double' : 'selected-card';
@@ -106,6 +149,10 @@ function PlayCard({ token, setSelectedCard, val, refreshWidget, revealCard, isDa
 							</div>
 						</div>
 						<div className="background-image"></div>
+						{isDailyDouble && 
+							<div className='temp-button-name'>
+								<button onClick={winWager}>success</button><button onClick={loseWager}>fail</button>
+							</div>}
 					</div>
 				}
 				{ !isAnswerVisible && <FaEyeSlash className='reveal-button' onClick={showAnswer}/> }
@@ -273,6 +320,8 @@ function GameBoard({ board, token, preview, editing, updateBoard, setSelectedBoa
 	const [selectedCard, setSelectedCard] = useState({ });
 	const [widgetNeedsRefresh, setWidgetNeedsRefresh] = useState(false);
 	const [revealedCards, setRevealedCards] = useState({});
+	const [selectedPlayer, setSelectedPlayer] = useState(null);
+	const [dailyDoubleWager, setDailyDoubleWager] = useState(500);
 
 	const updateRevealed = () => {
 		setRevealedCards( JSON.parse(JSON.stringify(revealedCards)) );
@@ -383,6 +432,7 @@ function GameBoard({ board, token, preview, editing, updateBoard, setSelectedBoa
 	}
 
 	const onClickPlayer = selectedCard.i ? onClickPlayerFunc : undefined;
+	const selectedIsDailyDouble = isDailyDouble(selectedCard.i, selectedCard.j);
 
 	if (!board) return; // maybe return a skeleton
 	if (preview) {
@@ -464,11 +514,20 @@ function GameBoard({ board, token, preview, editing, updateBoard, setSelectedBoa
 							val={board.grid[selectedCard.i][selectedCard.j]}
 							refreshWidget={refreshWidget}
 							revealCard={() => revealCard(selectedCard.i,selectedCard.j)}
-							isDailyDouble={isDailyDouble(selectedCard.i,selectedCard.j)}
+							isDailyDouble={selectedIsDailyDouble}
+							selectedPlayer={selectedPlayer}
+							setSelectedPlayer={setSelectedPlayer}
+							dailyDoubleWager={dailyDoubleWager}
+							setDailyDoubleWager={setDailyDoubleWager}
 						/>)
 					}
 				</div>
-				{ !editing && <PlayerContainer isPlaying isSidebar onClickPlayer={onClickPlayer}/> }
+				{ !editing && 
+					<PlayerContainer
+						isSidebar
+						onClickPlayer={selectedIsDailyDouble ? setSelectedPlayer : onClickPlayer}
+					/>
+				}
 			</div>
 			{!editing && <>
 				<CurrentlyPlayingWidget
