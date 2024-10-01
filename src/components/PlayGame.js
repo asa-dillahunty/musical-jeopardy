@@ -115,7 +115,7 @@ function PlayerSetup({ setPlayersInitialized }) {
 	);
 }
 
-export function PlayerContainer({ onClickPlayer, numPlayers, isPlaying, isSidebar }) {
+export function PlayerContainer({ onClickPlayer, numPlayers, isPlaying, isSidebar, selectedPlayer }) {
 	if (!numPlayers) numPlayers = numPlayersSignal.value;
 	const className = isSidebar ? 'player-container sidebar' : 'player-container';
 
@@ -128,6 +128,7 @@ export function PlayerContainer({ onClickPlayer, numPlayers, isPlaying, isSideba
 						display={index < numPlayers}
 						onClickPlayer={onClickPlayer}
 						isPlaying={isPlaying}
+						selectedPlayer={selectedPlayer}
 						key={index}
 					/>
 				);
@@ -142,12 +143,13 @@ const rewardState = {
 	neutral: "neutral"
 }
 
-function PlayerDisplay({ data, display, onClickPlayer, isPlaying }) {
+function PlayerDisplay({ data, display, onClickPlayer, isPlaying, selectedPlayer }) {
 	const [rewardStatus, setRewardStatus] = useState(rewardState.neutral);
 	let className = 'player-icon-wrapper';
 	if (onClickPlayer) className += ' selectable';
 	if (rewardStatus === rewardState.fail) className += ' fail';
 	if (rewardStatus === rewardState.success) className += ' success';
+	if (selectedPlayer?.index === data.index) className += ' selected';
 
 	const handleClick = () => {
 		if (!onClickPlayer) return;

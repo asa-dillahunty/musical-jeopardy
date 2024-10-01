@@ -527,6 +527,7 @@ function GameBoard({ board, token, preview, editing, updateBoard, setSelectedBoa
 						isSidebar
 						isPlaying={!selectedIsDailyDouble}
 						onClickPlayer={selectedIsDailyDouble ? setSelectedPlayer : onClickPlayer}
+						selectedPlayer={selectedPlayer}
 					/>
 				}
 			</div>

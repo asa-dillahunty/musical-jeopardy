@@ -9,8 +9,20 @@
 }
 
 .player-icon-wrapper.selectable:hover {
-	background-color: #0004;
+	/* background-color: #0004; */
 	cursor: pointer;
+}
+
+.player-icon-wrapper.selectable:hover::before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-color: #0004;
+	border-radius: 5px;
 }
 
 .player-icon-wrapper {
@@ -139,28 +151,16 @@
 	position: relative
 }
 
-.sidebar .player-icon-wrapper.fail::before {
-	content: "";
-	display: block;
-	position: absolute;
-	top: 0;
-	left: 0;
-	width: 100%;
-	height: 100%;
+.sidebar .player-icon-wrapper.selectable.fail {
 	background-color: rgba(255, 0, 0, 0.2);
-	border-radius: 5px;
 }
 
-.sidebar .player-icon-wrapper.success::before {
-	content: "";
-	display: block;
-	position: absolute;
-	top: 0;
-	left: 0;
-	width: 100%;
-	height: 100%;
+.sidebar .player-icon-wrapper.selectable.success {
 	background-color: rgba(0, 255, 0, 0.2);
-	border-radius: 5px;
+}
+
+.sidebar .player-icon-wrapper.selectable.selected {
+	background-color: rgba(0, 0, 255, 0.2);
 }
 
 .sidebar .player-icon {
