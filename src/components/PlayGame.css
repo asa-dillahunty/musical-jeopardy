@@ -10,6 +10,7 @@
 
 .player-icon-wrapper.selectable:hover {
 	/* background-color: #0004; */
+	position: relative;
 	cursor: pointer;
 }
 

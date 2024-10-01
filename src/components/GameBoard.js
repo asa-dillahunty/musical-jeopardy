@@ -4,11 +4,12 @@ import NumberInput from './NumberInput';
 import { AiFillCloseCircle, AiOutlineSearch } from 'react-icons/ai';
 import { playTrack, searchTracks } from '../util/spotifyAPI';
 import CurrentlyPlayingWidget from './CurrentlyPlayingWidget';
-import { FaEyeSlash } from 'react-icons/fa';
+import { FaCheck, FaEyeSlash } from 'react-icons/fa';
 import { SpotlightBackGround } from '../util/stolen';
 import { GiDoubleQuaver, GiRollingDices } from 'react-icons/gi';
 import { PlayerContainer } from './PlayGame';
 import { playersSignal, updatePlayerScore } from '../util/session';
+import { FaXmark } from 'react-icons/fa6';
 
 // what's the game object look like?
 /*
@@ -110,7 +111,7 @@ function PlayCard(
 		return (
 			<div className="selected-card">
 				<div className='daily-double-card'>
-					<p>it's the daily double! place a wager!</p>
+					<h3>Daily{"\n"} Double</h3>
 					{ selectedPlayer ? <p>{selectedPlayer.name}</p> : <p>Select a player to wager in the sidebar!</p> }
 					{ selectedPlayer && <>
 						<NumberInput
@@ -150,8 +151,9 @@ function PlayCard(
 						</div>
 						<div className="background-image"></div>
 						{isDailyDouble && 
-							<div className='temp-button-name'>
-								<button onClick={winWager}>success</button><button onClick={loseWager}>fail</button>
+							<div className='result-button-box'>
+								<button className="failure" onClick={loseWager}><FaXmark /></button>
+								<button className="success" onClick={winWager}><FaCheck /></button>
 							</div>}
 					</div>
 				}
@@ -373,8 +375,8 @@ function GameBoard({ board, token, preview, editing, updateBoard, setSelectedBoa
 		if (!board.dailyDoublePositions) board.dailyDoublePositions = [];
 		for (let index=0; index<board.dailyDoubles; index++) {
 			// get i, get j
-			let i = Math.floor(Math.random() * board.rows);
-			let j = Math.floor(Math.random() * board.cols) + 1; // plus one to avoid categories
+			let i = Math.floor(Math.random() * board.cols);
+			let j = Math.floor(Math.random() * board.rows) + 1; // plus one to avoid categories
 			if (isDailyDouble(i, j)) {
 				// if already a daily double, try again
 				index -= 1;
@@ -527,7 +529,7 @@ function GameBoard({ board, token, preview, editing, updateBoard, setSelectedBoa
 						isSidebar
 						isPlaying={!selectedIsDailyDouble}
 						onClickPlayer={selectedIsDailyDouble ? setSelectedPlayer : onClickPlayer}
-						selectedPlayer={selectedPlayer}
+						selectedPlayer={selectedIsDailyDouble ? selectedPlayer : undefined}
 					/>
 				}
 			</div>
