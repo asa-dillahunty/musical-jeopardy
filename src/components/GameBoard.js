@@ -525,6 +525,7 @@ function GameBoard({ board, token, preview, editing, updateBoard, setSelectedBoa
 				{ !editing && 
 					<PlayerContainer
 						isSidebar
+						isPlaying={!selectedIsDailyDouble}
 						onClickPlayer={selectedIsDailyDouble ? setSelectedPlayer : onClickPlayer}
 					/>
 				}
