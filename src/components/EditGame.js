@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 import NumberInput from './NumberInput';
 import GameBoard from './GameBoard';
 import { useCreateGame, useGame, useUpdateGame } from '../util/firebaseAPIs';
+import ClickBlocker from './ClickBlocker';
+import { SongSelect } from './SongSelect';
 
 // what's the game object look like?
 /*
@@ -42,6 +44,7 @@ function getNewGame() {
 		name: "",
 		numBoards: 2,
 		boards: boardList,
+		finalJeopardy: null
 	};
 	return newGame;
 }
@@ -94,6 +97,8 @@ function EditGame({ gameID, token, setChosenGameID, userID }) {
 	const [numBoards, setNumBoards] = useState();
 	const [selectedBoard, setSelectedBoard] = useState(null);
 	const [gameName, setGameName] = useState("");
+	const [songSelecting, setSongSelecting] = useState(false);
+	const [finalJeopardy, setFinalJeopardy] = useState();
 
 	const { data: gameData, isLoading, isError } = useGame(gameID);
 	const createGameMutation = useCreateGame();
@@ -173,6 +178,14 @@ function EditGame({ gameID, token, setChosenGameID, userID }) {
 	}
 	return (
 		<div className='edit-game'>
+			<ClickBlocker custom block={songSelecting} >
+				<SongSelect
+					token={token}
+					onClose={() => setSongSelecting(false)}
+					selectTrack={(track) => setFinalJeopardy(track)}
+					val={finalJeopardy}
+				/>
+			</ClickBlocker>
 			<div>
 				<input
 					onChange={(e) => setGameName(e.target.value)}
@@ -204,6 +217,7 @@ function EditGame({ gameID, token, setChosenGameID, userID }) {
 					)
 				) }
 			</div>
+			<button onClick={() => setSongSelecting(true)}>select song</button>
 		</div>
 	);
 }
