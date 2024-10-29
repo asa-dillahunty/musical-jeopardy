@@ -73,8 +73,14 @@ function PlayCard(
 		setStartedPlaying(true);
 	}
 
+	const changeWager = (e) => {
+		const wager = parseInt( e.target.value );
+		if (isNaN(wager)) setDailyDoubleWager(0);
+		else setDailyDoubleWager(wager);
+	}
+
 	const finalizeWager = () => {
-		// playSong();
+		playSong();
 		setPlacingWager(false)
 	}
 
@@ -121,6 +127,10 @@ function PlayCard(
 							setValue={setDailyDoubleWager}
 							maxVal={currentScore > 500 ? currentScore : 500}
 							minVal={0}
+						/>
+						<input
+							onChange={changeWager}
+							value={dailyDoubleWager}
 						/>
 						<button onClick={finalizeWager}>Finalized wager</button>
 					</>}
