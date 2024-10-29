@@ -7,7 +7,7 @@ import CurrentlyPlayingWidget from './CurrentlyPlayingWidget';
 import { FaCheck, FaEyeSlash } from 'react-icons/fa';
 import { SpotlightBackGround } from '../util/stolen';
 import { GiDoubleQuaver, GiRollingDices } from 'react-icons/gi';
-import { PlayerContainer } from './PlayGame';
+import { PlayerContainer, PlayerDisplay } from './PlayGame';
 import { playersSignal, updatePlayerScore } from '../util/session';
 import { FaXmark } from 'react-icons/fa6';
 import { SongSelect } from './SongSelect';
@@ -118,8 +118,17 @@ function PlayCard(
 		return (
 			<div className="selected-card">
 				<div className='daily-double-card'>
-					<h3>Daily{"\n"} Double</h3>
-					{ selectedPlayer ? <p>{selectedPlayer.name}</p> : <p>Select a player to wager in the sidebar!</p> }
+					<h3>Daily Double</h3>
+					{ selectedPlayer ? 
+						<div className='sidebar'>
+							<PlayerDisplay
+								data={selectedPlayer}
+								display={true}
+								isPlaying={true}
+							/>
+						</div> : 
+						<p>Select a player to wager in the sidebar!</p> 
+					}
 					{ selectedPlayer && <>
 						<NumberInput
 							label="wager $"
@@ -127,12 +136,9 @@ function PlayCard(
 							setValue={setDailyDoubleWager}
 							maxVal={currentScore > 500 ? currentScore : 500}
 							minVal={0}
+							incPerDigit
 						/>
-						<input
-							onChange={changeWager}
-							value={dailyDoubleWager}
-						/>
-						<button onClick={finalizeWager}>Finalized wager</button>
+						<button onClick={finalizeWager} className='finalize-wager-button'>Finalize Wager</button>
 					</>}
 				</div>
 			</div>
@@ -245,7 +251,7 @@ function BoardCell({ i, j, val, setVal, multiplier, header, editing, setSelected
 			);
 			return (
 				<div
-					className='game-cell' 
+					className='game-cell'
 					onClick={() => setSelectedCard({i,j})}
 				>
 					<p>{'$'+100*(j)*(multiplier)}</p>

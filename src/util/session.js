@@ -43,6 +43,7 @@ export const updatePlayerName = (playerIndex, name) => {
 }
 
 export const updatePlayerScore = (playerIndex, score) => {
+	score = parseInt(score);
 	const playersCopy = playersSignal.value.map((player, index) =>
 		playerIndex === index ? { ...player, score } : player
 	);

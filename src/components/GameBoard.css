@@ -189,13 +189,40 @@
 	display: flex;
 	flex-direction: column;
 	background-color: rgb(110, 26, 42);
-	font-family: 'Wendy One', sans-serif;
+}
 
+.game-board > .selected-card .daily-double-card .sidebar .player-icon-wrapper {
+	margin: auto;
+}
+.game-board > .selected-card .daily-double-card .sidebar .player-icon-wrapper {
+	background-color: rgb(219, 219, 219);
+}
+
+.game-board > .selected-card .daily-double-card h3 {
+	font-family: 'Wendy One', sans-serif;
 	font-size: 72px;
-	/* color: #F7CA05; */
 	color: rgb(140, 33, 52);
 	text-shadow: 0 10px 7px rgba(0,0,0,0.4), -2px -5px 0 #fff;
 	letter-spacing: -3px;
+	padding: 10px 0;
+	margin: 0;
+}
+
+.game-board > .selected-card .daily-double-card .compact-number-inputs {
+	color: white;
+	font-weight: bold;
+	padding: 10px 0;
+	width: fit-content;
+	margin: auto;
+}
+
+.finalize-wager-button {
+	font-family: 'Wendy One', sans-serif;
+	font-size: 24px;
+	padding: 10px 15px;
+	width: min-content;
+	white-space: nowrap;
+	margin: auto;
 }
 
 .game-board > .selected-card > .question-box {

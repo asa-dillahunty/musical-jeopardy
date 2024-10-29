@@ -143,7 +143,7 @@ const rewardState = {
 	neutral: "neutral"
 }
 
-function PlayerDisplay({ data, display, onClickPlayer, isPlaying, selectedPlayer }) {
+export function PlayerDisplay({ data, display, onClickPlayer, isPlaying, selectedPlayer }) {
 	const [rewardStatus, setRewardStatus] = useState(rewardState.neutral);
 	let className = 'player-icon-wrapper';
 	if (onClickPlayer) className += ' selectable';
