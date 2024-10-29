@@ -22,6 +22,13 @@ export default function CurrentlyPlayingWidget({token, widgetNeedsRefresh, toggl
 
 	const refreshWidget = () => {
 		getCurrentlyPlaying(token).then((val) => {
+			console.log(val);
+			if (!val) {
+				setProgress(0);
+				setPaused(true);
+				setDuration(1);
+				return;
+			};
 			setProgress(val.progress_ms);
 			setPaused(!val.is_playing);
 			setDuration(val.item.duration_ms);

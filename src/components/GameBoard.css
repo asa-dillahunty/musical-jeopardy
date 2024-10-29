@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Wendy+One&display=swap');
+
 .game-board-and-sidebar {
 	position: relative;
 	display: flex;
@@ -186,7 +188,14 @@
 	height: 100%;
 	display: flex;
 	flex-direction: column;
-	background-color: rgb(210, 231, 255);
+	background-color: rgb(110, 26, 42);
+	font-family: 'Wendy One', sans-serif;
+
+	font-size: 72px;
+	/* color: #F7CA05; */
+	color: rgb(140, 33, 52);
+	text-shadow: 0 10px 7px rgba(0,0,0,0.4), -2px -5px 0 #fff;
+	letter-spacing: -3px;
 }
 
 .game-board > .selected-card > .question-box {

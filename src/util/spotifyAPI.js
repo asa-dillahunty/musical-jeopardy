@@ -63,12 +63,18 @@ export async function playTrack(trackUri, accessToken) {
 }
 
 export async function getCurrentlyPlaying(accessToken) {
+	console.log("getting currently playing");
 	// https://developer.spotify.com/documentation/web-api/reference/get-the-users-currently-playing-track
 	const response = await fetch(`https://api.spotify.com/v1/me/player/currently-playing`, {
 		headers: {
 			'Authorization': `Bearer ${accessToken}`,
 		},
 	});
+	if (response.status === 204) {
+		// nothing is currently playing
+		return null;
+	}
+	console.log(response);
 	const data = await response.json();
 	// if data.error
 	// if data.error.message ==="The access token expired"

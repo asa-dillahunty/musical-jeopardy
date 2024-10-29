@@ -1,8 +1,8 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import './GameBoard.css';
 import NumberInput from './NumberInput';
-import { AiFillCloseCircle, AiOutlineSearch } from 'react-icons/ai';
-import { playTrack, searchTracks } from '../util/spotifyAPI';
+import { AiFillCloseCircle } from 'react-icons/ai';
+import { playTrack } from '../util/spotifyAPI';
 import CurrentlyPlayingWidget from './CurrentlyPlayingWidget';
 import { FaCheck, FaEyeSlash } from 'react-icons/fa';
 import { SpotlightBackGround } from '../util/stolen';
@@ -10,6 +10,7 @@ import { GiDoubleQuaver, GiRollingDices } from 'react-icons/gi';
 import { PlayerContainer } from './PlayGame';
 import { playersSignal, updatePlayerScore } from '../util/session';
 import { FaXmark } from 'react-icons/fa6';
+import { SongSelect } from './SongSelect';
 
 // what's the game object look like?
 /*
@@ -165,52 +166,14 @@ function PlayCard(
 }
 
 function EditCard({ token, selectTrack, setSelectedCard, val }) {
-	const [queryVal, setQueryVal] = useState("");
-	const [searchResults, setSearchResults] = useState([]);
-
-	const onEnter = (e) => {
-		if (e.key === 'Enter') {
-			performQuery();
-		}
-	}
-
-	const performQuery = () => {
-		console.log(queryVal);
-		searchTracks(queryVal, token).then((results) => {
-			setSearchResults(results);
-			console.log(results);
-		});
-	}
-
 	return (
-	// selectedCard.i !== undefined &&
 		<div className='selected-card editing'>
-			<div className="question-box">
-				<div className="search-bar">
-					<input
-						onChange={(e) => setQueryVal(e.target.value)}
-						value={queryVal}
-						onKeyDown={onEnter}
-					/>
-					<AiOutlineSearch onClick={performQuery}/>
-				</div>
-				<div className='search-box'>
-					{ searchResults && searchResults.map( (val, index) => 
-						<div 
-							className="search-item"
-							onClick={() => selectTrack(val)}
-							key={index}
-						>
-							<p> { val.name } </p>
-							<p> { val.artists[0].name } </p>
-						</div>
-					) }
-				</div>
-				{ val && 
-					<p>{ val.name }</p>
-				}
-				<button onClick={() => setSelectedCard({})}>close</button>
-			</div>
+			<SongSelect
+				token={token}
+				onClose={() => setSelectedCard({})}
+				selectTrack={selectTrack}
+				val={val}
+			/>
 		</div>
 	);
 }

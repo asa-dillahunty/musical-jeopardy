@@ -1,0 +1,29 @@
+.login-wrapper {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+}
+
+.login-text {
+	font-size: 24px;
+	padding: 20px;
+}
+
+.btn-spotify {
+	width: 200px;
+	background-color: #1ED760;
+	border-radius: 10px;
+	padding: 10px 15px;
+	box-shadow: 3px 3px 0 black;
+
+	cursor: pointer;
+
+	transition-property: box-shadow, transform;
+	transition-duration: .3s;
+}
+
+.btn-spotify:hover {
+	transform: translate(3px, 3px);
+	box-shadow: none;
+}
