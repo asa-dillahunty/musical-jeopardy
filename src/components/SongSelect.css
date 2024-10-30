@@ -1,5 +1,5 @@
 .blocker .question-box {
-    width: 500px;
+	width: 500px;
 	height: 500px;
 	background-color: var(--jeopardy-yellow);
 	display: flex;
@@ -14,7 +14,7 @@
 }
 
 .blocker .question-box .search-bar {
-    background-color: white;
+	background-color: white;
 }
 
 .edit-game .blocker .search-box {

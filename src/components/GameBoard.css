@@ -118,7 +118,7 @@
 	justify-content: center;
 
 	transform-origin: center;
-    animation: rotate-in 1s forwards;
+	animation: rotate-in 1s forwards;
 }
 
 .daily-double .result-button-box {
@@ -150,10 +150,10 @@
 	color: white;
 	font-size: 48px;
 	font-weight: bold;
-	box-shadow: inset -2px -2px  white;
+	box-shadow: inset -2px -2px white;
 
 	transition-property: box-shadow, transform;
-  	transition-duration: .3s;
+	transition-duration: .3s;
 	position: relative;
 }
 

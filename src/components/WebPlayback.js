@@ -29,8 +29,7 @@ function WebPlayback({token}) {
 			player.connect();
 		};
 	}, [token]);
-
-   return (
+	return (
 		<>
 			<div className="container">
 				<div className="main-wrapper">

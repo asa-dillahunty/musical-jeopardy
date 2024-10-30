@@ -93,11 +93,11 @@ const fetchGame = async (id) => {
 		throw new Error('Game not found');
 	}
 };
-  
+
 export const useGame = (id) => {
 	return useQuery([GAMES_QUERY_KEY, id], () => fetchGame(id), {
-	  staleTime: 60000, // 1 minute
-	  cacheTime: 300000, // 5 minutes
+		staleTime: 60000, // 1 minute
+		cacheTime: 300000, // 5 minutes
 	});
 };
 
@@ -111,8 +111,8 @@ const fetchGamesList = async () => {
 
 export const useGamesList = () => {
 	return useQuery(GAMES_QUERY_KEY, fetchGamesList, {
-	  staleTime: 60000, // 1 minute
-	  cacheTime: 300000, // 5 minutes
+		staleTime: 60000, // 1 minute
+		cacheTime: 300000, // 5 minutes
 	});
 };
 
