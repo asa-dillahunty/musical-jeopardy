@@ -29,6 +29,56 @@
 	flex-direction: column;
 }
 
+.fake-game-cell {
+	text-transform: UPPERCASE;
+	font-size: 14px;
+	font-weight: bold;
+	color: white;
+
+	--border-size: 2px;
+	--cell-width: 150px;
+	--cell-height: 75px;
+
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+
+	width: var(--cell-width);
+	height: var(--cell-height);
+
+	background-color: var(--jeopardy-blue);
+	border: var(--border-size) solid black;
+	box-sizing: border-box;
+
+	position: relative;
+}
+
+.fake-game-cell:hover {
+	cursor: pointer;
+	opacity: .8;
+}
+
+.fake-game-cell.category:hover {
+	opacity: 1;
+}
+
+.fake-game-cell > textarea {
+	font-size: 14px;
+	font-weight: bold;
+	color: white;
+	text-transform: UPPERCASE;
+	border: none;
+	background-color: transparent;
+	width: var(--cell-width);
+	height: var(--cell-height);
+	text-align: center;
+	align-content: center;
+	outline: none;
+	box-sizing: border-box;
+	resize:none;
+}
+
 .game-board > .game-col > .game-cell p,
 .game-board > .game-col > .game-cell textarea {
 	text-transform: UPPERCASE;

@@ -72,6 +72,7 @@ function PlayGame({ gameID, token, setChosenGameID }) {
 						</div>
 					)
 				) }
+				<div className='fake-game-cell'>Final Jeopardy</div>
 			</div>
 		</div>
 	);

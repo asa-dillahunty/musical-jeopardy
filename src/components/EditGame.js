@@ -97,8 +97,9 @@ function EditGame({ gameID, token, setChosenGameID, userID }) {
 	const [numBoards, setNumBoards] = useState();
 	const [selectedBoard, setSelectedBoard] = useState(null);
 	const [gameName, setGameName] = useState("");
-	const [songSelecting, setSongSelecting] = useState(false);
-	const [finalJeopardy, setFinalJeopardy] = useState();
+	const [selectingFinalJeopardy, setSelectingFinalJeopardy] = useState(false);
+	const [finalJeopardySong, setFinalJeopardySong] = useState(null);
+	const [finalJeopardyCategory, setFinalJeopardyCategory] = useState("");
 
 	const { data: gameData, isLoading, isError } = useGame(gameID);
 	const createGameMutation = useCreateGame();
@@ -110,6 +111,13 @@ function EditGame({ gameID, token, setChosenGameID, userID }) {
 
 	const printGame = () => {
 		console.log({name:gameName, ...game});
+	}
+
+	const updateFinalJeopardy = () => {
+		game.finalJeopardy = {
+			category: finalJeopardyCategory,
+			song: finalJeopardySong
+		}
 	}
 
 	const saveGame = () => {
@@ -150,6 +158,10 @@ function EditGame({ gameID, token, setChosenGameID, userID }) {
 				setGame(gameData);
 				setNumBoards(gameData.numBoards);
 				setGameName(gameData.name);
+				if (gameData.finalJeopardy) {
+					setFinalJeopardyCategory(gameData.finalJeopardy.category);
+					setFinalJeopardySong(gameData.finalJeopardy.song);
+				}
 			}
 		}
 	}, [gameID, setGame, setNumBoards, setGameName, gameData, isLoading])
@@ -176,14 +188,25 @@ function EditGame({ gameID, token, setChosenGameID, userID }) {
 			/>
 		)
 	}
+
 	return (
 		<div className='edit-game'>
-			<ClickBlocker custom block={songSelecting} >
+			<ClickBlocker custom block={selectingFinalJeopardy} >
+				<div className='fake-game-cell category'>
+					<textarea
+						placeholder='Category'
+						onChange={(e) => setFinalJeopardyCategory(e.target.value)}
+						value={finalJeopardyCategory}
+					/>
+				</div> 
 				<SongSelect
 					token={token}
-					onClose={() => setSongSelecting(false)}
-					selectTrack={(track) => setFinalJeopardy(track)}
-					val={finalJeopardy}
+					onClose={() => {
+						setSelectingFinalJeopardy(false);
+						updateFinalJeopardy();
+					}}
+					selectTrack={(track) => setFinalJeopardySong(track)}
+					val={finalJeopardySong}
 				/>
 			</ClickBlocker>
 			<div>
@@ -216,8 +239,8 @@ function EditGame({ gameID, token, setChosenGameID, userID }) {
 						</div>
 					)
 				) }
+				<div className='fake-game-cell' onClick={() => setSelectingFinalJeopardy(true)} >Final Jeopardy</div>
 			</div>
-			<button onClick={() => setSongSelecting(true)}>select song</button>
 		</div>
 	);
 }
