@@ -4,6 +4,7 @@ import GameBoard from './GameBoard';
 import { useCreateGame, useGame, useUpdateGame } from '../util/firebaseAPIs';
 import ClickBlocker from './ClickBlocker';
 import { SongSelect } from './SongSelect';
+import { getGameFromStorage, storeGame } from '../util/session';
 
 // what's the game object look like?
 /*
@@ -107,6 +108,7 @@ function EditGame({ gameID, token, setChosenGameID, userID }) {
 
 	const updateGame = () => {
 		setGame( JSON.parse(JSON.stringify(game)) );
+		storeGame(game);
 	}
 
 	const printGame = () => {
@@ -133,6 +135,41 @@ function EditGame({ gameID, token, setChosenGameID, userID }) {
 	}
 
 	useEffect(() => {
+		if (!isLoading) {
+			const currGame = getGameFromStorage();
+			if (gameData === null) {
+				if (currGame && currGame.id === undefined) {
+					setGame(currGame);
+					setNumBoards(currGame.numBoards);
+					setGameName(currGame.name);
+				}
+				else {
+					const newGame = getNewGame(gameID);
+					newGame.userID = userID;
+					setGame(newGame);
+					setNumBoards(newGame.numBoards);
+					setGameName(newGame.name);
+				}
+			} else {
+				if (currGame?.id === gameData.id) {
+					setGame(currGame);
+					setNumBoards(currGame.numBoards);
+					setGameName(currGame.name);
+				}
+				else {
+					setGame(gameData);
+					setNumBoards(gameData.numBoards);
+					setGameName(gameData.name);
+				}
+				if (gameData.finalJeopardy) {
+					setFinalJeopardyCategory(gameData.finalJeopardy.category);
+					setFinalJeopardySong(gameData.finalJeopardy.song);
+				}
+			}
+		}
+	}, [gameID, setGame, setNumBoards, setGameName, gameData, isLoading]);
+
+	useEffect(() => {
 		if (game && gameName) {
 			game.name = gameName;
 			updateGame();
@@ -145,26 +182,6 @@ function EditGame({ gameID, token, setChosenGameID, userID }) {
 			updateGame();
 		}
 	}, [numBoards]);
-
-	useEffect(() => {
-		if (!isLoading) {
-			if (gameData === null) {
-				const newGame = getNewGame(gameID);
-				newGame.userID = userID;
-				setGame(newGame);
-				setNumBoards(newGame.numBoards);
-				setGameName(newGame.name);
-			} else {
-				setGame(gameData);
-				setNumBoards(gameData.numBoards);
-				setGameName(gameData.name);
-				if (gameData.finalJeopardy) {
-					setFinalJeopardyCategory(gameData.finalJeopardy.category);
-					setFinalJeopardySong(gameData.finalJeopardy.song);
-				}
-			}
-		}
-	}, [gameID, setGame, setNumBoards, setGameName, gameData, isLoading])
 
 	if (isLoading) {
 		return <p>Loading</p>

@@ -49,3 +49,11 @@ export const updatePlayerScore = (playerIndex, score) => {
 	);
 	playersSignal.value = [...playersCopy];
 };
+
+export function storeGame(gameData) {
+	localStorage.setItem('selectedGame', JSON.stringify(gameData));
+}
+
+export function getGameFromStorage() {
+	return loadFromStorage('selectedGame', null);
+}
