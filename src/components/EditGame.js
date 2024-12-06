@@ -107,8 +107,7 @@ function EditGame({ gameID, token, setChosenGameID, userID }) {
 	const updateGameMutation = useUpdateGame();
 
 	const updateGame = () => {
-		setGame( JSON.parse(JSON.stringify(game)) );
-		storeGame(game);
+		setGame( JSON.parse(JSON.stringify(game)) );		
 	}
 
 	const printGame = () => {
@@ -120,6 +119,7 @@ function EditGame({ gameID, token, setChosenGameID, userID }) {
 			category: finalJeopardyCategory,
 			song: finalJeopardySong
 		}
+		updateGame();
 	}
 
 	const saveGame = () => {
@@ -182,6 +182,14 @@ function EditGame({ gameID, token, setChosenGameID, userID }) {
 			updateGame();
 		}
 	}, [numBoards]);
+
+	useEffect(() => {
+		// debounce this so  it doesn't trigger with every keystroke
+		const storeGameTimeout = setTimeout(() => {
+			storeGame(game);
+		}, 2000);
+		return () => clearTimeout(storeGameTimeout);
+	}, [game]);
 
 	if (isLoading) {
 		return <p>Loading</p>
