@@ -5,6 +5,7 @@ import GameBoard from './GameBoard';
 import { useGame } from '../util/firebaseAPIs';
 import ClickBlocker from './ClickBlocker';
 import { numPlayersSignal, playersSignal, updatePlayerName } from '../util/session';
+import FinalJeopardy from './FinalJeopardy';
 
 // const players = [
 // 	{ name: "Player 1", color: "red" },
@@ -20,6 +21,7 @@ import { numPlayersSignal, playersSignal, updatePlayerName } from '../util/sessi
 
 function PlayGame({ gameID, token, setChosenGameID }) {
 	const [selectedBoard, setSelectedBoard] = useState(null);
+	const [playFinalJeopardy, setPlayFinalJeopardy] = useState(false);
 	const { data: gameData, isLoading, isError } = useGame(gameID);
 	const [playersInitialized, setPlayersInitialized ] = useState(false);
 
@@ -42,6 +44,13 @@ function PlayGame({ gameID, token, setChosenGameID }) {
 	if (playersInitialized === false) {
 		return (
 			<PlayerSetup setPlayersInitialized={setPlayersInitialized} />
+		);
+	}
+	else if (playFinalJeopardy) {
+		return (
+			<FinalJeopardy
+				songData={gameData.finalJeopardy}
+			/>
 		);
 	}
 	else if (selectedBoard !== null) {
@@ -72,7 +81,9 @@ function PlayGame({ gameID, token, setChosenGameID }) {
 						</div>
 					)
 				) }
-				<div className='fake-game-cell'>Final Jeopardy</div>
+				<div className='fake-game-cell' onClick={() => setPlayFinalJeopardy(true)}>
+					Final Jeopardy
+				</div>
 			</div>
 		</div>
 	);
