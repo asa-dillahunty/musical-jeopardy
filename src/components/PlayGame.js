@@ -31,6 +31,16 @@ function PlayGame({ gameID, token, setChosenGameID }) {
 	// 	}
 	// }, [isLoading]);
 
+	const playNextState = () => {
+		if (selectedBoard === gameData.numBoards - 1) {
+			setSelectedBoard(null);
+			setPlayFinalJeopardy(true);
+		}
+		else {
+			setSelectedBoard(selectedBoard + 1);
+		}
+	}
+
 	if (isLoading) {
 		return <p>Loading</p>
 	}
@@ -49,7 +59,9 @@ function PlayGame({ gameID, token, setChosenGameID }) {
 	else if (playFinalJeopardy) {
 		return (
 			<FinalJeopardy
+				token={token}
 				songData={gameData.finalJeopardy}
+				onFinish={() => setPlayFinalJeopardy(false)}
 			/>
 		);
 	}
@@ -61,6 +73,7 @@ function PlayGame({ gameID, token, setChosenGameID }) {
 				token={token}
 				setSelectedBoard={setSelectedBoard}
 				editing={false}
+				playNextBoard={playNextState}
 			/>
 		)
 	}

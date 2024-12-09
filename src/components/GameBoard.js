@@ -43,7 +43,7 @@ if we are playing the game, we want here to be card
 	web playback tool, with some key items hidden, 
 	as well as eventually players, their scores, etc.
 */
-function PlayCard(
+export function PlayCard(
 		{ 
 			token, setSelectedCard, val, refreshWidget, 
 			revealCard, isDailyDouble, selectedPlayer, setSelectedPlayer,
@@ -291,7 +291,7 @@ function BoardValueNumberInputs({ cols, setCols, rows, setRows, multiplier, setM
 	)
 }
 
-function GameBoard({ board, token, preview, editing, updateBoard, setSelectedBoard }) {
+function GameBoard({ board, token, preview, editing, updateBoard, setSelectedBoard, playNextBoard }) {
 	const [selectedCard, setSelectedCard] = useState({ });
 	const [widgetNeedsRefresh, setWidgetNeedsRefresh] = useState(false);
 	const [revealedCards, setRevealedCards] = useState({});
@@ -381,6 +381,19 @@ function GameBoard({ board, token, preview, editing, updateBoard, setSelectedBoa
 	const setCategoryValue = (col, val) => {
 		board.grid[col][0] = val;
 		updateBoard();
+	}
+
+	const allRevealed = () => {
+		for ( let i=0; i<board.cols; i++) {
+			for (let j=0; j<board.rows; j++) {
+				// j + 1, to avoid headers
+				if (getRevealed(i, j + 1)) {
+					continue;
+				};
+				return false;
+			}
+		}
+		return true;
 	}
 
 	useEffect(() => {
@@ -495,6 +508,19 @@ function GameBoard({ board, token, preview, editing, updateBoard, setSelectedBoa
 							dailyDoubleWager={dailyDoubleWager}
 							setDailyDoubleWager={setDailyDoubleWager}
 						/>)
+					}
+					{ !editing && selectedCard.i === undefined && allRevealed() &&
+						<div className='next-board-wrapper'>
+							<button 
+								className='next-board'
+								onClick={() => {
+									setRevealedCards({});
+									playNextBoard();
+								}}
+							>
+								Next Board!
+							</button>
+						</div>
 					}
 				</div>
 				{ !editing && 
