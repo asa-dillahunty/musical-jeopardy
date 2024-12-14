@@ -31,6 +31,12 @@ function validateJeopardyData(data, numBoards, numCategories, numSongs) {
 				if (category.songs.length !== numSongs) {
 					throw new Error(`Category '${category.name}' in ${boardKey} has ${category.songs.length} songs, expected ${numSongs}.`);
 				}
+
+				for (let j=0; j<category.songs.length; j++) {
+					if (!category.songs[j].song) {
+						throw new Error("Invalid song structure");
+					}
+				}
 			});
 		}
 
@@ -43,7 +49,11 @@ function validateJeopardyData(data, numBoards, numCategories, numSongs) {
 		console.log("Validation error:", error.message);
 		return false;
 	}
-  }
+}
+
+function createBoardFromJSON(data) {
+	
+}
 
 const aiExample = {
 	"board1": {

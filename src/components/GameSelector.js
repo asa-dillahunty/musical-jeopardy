@@ -1,7 +1,8 @@
 import './GameSelector.css';
 import { menuOptions } from './Menu';
 import { useDeleteGame, useGamesList } from '../util/firebaseAPIs';
-import { FaRegTrashCan } from 'react-icons/fa6';
+import { FaRegTrashCan, FaWandMagicSparkles } from 'react-icons/fa6';
+import { FaPlus } from 'react-icons/fa';
 
 function GameSelector({ setPage, setChosenGameID, editing, userID }) {
 
@@ -18,6 +19,10 @@ function GameSelector({ setPage, setChosenGameID, editing, userID }) {
 		e.stopPropagation();
 		if (!window.confirm("Confirm Delete?")) return;
 		deleteGameMutation.mutateAsync(gameID);
+	}
+
+	const askGemini = () => {
+		alert("Working on this feature! Coming soon!");
 	}
 
 	if (isLoading) {
@@ -51,11 +56,16 @@ function GameSelector({ setPage, setChosenGameID, editing, userID }) {
 					</li>
 				)}
 			</ul>
-			{editing &&
+			{editing && <>
 				<button id="new-game-button" onClick={() => selectGame("")}>
-					New Game (+)
+					New Game
+					<FaPlus />
 				</button>
-			}
+				<button id="ask-gemini-button" onClick={() => askGemini()}>
+					Ask Gemini
+					<FaWandMagicSparkles />
+				</button>
+			</>}
 		</section>
 	);
 }

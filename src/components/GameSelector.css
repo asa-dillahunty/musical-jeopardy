@@ -33,20 +33,32 @@ ul.game-selector-list li:hover {
 	cursor: pointer;
 }
 
-#new-game-button {
+#new-game-button, #ask-gemini-button {
 	border-radius: 5px;
 	margin-top: 10px;
 	padding: 10px 10px;
 	background-color: var(--jeopardy-blue);
 	color: white;
 	font-weight: bold;
+
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: center;
+	gap: 8px;
+
+	/* width: 20ch; */
 }
 
-#new-game-button:hover {
+#new-game-button:hover, #ask-gemini-button:hover {
 	opacity: .8;
 	cursor: pointer;
 }
 
 section.selection-section {
 	padding-bottom: 30px;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
 }
