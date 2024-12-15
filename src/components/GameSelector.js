@@ -23,8 +23,10 @@ function GameSelector({ setPage, setChosenGameID, editing, userID, token }) {
 	}
 
 	const askGemini = () => {
-		alert("Working on this feature! Coming soon!");
-		// testFunc(token);
+		// alert("Working on this feature! Coming soon!");
+		testFunc(token, userID).then((gameData) => {
+			selectGame("");
+		});
 	}
 
 	if (isLoading) {

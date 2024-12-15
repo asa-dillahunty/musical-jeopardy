@@ -1,10 +1,11 @@
 import { getNewGame } from "../components/EditGame";
 import { reduceSongData } from "../components/SongSelect";
+import { storeGame } from "./session";
 import { getSingleTrack } from "./spotifyAPI";
 
 function validateJeopardyData(data, numBoards, numCategories, numSongs) {
 	try {
-		if (data.finalJeopardy?.song === undefined) {
+		if (data.finalJeopardy?.song === undefined || data.finalJeopardy?.hint === undefined) {
 			throw new Error(`Final Jeopardy not included.`);
 		}
 
@@ -88,7 +89,7 @@ function isDailyDouble(board, i, j) {
 	return false;
 }
 
-export async function createBoardFromJSON(data, numBoards, numCategories, numSongs, accessToken) {
+export async function createBoardFromJSON(data, numBoards, numCategories, numSongs, userID, accessToken) {
 	const newGame = getNewGame();
 	newGame.numBoards = numBoards;
 	for (let i=0; i<numBoards; i++) {
@@ -101,18 +102,32 @@ export async function createBoardFromJSON(data, numBoards, numCategories, numSon
 			board.grid[j][0] = data[`board${i+1}`].categories[j].name;
 			for (let k=0;k<numSongs;k++) {
 				const currSong = data[`board${i+1}`].categories[j].songs[k].song;
-				console.log( await getSingleTrack(currSong, accessToken));
-				// const currSongData = reduceSongData(await getSingleTrack(currSong, accessToken));
-				// board.grid[j][k+1] = currSongData;
-				return;
+				// console.log( await getSingleTrack(currSong, accessToken));
+				const currSongData = reduceSongData(await getSingleTrack(currSong, accessToken));
+				board.grid[j][k+1] = currSongData;
+				// return;
 			}
 		}
-
 	}
+
+	// this is what final jeopardy should look like
+	// game.finalJeopardy = {
+	// 	category: finalJeopardyCategory,
+	// 	song: finalJeopardySong
+	// }
+	newGame.finalJeopardy = {
+		category: data.finalJeopardy.hint,
+		song: reduceSongData(await getSingleTrack(data.finalJeopardy.song, accessToken))
+	}
+
+	newGame.userID = userID;
+	return newGame;
 }
 
-export function testFunc(token) {
-	createBoardFromJSON(aiExample, 2, 3, 3, token);
+export async function testFunc(token, userID) {
+	const newGame = await createBoardFromJSON(aiExample, 2, 3, 3, userID, token);
+	storeGame(newGame);
+	return newGame;
 }
 
 const aiExample = {
@@ -173,7 +188,9 @@ const aiExample = {
 		]
 	},
 	"finalJeopardy" : {
-		"song": "Move Along", "artist": "The All-American Rejects"
+		"song": "Move Along", 
+		"artist": "The All-American Rejects",
+		"hint": "We're not in Oklahoma anymore"
 	}
 };
 
@@ -240,8 +257,10 @@ const jeopardyData = {
 		]
 		}
 	]
-	},"finalJeopardy" : {
-		"song": "Move Along", "artist": "The All-American Rejects"
+	}, "finalJeopardy" : {
+		"song": "Move Along",
+		"artist": "The All-American Rejects",
+		"hint": "We're not in Oklahoma anymore"
 	}
 };
 
