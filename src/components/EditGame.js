@@ -31,7 +31,7 @@ import { getGameFromStorage, storeGame } from '../util/session';
 	}
 */
 
-function getNewGame() {
+export function getNewGame() {
 	
 	// new board
 	const boardList = Array(3)

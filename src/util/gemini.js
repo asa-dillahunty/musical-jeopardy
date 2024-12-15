@@ -1,3 +1,7 @@
+import { getNewGame } from "../components/EditGame";
+import { reduceSongData } from "../components/SongSelect";
+import { getSingleTrack } from "./spotifyAPI";
+
 function validateJeopardyData(data, numBoards, numCategories, numSongs) {
 	try {
 		if (data.finalJeopardy?.song === undefined) {
@@ -51,8 +55,64 @@ function validateJeopardyData(data, numBoards, numCategories, numSongs) {
 	}
 }
 
-function createBoardFromJSON(data) {
-	
+function randomizeDailyDoublePositions(board) {
+	if (!board.dailyDoublePositions) board.dailyDoublePositions = [];
+	for (let index=0; index<board.dailyDoubles; index++) {
+		// get i, get j
+		let i = Math.floor(Math.random() * board.cols);
+		let j = Math.floor(Math.random() * board.rows) + 1; // plus one to avoid categories
+		if (isDailyDouble(i, j)) {
+			// if already a daily double, try again
+			index -= 1;
+			continue;
+		}
+		 
+		if (board.dailyDoublePositions[index]) 
+			board.dailyDoublePositions[index] = { i, j };
+		else 
+			board.dailyDoublePositions.push({ i, j });
+	}
+}
+
+function isDailyDouble(board, i, j) {
+	if (!board) return false
+	if (!board.dailyDoublePositions) return false;
+	i = parseInt(i);
+	// rows are strings because they are keys
+
+	for (let index=0; index < board.dailyDoubles; index++) {
+		const curr = board.dailyDoublePositions[index];
+		if (curr === undefined) break;
+		if (curr.i === i && curr.j === j) return true;
+	}
+	return false;
+}
+
+export async function createBoardFromJSON(data, numBoards, numCategories, numSongs, accessToken) {
+	const newGame = getNewGame();
+	newGame.numBoards = numBoards;
+	for (let i=0; i<numBoards; i++) {
+		const board = newGame.boards[i];
+		board.cols = numCategories;
+		board.rows = numSongs;
+		randomizeDailyDoublePositions(board);
+
+		for (let j=0;j<numCategories;j++) {
+			board.grid[j][0] = data[`board${i+1}`].categories[j].name;
+			for (let k=0;k<numSongs;k++) {
+				const currSong = data[`board${i+1}`].categories[j].songs[k].song;
+				console.log( await getSingleTrack(currSong, accessToken));
+				// const currSongData = reduceSongData(await getSingleTrack(currSong, accessToken));
+				// board.grid[j][k+1] = currSongData;
+				return;
+			}
+		}
+
+	}
+}
+
+export function testFunc(token) {
+	createBoardFromJSON(aiExample, 2, 3, 3, token);
 }
 
 const aiExample = {

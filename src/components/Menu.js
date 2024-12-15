@@ -42,6 +42,7 @@ function Menu ({ token, page, setPage, userID }) {
 					userID={userID}
 					setChosenGameID={setChosenGameID}
 					editing={true}
+					token={token}
 				/>
 			);
 		default: // menu

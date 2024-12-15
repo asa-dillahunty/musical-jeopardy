@@ -3,8 +3,9 @@ import { menuOptions } from './Menu';
 import { useDeleteGame, useGamesList } from '../util/firebaseAPIs';
 import { FaRegTrashCan, FaWandMagicSparkles } from 'react-icons/fa6';
 import { FaPlus } from 'react-icons/fa';
+import { testFunc } from '../util/gemini';
 
-function GameSelector({ setPage, setChosenGameID, editing, userID }) {
+function GameSelector({ setPage, setChosenGameID, editing, userID, token }) {
 
 	const { data: gameList, isLoading, isError } = useGamesList();
 	const deleteGameMutation = useDeleteGame();
@@ -23,6 +24,7 @@ function GameSelector({ setPage, setChosenGameID, editing, userID }) {
 
 	const askGemini = () => {
 		alert("Working on this feature! Coming soon!");
+		// testFunc(token);
 	}
 
 	if (isLoading) {

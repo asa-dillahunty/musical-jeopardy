@@ -3,6 +3,17 @@ import { useState } from "react";
 import { searchTracks } from "../util/spotifyAPI";
 import { AiOutlineSearch } from "react-icons/ai";
 
+export function reduceSongData(song) {
+	return {
+		name: song.name,
+		uri: song.uri,
+		album: {
+			images: [song.album.images[0]]
+		},
+		artists: song.artists.map(artist => ({ name: artist.name }))
+	}
+}
+
 export function SongSelect({ token, onClose, selectTrack, val }) {
 	const [queryVal, setQueryVal] = useState("");
 	const [searchResults, setSearchResults] = useState([]);
@@ -13,22 +24,11 @@ export function SongSelect({ token, onClose, selectTrack, val }) {
 		}
 	}
 
-	const necessarySongData = (song) => {
-		return {
-			name: song.name,
-			uri: song.uri,
-			album: {
-				images: [song.album.images[0]]
-			},
-			artists: song.artists.map(artist => ({ name: artist.name }))
-		}
-	}
-
 	const performQuery = () => {
 		console.log(queryVal);
 		searchTracks(queryVal, token).then((results) => {
 			setSearchResults(results.map((result) =>
-				necessarySongData(result)
+				reduceSongData(result)
 			));
 		});
 	}

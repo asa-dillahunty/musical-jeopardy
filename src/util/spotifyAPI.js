@@ -47,6 +47,19 @@ export async function searchTracks(query, accessToken) {
 // });
 }
 
+export async function getSingleTrack(query, accessToken) {
+	const response = await fetch(`https://api.spotify.com/v1/search?q=${query}&type=track&limit=1`, {
+		headers: {
+			'Authorization': `Bearer ${accessToken}`
+		}
+	});
+	const data = await response.json();
+	// if data.error
+	// if data.error.message ==="The access token expired"
+	console.log(data);
+	return data.tracks.items[0];
+}
+
 // Function to play a track
 export async function playTrack(trackUri, accessToken) {
 	console.log("playing track: ", trackUri);
