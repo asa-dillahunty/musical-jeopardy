@@ -92,6 +92,7 @@ function isDailyDouble(board, i, j) {
 export async function createBoardFromJSON(data, numBoards, numCategories, numSongs, userID, accessToken) {
 	const newGame = getNewGame();
 	newGame.numBoards = numBoards;
+	const songPromises = [];
 	for (let i=0; i<numBoards; i++) {
 		const board = newGame.boards[i];
 		board.cols = numCategories;
@@ -103,22 +104,30 @@ export async function createBoardFromJSON(data, numBoards, numCategories, numSon
 			for (let k=0;k<numSongs;k++) {
 				const currSong = data[`board${i+1}`].categories[j].songs[k].song;
 				// console.log( await getSingleTrack(currSong, accessToken));
-				const currSongData = reduceSongData(await getSingleTrack(currSong, accessToken));
-				board.grid[j][k+1] = currSongData;
+				songPromises.push(
+					getSingleTrack(currSong, accessToken)
+						.then(reduceSongData)
+						.then((songData) => {
+							board.grid[j][k + 1] = songData; // Update grid when resolved
+						})
+				);
 				// return;
 			}
 		}
 	}
 
-	// this is what final jeopardy should look like
-	// game.finalJeopardy = {
-	// 	category: finalJeopardyCategory,
-	// 	song: finalJeopardySong
-	// }
-	newGame.finalJeopardy = {
-		category: data.finalJeopardy.hint,
-		song: reduceSongData(await getSingleTrack(data.finalJeopardy.song, accessToken))
-	}
+	songPromises.push(
+		getSingleTrack(data.finalJeopardy.song, accessToken)
+			.then(reduceSongData)
+			.then((songData) => {
+				newGame.finalJeopardy = {
+					category: data.finalJeopardy.hint,
+					song: songData, // Update finalJeopardy song when resolved
+				};
+			})
+	);
+
+	await Promise.all(songPromises);
 
 	newGame.userID = userID;
 	return newGame;
