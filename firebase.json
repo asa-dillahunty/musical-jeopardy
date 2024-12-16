@@ -12,9 +12,34 @@
     ],
     "rewrites": [
       {
+        "source": "/api/helloWorld",
+        "function": {
+          "functionId": "helloWorld"
+        }
+      },
+      {
+        "source": "/api/askGemini",
+        "function": {
+          "functionId": "askGemini"
+        }
+      },
+      {
         "source": "**",
         "destination": "/index.html"
       }
     ]
-  }
+  },
+  "functions": [
+    {
+      "source": "functions",
+      "codebase": "default",
+      "ignore": [
+        "node_modules",
+        ".git",
+        "firebase-debug.log",
+        "firebase-debug.*.log",
+        "*.local"
+      ]
+    }
+  ]
 }
