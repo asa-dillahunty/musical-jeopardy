@@ -33,7 +33,7 @@ ul.game-selector-list li:hover {
 	cursor: pointer;
 }
 
-#new-game-button, #ask-gemini-button {
+#new-game-button, .static #ask-gemini-button {
 	border-radius: 5px;
 	margin-top: 10px;
 	padding: 10px 10px;
@@ -50,9 +50,13 @@ ul.game-selector-list li:hover {
 	/* width: 20ch; */
 }
 
-#new-game-button:hover, #ask-gemini-button:hover {
+#new-game-button:hover, .static #ask-gemini-button:hover {
 	opacity: .8;
 	cursor: pointer;
+}
+
+#ask-gemini-button {
+	display: none;
 }
 
 section.selection-section {

@@ -3,7 +3,7 @@ import { menuOptions } from './Menu';
 import { useDeleteGame, useGamesList } from '../util/firebaseAPIs';
 import { FaRegTrashCan, FaWandMagicSparkles } from 'react-icons/fa6';
 import { FaPlus } from 'react-icons/fa';
-import { testFunc } from '../util/gemini';
+import { queryGemini, testFunc } from '../util/gemini';
 
 function GameSelector({ setPage, setChosenGameID, editing, userID, token }) {
 
@@ -24,9 +24,10 @@ function GameSelector({ setPage, setChosenGameID, editing, userID, token }) {
 
 	const askGemini = () => {
 		// alert("Working on this feature! Coming soon!");
-		testFunc(token, userID).then((gameData) => {
-			selectGame("");
-		});
+		queryGemini(token, userID);
+		// testFunc(token, userID).then((gameData) => {
+		// 	selectGame("");
+		// });
 	}
 
 	if (isLoading) {

@@ -2,6 +2,7 @@
 import { initializeApp } from "firebase/app";
 import { getAnalytics, logEvent } from "firebase/analytics";
 import { collection, addDoc, doc, updateDoc, deleteDoc, getDocs, getFirestore, getDoc } from 'firebase/firestore';
+import { getFunctions } from "firebase/functions";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -22,6 +23,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
 const db = getFirestore(app);
+export const functions = getFunctions(app);
 
 const GAMES_COLLECTION = 'games';
 const GAMES_QUERY_KEY = 'games_key';

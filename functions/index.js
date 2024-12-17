@@ -4,32 +4,34 @@ const { GoogleGenerativeAI } = require("@google/generative-ai");
 
 exports.helloWorld = onRequest((request, response) => {
   logger.info("Hello logs!", {structuredData: true});
-  response.send("Hello from Firebase!");
+  response.send("Hello from Firebase! " + JSON.stringify(request.query));
 });
 
-exports.askGemini = onRequest(async (request, response) => {
-	const original = request.query.text;
-	const cols = Number(request.query.cols);
-	const rows = Number(request.query.rows);
-	const numBoards = Number(request.query.numBoards);
+exports.askGemini = onRequest(
+  { secrets: ["GEM_FLASH_API_KEY"]}, 
+  async (request, response) => {
+    const cols = Number(request.query.cols);
+    const rows = Number(request.query.rows);
+    const numBoards = Number(request.query.numBoards);
 
-	if (!cols || !rows || !numBoards) return; // if they're not numbers
-	if (cols > 6 || cols < 3) return;
-	if (rows > 5 || rows < 3) return;
-	if (numBoards > 3 || numBoards < 1) return;
+    if (!cols || !rows || !numBoards) return; // if they're not numbers
+    if (cols > 6 || cols < 3) return;
+    if (rows > 5 || rows < 3) return;
+    if (numBoards > 3 || numBoards < 1) return;
 
-	const genAI = new GoogleGenerativeAI("API-Key");
-	const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    const genAI = new GoogleGenerativeAI(process.env.GEM_FLASH_API_KEY);
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
-	const prompt = buildPrompt(cols, rows, numBoards);
+    const prompt = buildPrompt(cols, rows, numBoards);
 
-	const result = await model.generateContent(prompt);
-	
-	// logger.info("Hello logs!", {structuredData: true});
-	// response.send("Hello from Firebase!");
+    const result = await model.generateContent(prompt);
+    
+    // logger.info("Hello logs!", {structuredData: true});
+    // response.send("Hello from Firebase!");
 
-	response.json({ result: result });
-});
+    response.json({ result: result });
+  }
+);
 
 function buildPrompt(cols, rows, numBoards) {
 	return `

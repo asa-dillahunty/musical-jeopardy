@@ -1,7 +1,12 @@
 import { getNewGame } from "../components/EditGame";
 import { reduceSongData } from "../components/SongSelect";
+import { functions } from "./firebaseAPIs";
 import { storeGame } from "./session";
 import { getSingleTrack } from "./spotifyAPI";
+import { httpsCallable } from "firebase/functions";
+import { konamiSetup } from "./konami";
+
+const askGemini = httpsCallable(functions, "askGemini");
 
 function validateJeopardyData(data, numBoards, numCategories, numSongs) {
 	try {
@@ -137,6 +142,17 @@ export async function testFunc(token, userID) {
 	const newGame = await createBoardFromJSON(aiExample, 2, 3, 3, userID, token);
 	storeGame(newGame);
 	return newGame;
+}
+
+export async function queryGemini(token, userID) {
+	// https://musical-jeopardy.firebaseapp.com/api/askGemini?cols=3&rows=3&numBoards=1
+	const query = {
+		cols: 3,
+		rows: 3,
+		numBoards: 1
+	};
+	const result = await askGemini(query)
+	console.log(result);
 }
 
 const aiExample = {
