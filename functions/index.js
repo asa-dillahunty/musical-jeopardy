@@ -1,5 +1,6 @@
 const {onRequest} = require("firebase-functions/v2/https");
 const logger = require("firebase-functions/logger");
+const functions = require('firebase-functions');
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 
 exports.helloWorld = onRequest((request, response) => {
@@ -10,26 +11,31 @@ exports.helloWorld = onRequest((request, response) => {
 exports.askGemini = onRequest(
   { secrets: ["GEM_FLASH_API_KEY"]}, 
   async (request, response) => {
-    const cols = Number(request.query.cols);
-    const rows = Number(request.query.rows);
-    const numBoards = Number(request.query.numBoards);
+    try {
+      const cols = Number(request.query.cols);
+      const rows = Number(request.query.rows);
+      const numBoards = Number(request.query.numBoards);
 
-    if (!cols || !rows || !numBoards) return; // if they're not numbers
-    if (cols > 6 || cols < 3) return;
-    if (rows > 5 || rows < 3) return;
-    if (numBoards > 3 || numBoards < 1) return;
+      // if they're not numbers, or bad numbers
+      if (!cols || !rows || !numBoards) throw new functions.https.HttpsError('invalid-argument', 'invalid query data');
+      if (cols > 6 || cols < 3) throw new functions.https.HttpsError('invalid-argument', 'bad number of cols');
+      if (rows > 5 || rows < 3) throw new functions.https.HttpsError('invalid-argument', 'bad number of rows');
+      if (numBoards > 3 || numBoards < 1) throw new functions.https.HttpsError('invalid-argument', 'bad number of boards');
 
-    const genAI = new GoogleGenerativeAI(process.env.GEM_FLASH_API_KEY);
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+      const genAI = new GoogleGenerativeAI(process.env.GEM_FLASH_API_KEY);
+      const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
-    const prompt = buildPrompt(cols, rows, numBoards);
+      const prompt = buildPrompt(cols, rows, numBoards);
 
-    const result = await model.generateContent(prompt);
-    
-    // logger.info("Hello logs!", {structuredData: true});
-    // response.send("Hello from Firebase!");
+      const result = await model.generateContent(prompt);
+      
+      // logger.info("Hello logs!", {structuredData: true});
+      // response.send("Hello from Firebase!");
 
-    response.json({ result: result });
+      response.json({ result: result });
+    } catch (e) {
+      throw new functions.https.HttpsError('internal', 'unknown error - 219');
+    }
   }
 );
 

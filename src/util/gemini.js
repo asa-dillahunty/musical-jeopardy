@@ -146,15 +146,37 @@ export async function testFunc(token, userID) {
 }
 
 export async function queryGemini(token, userID) {
-	console.log("querying Gemini")
+	console.log("Querying Gemini");
+	const cols = 3;
+	const rows = 3;
+	const numBoards = 1;
 	// https://musical-jeopardy.firebaseapp.com/api/askGemini?cols=3&rows=3&numBoards=1
-	const query = {
-		cols: 3,
-		rows: 3,
-		numBoards: 1
-	};
-	const result = await callHelloWorld(query);
-	console.log(result);
+	const url = `https://musical-jeopardy.firebaseapp.com/api/askGemini?cols=${cols}&rows=${rows}&numBoards=${numBoards}`;
+	try {
+		const response = await fetch(url, {
+			method: 'POST', // Use POST as required by the function
+		});
+	
+		if (!response.ok) {
+			const errorData = await response.json();
+			console.error("Error response from askGemini:", errorData);
+			throw new Error(`HTTP error! Status: ${response.status}`);
+		}
+	
+		const data = await response.json();
+		console.log("Response from askGemini:", data);
+		const actualText = data.response.candidates[0].content.parts[0].text
+		const cleanedText = text.replace(/```json|```/g, '').trim();
+		console.log("Cleaned Text value", cleanedText);
+		const gameJSON = JSON.parse(cleanedText);
+		validateJeopardyData(gameJSON, numBoards, cols, rows);
+		const newGame = await createBoardFromJSON(gameJSON, numBoards, cols, rows, userID, token);
+		storeGame(newGame);
+		return newGame;
+	} catch (error) {
+		console.error("Error querying askGemini:", error);
+		throw error;
+	}
 }
 
 const aiExample = {
