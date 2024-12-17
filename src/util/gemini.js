@@ -166,7 +166,7 @@ export async function queryGemini(token, userID) {
 		const data = await response.json();
 		console.log("Response from askGemini:", data);
 		const actualText = data.response.candidates[0].content.parts[0].text
-		const cleanedText = text.replace(/```json|```/g, '').trim();
+		const cleanedText = actualText.replace(/```json|```/g, '').trim();
 		console.log("Cleaned Text value", cleanedText);
 		const gameJSON = JSON.parse(cleanedText);
 		validateJeopardyData(gameJSON, numBoards, cols, rows);
