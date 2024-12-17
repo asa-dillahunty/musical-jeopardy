@@ -7,6 +7,7 @@ import { httpsCallable } from "firebase/functions";
 import { konamiSetup } from "./konami";
 
 const askGemini = httpsCallable(functions, "askGemini");
+const callHelloWorld = httpsCallable(functions, "helloWorld");
 
 function validateJeopardyData(data, numBoards, numCategories, numSongs) {
 	try {
@@ -145,13 +146,14 @@ export async function testFunc(token, userID) {
 }
 
 export async function queryGemini(token, userID) {
+	console.log("querying Gemini")
 	// https://musical-jeopardy.firebaseapp.com/api/askGemini?cols=3&rows=3&numBoards=1
 	const query = {
 		cols: 3,
 		rows: 3,
 		numBoards: 1
 	};
-	const result = await askGemini(query)
+	const result = await callHelloWorld(query);
 	console.log(result);
 }
 

@@ -27,7 +27,6 @@ export function konamiSetup() {
 }
 
 function change() {
-	console.log("here");
 	if (isNormal) makeStatic();
 	else normalize();
 	
@@ -40,7 +39,6 @@ function makeStatic() {
 }
 
 function inputHandler(input) {
-	console.log(input);
 	if (input === "up") {
 		if (konami === 0 || konami === 1) konami++;
 		else if (konami === 2) konami = 2;

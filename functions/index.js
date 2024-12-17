@@ -4,7 +4,7 @@ const { GoogleGenerativeAI } = require("@google/generative-ai");
 
 exports.helloWorld = onRequest((request, response) => {
   logger.info("Hello logs!", {structuredData: true});
-  response.send("Hello from Firebase! " + JSON.stringify(request.query));
+  response.send("Hello from Firebase! " + JSON.stringify(request));
 });
 
 exports.askGemini = onRequest(
