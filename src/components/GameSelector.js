@@ -24,7 +24,9 @@ function GameSelector({ setPage, setChosenGameID, editing, userID, token }) {
 
 	const askGemini = () => {
 		try {
-			queryGemini(token, userID);
+			queryGemini(token, userID).then((gameData) => {
+				selectGame("");
+			});
 		} catch (e) {
 			alert("Working on this feature! Coming soon!");
 			console.error(e.message);

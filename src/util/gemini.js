@@ -6,9 +6,6 @@ import { getSingleTrack } from "./spotifyAPI";
 import { httpsCallable } from "firebase/functions";
 import { konamiSetup } from "./konami";
 
-const askGemini = httpsCallable(functions, "askGemini");
-const callHelloWorld = httpsCallable(functions, "helloWorld");
-
 function validateJeopardyData(data, numBoards, numCategories, numSongs) {
 	try {
 		if (data.finalJeopardy?.song === undefined || data.finalJeopardy?.hint === undefined) {
@@ -117,7 +114,6 @@ export async function createBoardFromJSON(data, numBoards, numCategories, numSon
 							board.grid[j][k + 1] = songData; // Update grid when resolved
 						})
 				);
-				// return;
 			}
 		}
 	}
@@ -167,7 +163,6 @@ export async function queryGemini(token, userID) {
 		console.log("Response from askGemini:", data);
 		const actualText = data.result.response.candidates[0].content.parts[0].text;
 		const cleanedText = actualText.replace(/```json|```/g, '').trim();
-		console.log("Cleaned Text value", cleanedText);
 		const gameJSON = JSON.parse(cleanedText);
 		validateJeopardyData(gameJSON, numBoards, cols, rows);
 		const newGame = await createBoardFromJSON(gameJSON, numBoards, cols, rows, userID, token);
