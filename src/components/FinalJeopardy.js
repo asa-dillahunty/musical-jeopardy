@@ -1,29 +1,52 @@
 import './FinalJeopardy.css';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { PlayCard } from './GameBoard';
 import { PlayerContainer } from './PlayGame';
 import CurrentlyPlayingWidget from './CurrentlyPlayingWidget';
+import { getSingleTrack, playTrack } from '../util/spotifyAPI';
+
+const JEOPARDY_THEME_URI = "spotify:track:4qkYiZablQoG7f0Qu4Nd1c";
 
 function FinalJeopardy({ songData, token, onFinish }) {
-	console.log("rendering final jeopardy")
+	const [startedPlaying, setStartedPlaying] = useState(false);
 	const [widgetNeedsRefresh, setWidgetNeedsRefresh] = useState(false);
 
 	const refreshWidget = () => {
 		setWidgetNeedsRefresh(!widgetNeedsRefresh);
 	}
 
+	useEffect(() => {
+		if (!startedPlaying) {
+			playTrack(JEOPARDY_THEME_URI, token).then(() => {
+				refreshWidget();
+			});
+		} else {
+			playTrack(songData.song.uri, token).then(() => {
+				refreshWidget();
+			});
+		}
+	}, [startedPlaying])
+
 	return (
 		<div className='login-wrapper'>
 			<span className="login-text">
-				{songData.category}
-				{songData.song.name}
-				<PlayCard
-					token={token}
-					val={songData.song}
-					refreshWidget={refreshWidget}
-					revealCard={() => {}}
-					setSelectedCard={() => { onFinish() }}
-				/>
+				{/* {songData.category}
+				{songData.song.name} */}
+				{ startedPlaying ?
+					<div className='final-jeopardy-card-wrapper'>
+						<PlayCard
+							token={token}
+							val={songData.song}
+							refreshWidget={refreshWidget}
+							revealCard={() => {}}
+							setSelectedCard={() => { onFinish() }}
+						/>
+					</div> :
+					<div className='final-jeopardy-card-wrapper'>
+						<p>It's time for Final Jeopardy!</p>
+						<button onClick={() => setStartedPlaying(true)}>Let's Go!!</button>
+					</div>
+				}	
 				<CurrentlyPlayingWidget
 					token={token}
 					widgetNeedsRefresh={widgetNeedsRefresh}

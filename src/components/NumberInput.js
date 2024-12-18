@@ -19,7 +19,7 @@ const NumberInput = ({ label, value, setValue, maxVal, minVal, incPerDigit }) =>
 	}, [value, setValue, maxVal, minVal])
 
 	if (incPerDigit) {
-		const maxDigits = Math.ceil(Math.log10(maxVal));
+		const maxDigits = Math.ceil(Math.log10(maxVal+1));
 		const valueString = value.toString().padStart(maxDigits, '0');
 
 		let digits = []
