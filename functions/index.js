@@ -3,11 +3,6 @@ const logger = require("firebase-functions/logger");
 const functions = require('firebase-functions');
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 
-exports.helloWorld = onRequest((request, response) => {
-  logger.info("Hello logs!", {structuredData: true});
-  response.send("Hello from Firebase! " + JSON.stringify(request));
-});
-
 exports.askGemini = onRequest(
   { secrets: ["GEM_FLASH_API_KEY"]}, 
   async (request, response) => {
@@ -23,7 +18,12 @@ exports.askGemini = onRequest(
       if (numBoards > 3 || numBoards < 1) throw new functions.https.HttpsError('invalid-argument', 'bad number of boards');
 
       const genAI = new GoogleGenerativeAI(process.env.GEM_FLASH_API_KEY);
-      const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+      const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash", 
+        generationConfig: {
+          candidateCount: 1, // I'm not gonna display options to the user
+          temperature: 1.5, // essentially 'randomness', with 0 being no randomness and 2 being the most allowed
+        },
+      });
 
       const prompt = buildPrompt(cols, rows, numBoards);
 
@@ -47,12 +47,13 @@ Although you must name a specific song to be played, much of this game's emphasi
 
 Songs within their category must have something in common with the category. For example, if the category is West Coast Hip-Hop, one song chosen could be something like Gin and Juice by Snoop Dog, because the song's artist, Snoop Dog, is from the West Coast Hip-Hop scene. Another example is making a category called Taylor's Feats with songs by artists that are featured on other Taylor Swift songs. So for example, we could choose a song by Panic! At The Disco, because they were featured in Taylor Swift's song Me!. 
 
-Be very creative when deciding the categories. The more nonsensical the better.
+Be very creative when deciding the categories. Brainstorm categories that are novel and imaginative. Don't limit yourself to things that are predictable or closely related.
 
 Remember
 - DO NOT use any examples that I gave you
+- DO NOT generate categories that are closely related to each other or to the examples provided
 - DO NOT repeat songs or artists
-- DO NOT select songs with over 500 million streams
+- DO NOT select songs with over 100 million streams
 - Categories should primarily describe connections between the artists
 
 As the song's index grows, guessing the artist's identity is expected to become more difficult. This can be due to the song being by a lesser-known artist or simply a lesser-known song by the artist.

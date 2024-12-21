@@ -520,7 +520,7 @@ button.next-board:hover {
 	cursor: pointer;
 }
 
-.edit-board > .value-container {
+.value-container {
 	align-items: center;
 	justify-content: center;
 	display: flex;

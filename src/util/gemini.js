@@ -141,11 +141,12 @@ export async function testFunc(token, userID) {
 	return newGame;
 }
 
-export async function queryGemini(token, userID) {
-	console.log("Querying Gemini");
-	const cols = 3;
-	const rows = 3;
-	const numBoards = 1;
+export async function queryGemini(token, userID, options) {
+	const { numBoards, cols, rows } = options;
+	console.log("Querying Gemini", options);
+	// const cols = 3;
+	// const rows = 3;
+	// const numBoards = 1;
 	// https://musical-jeopardy.firebaseapp.com/api/askGemini?cols=3&rows=3&numBoards=1
 	const url = `https://musical-jeopardy.firebaseapp.com/api/askGemini?cols=${cols}&rows=${rows}&numBoards=${numBoards}`;
 	try {

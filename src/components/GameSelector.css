@@ -66,3 +66,57 @@ section.selection-section {
 	justify-content: center;
 	align-items: center;
 }
+
+.form-wrapper {
+	background-color: antiquewhite;
+	padding: 32px;
+	border-radius: 15px;
+}
+
+.loading-gemini-message {
+	color: white;
+	background-color: var(--jeopardy-blue);
+	display: flex;
+	flex-direction: row;
+
+	align-items: center;
+	justify-content: center;
+	
+	padding: 32px;
+	border-radius: 15px;
+	gap: 32px;
+}
+
+.loading-gemini-message .sparkle-wrapper {
+	font-size: 90px;
+	animation: spin 1s ease-in 0s infinite;
+}
+
+.loading-gemini-message .text-wrapper {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+}
+
+.loading-gemini-message h3 {
+	font-size: 64px;
+	margin: 0;
+}
+
+.loading-gemini-message p {
+	font-size: 24px;
+	margin: 0;
+}
+
+@keyframes spin {
+	0% {
+		transform: rotate(0deg);
+	}
+	50% {
+		transform: rotate(180deg);
+	}
+	100% {
+		transform: rotate(360deg);
+	}
+}
