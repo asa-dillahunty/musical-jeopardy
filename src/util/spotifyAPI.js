@@ -47,8 +47,8 @@ export async function searchTracks(query, accessToken) {
 // });
 }
 
-export async function getSingleTrack(query, accessToken) {
-	const response = await fetch(`https://api.spotify.com/v1/search?q=${query}&type=track&limit=1`, {
+export async function getSingleTrack(songTitle, artist, accessToken) {
+	const response = await fetch(`https://api.spotify.com/v1/search?q=${songTitle} ${artist}&type=track&limit=1`, {
 		headers: {
 			'Authorization': `Bearer ${accessToken}`
 		}

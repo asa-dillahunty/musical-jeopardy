@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { PlayCard } from './GameBoard';
 import { PlayerContainer } from './PlayGame';
 import CurrentlyPlayingWidget from './CurrentlyPlayingWidget';
-import { getSingleTrack, playTrack } from '../util/spotifyAPI';
+import { playTrack } from '../util/spotifyAPI';
 
 const JEOPARDY_THEME_URI = "spotify:track:4qkYiZablQoG7f0Qu4Nd1c";
 

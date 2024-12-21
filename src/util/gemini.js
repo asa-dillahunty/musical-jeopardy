@@ -1,9 +1,7 @@
 import { getNewGame } from "../components/EditGame";
 import { reduceSongData } from "../components/SongSelect";
-import { functions } from "./firebaseAPIs";
 import { storeGame } from "./session";
 import { getSingleTrack } from "./spotifyAPI";
-import { httpsCallable } from "firebase/functions";
 import { konamiSetup } from "./konami";
 
 function validateJeopardyData(data, numBoards, numCategories, numSongs) {
@@ -105,10 +103,10 @@ export async function createBoardFromJSON(data, numBoards, numCategories, numSon
 		for (let j=0;j<numCategories;j++) {
 			board.grid[j][0] = data[`board${i+1}`].categories[j].name;
 			for (let k=0;k<numSongs;k++) {
-				const currSong = data[`board${i+1}`].categories[j].songs[k].song;
+				const currSong = data[`board${i+1}`].categories[j].songs[k];
 				// console.log( await getSingleTrack(currSong, accessToken));
 				songPromises.push(
-					getSingleTrack(currSong, accessToken)
+					getSingleTrack(currSong.song, currSong.artist, accessToken)
 						.then(reduceSongData)
 						.then((songData) => {
 							board.grid[j][k + 1] = songData; // Update grid when resolved
@@ -119,7 +117,7 @@ export async function createBoardFromJSON(data, numBoards, numCategories, numSon
 	}
 
 	songPromises.push(
-		getSingleTrack(data.finalJeopardy.song, accessToken)
+		getSingleTrack(data.finalJeopardy.song, data.finalJeopardy.artist, accessToken)
 			.then(reduceSongData)
 			.then((songData) => {
 				newGame.finalJeopardy = {
