@@ -142,6 +142,10 @@ function EditGame({ gameID, token, setChosenGameID, userID }) {
 					setGame(currGame);
 					setNumBoards(currGame.numBoards);
 					setGameName(currGame.name);
+					if (currGame.finalJeopardy) {
+						setFinalJeopardyCategory(currGame.finalJeopardy.category);
+						setFinalJeopardySong(currGame.finalJeopardy.song);
+					}
 				}
 				else {
 					const newGame = getNewGame(gameID);
@@ -155,15 +159,19 @@ function EditGame({ gameID, token, setChosenGameID, userID }) {
 					setGame(currGame);
 					setNumBoards(currGame.numBoards);
 					setGameName(currGame.name);
+					if (currGame.finalJeopardy) {
+						setFinalJeopardyCategory(currGame.finalJeopardy.category);
+						setFinalJeopardySong(currGame.finalJeopardy.song);
+					}
 				}
 				else {
 					setGame(gameData);
 					setNumBoards(gameData.numBoards);
 					setGameName(gameData.name);
-				}
-				if (gameData.finalJeopardy) {
-					setFinalJeopardyCategory(gameData.finalJeopardy.category);
-					setFinalJeopardySong(gameData.finalJeopardy.song);
+					if (gameData.finalJeopardy) {
+						setFinalJeopardyCategory(gameData.finalJeopardy.category);
+						setFinalJeopardySong(gameData.finalJeopardy.song);
+					}
 				}
 			}
 		}
