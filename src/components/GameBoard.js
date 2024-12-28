@@ -8,7 +8,7 @@ import { FaCheck, FaEyeSlash } from 'react-icons/fa';
 import { SpotlightBackGround } from '../util/stolen';
 import { GiDoubleQuaver, GiRollingDices } from 'react-icons/gi';
 import { PlayerContainer, PlayerDisplay } from './PlayGame';
-import { playersSignal, updatePlayerScore } from '../util/session';
+import { getGameSessionFromStorage, playersSignal, updatePlayerScore } from '../util/session';
 import { FaXmark } from 'react-icons/fa6';
 import { SongSelect } from './SongSelect';
 
@@ -291,16 +291,11 @@ function BoardValueNumberInputs({ cols, setCols, rows, setRows, multiplier, setM
 	)
 }
 
-function GameBoard({ board, token, preview, editing, updateBoard, setSelectedBoard, playNextBoard }) {
+function GameBoard({ board, token, preview, editing, updateBoard, setSelectedBoard, playNextBoard, revealedCards, updateRevealed }) {
 	const [selectedCard, setSelectedCard] = useState({ });
 	const [widgetNeedsRefresh, setWidgetNeedsRefresh] = useState(false);
-	const [revealedCards, setRevealedCards] = useState({});
 	const [selectedPlayer, setSelectedPlayer] = useState(null);
 	const [dailyDoubleWager, setDailyDoubleWager] = useState(500);
-
-	const updateRevealed = () => {
-		setRevealedCards( JSON.parse(JSON.stringify(revealedCards)) );
-	}
 
 	const revealCard = (i,j) => {
 		if (!revealedCards[i]) revealedCards[i] = {};
@@ -396,11 +391,6 @@ function GameBoard({ board, token, preview, editing, updateBoard, setSelectedBoa
 		return true;
 	}
 
-	useEffect(() => {
-		if (!selectedCard.i) return; // no selected card
-		// should we do something when a card is selected?
-	}, [selectedCard]);
-
 	const onClickPlayerFunc = (player, prevStatus) => {
 		const calcScore = Number.parseInt( selectedCard.j ) * board.multiplier * 100;
 
@@ -421,6 +411,11 @@ function GameBoard({ board, token, preview, editing, updateBoard, setSelectedBoa
 
 	const onClickPlayer = selectedCard.i ? onClickPlayerFunc : undefined;
 	const selectedIsDailyDouble = isDailyDouble(selectedCard.i, selectedCard.j);
+
+	useEffect(() => {
+		if (!selectedCard.i) return; // no selected card
+		// should we do something when a card is selected?
+	}, [selectedCard]);
 
 	if (!board) return; // maybe return a skeleton
 	if (preview) {
@@ -514,7 +509,6 @@ function GameBoard({ board, token, preview, editing, updateBoard, setSelectedBoa
 							<button 
 								className='next-board'
 								onClick={() => {
-									setRevealedCards({});
 									playNextBoard();
 								}}
 							>

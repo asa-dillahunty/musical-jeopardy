@@ -4,7 +4,7 @@ import NumberInput from './NumberInput';
 import GameBoard from './GameBoard';
 import { useGame } from '../util/firebaseAPIs';
 import ClickBlocker from './ClickBlocker';
-import { numPlayersSignal, playersSignal, updatePlayerName } from '../util/session';
+import { getGameSessionFromStorage, numPlayersSignal, playersSignal, storeGameSession, updatePlayerName } from '../util/session';
 import FinalJeopardy from './FinalJeopardy';
 
 // const players = [
@@ -24,6 +24,7 @@ function PlayGame({ gameID, token, setChosenGameID }) {
 	const [playFinalJeopardy, setPlayFinalJeopardy] = useState(false);
 	const { data: gameData, isLoading, isError } = useGame(gameID);
 	const [playersInitialized, setPlayersInitialized ] = useState(false);
+	const [revealedCards, setRevealedCards] = useState([{}, {}, {}]);
 
 	// useEffect(() => {
 	// 	if (!isLoading) {
@@ -40,6 +41,33 @@ function PlayGame({ gameID, token, setChosenGameID }) {
 			setSelectedBoard(selectedBoard + 1);
 		}
 	}
+
+	const updateSessionStorage = () => {
+		const sessionData = {
+			id: gameID,
+			selectedBoard: selectedBoard,
+			playFinalJeopardy: playFinalJeopardy,
+			playersInitialized: playersInitialized,
+			revealedCards: revealedCards
+		}
+		storeGameSession(sessionData);
+	}
+
+	const updateRevealed = () => {
+		setRevealedCards( JSON.parse(JSON.stringify(revealedCards)) );
+		updateSessionStorage();
+	}
+
+	useEffect(() => {
+		// load from storage the active session
+		const sessionData = getGameSessionFromStorage();
+		if (sessionData?.id !== gameID) return;
+		
+		setSelectedBoard(sessionData.selectedBoard);
+		setPlayFinalJeopardy(sessionData.playFinalJeopardy);
+		setPlayersInitialized(sessionData.playersInitialized);
+		setRevealedCards(sessionData.revealedCards);
+	}, [gameID]);
 
 	if (isLoading) {
 		return <p>Loading</p>
@@ -74,6 +102,8 @@ function PlayGame({ gameID, token, setChosenGameID }) {
 				setSelectedBoard={setSelectedBoard}
 				editing={false}
 				playNextBoard={playNextState}
+				revealedCards={revealedCards[selectedBoard]}
+				updateRevealed={updateRevealed}
 			/>
 		)
 	}
@@ -140,7 +170,7 @@ function PlayerSetup({ setPlayersInitialized }) {
 	);
 }
 
-export function PlayerContainer({ onClickPlayer, numPlayers, isPlaying, isSidebar, selectedPlayer }) {
+export function PlayerContainer({ onClickPlayer, numPlayers, isPlaying, isSidebar, selectedPlayer, isFinalJeopardy }) {
 	if (!numPlayers) numPlayers = numPlayersSignal.value;
 	const className = isSidebar ? 'player-container sidebar' : 'player-container';
 

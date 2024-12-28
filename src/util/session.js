@@ -57,3 +57,11 @@ export function storeGame(gameData) {
 export function getGameFromStorage() {
 	return loadFromStorage('selectedGame', null);
 }
+
+export function storeGameSession(sessionData) {
+	localStorage.setItem('activeSession', JSON.stringify(sessionData));
+}
+
+export function getGameSessionFromStorage() {
+	return loadFromStorage('activeSession', null);
+}

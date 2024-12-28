@@ -63,6 +63,11 @@ export async function getSingleTrack(songTitle, artist, accessToken) {
 // Function to play a track
 export async function playTrack(trackUri, accessToken) {
 	console.log("playing track: ", trackUri);
+	if (window.location.hostname === 'localhost') {
+		console.log("NOT");
+		return;
+	};
+
 	const response = await fetch(`https://api.spotify.com/v1/me/player/play`, {
 		method: 'PUT',
 		body: JSON.stringify({ uris: [trackUri] }),
@@ -77,6 +82,10 @@ export async function playTrack(trackUri, accessToken) {
 
 export async function getCurrentlyPlaying(accessToken) {
 	console.log("getting currently playing");
+	if (window.location.hostname === 'localhost') {
+		console.log("NOT");
+		return null;
+	};
 	// https://developer.spotify.com/documentation/web-api/reference/get-the-users-currently-playing-track
 	const response = await fetch(`https://api.spotify.com/v1/me/player/currently-playing`, {
 		headers: {
