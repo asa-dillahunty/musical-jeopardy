@@ -4,7 +4,7 @@ import NumberInput from './NumberInput';
 import GameBoard from './GameBoard';
 import { useGame } from '../util/firebaseAPIs';
 import ClickBlocker from './ClickBlocker';
-import { getGameSessionFromStorage, numPlayersSignal, playersSignal, storeGameSession, updatePlayerName } from '../util/session';
+import { getGameSessionFromStorage, numPlayersSignal, playersSignal, storeGameSession, updatePlayerName, updatePlayerScore } from '../util/session';
 import FinalJeopardy from './FinalJeopardy';
 
 // const players = [
@@ -185,6 +185,7 @@ export function PlayerContainer({ onClickPlayer, numPlayers, isPlaying, isSideba
 						isPlaying={isPlaying}
 						selectedPlayer={selectedPlayer}
 						key={index}
+						isFinalJeopardy={isFinalJeopardy}
 					/>
 				);
 			})}
@@ -198,8 +199,9 @@ const rewardState = {
 	neutral: "neutral"
 }
 
-export function PlayerDisplay({ data, display, onClickPlayer, isPlaying, selectedPlayer }) {
+export function PlayerDisplay({ data, display, onClickPlayer, isPlaying, selectedPlayer, isFinalJeopardy }) {
 	const [rewardStatus, setRewardStatus] = useState(rewardState.neutral);
+	const [wager, setWager] = useState(500);
 	let className = 'player-icon-wrapper';
 	if (onClickPlayer) className += ' selectable';
 	if (rewardStatus === rewardState.fail) className += ' fail';
@@ -222,6 +224,18 @@ export function PlayerDisplay({ data, display, onClickPlayer, isPlaying, selecte
 		else if (rewardStatus === rewardState.fail) setRewardStatus(rewardState.neutral);
 	}
 
+	const winWager = () => {
+		updatePlayerScore(data.index, playersSignal.value[data.index].score + wager);
+		// setSelectedCard({});
+	}
+
+	const loseWager = () => {
+		updatePlayerScore(data.index, playersSignal.value[data.index].score - wager);
+		// setSelectedCard({});
+	}
+
+	const currentScore = playersSignal?.value[data.index]?.score ?? 0
+
 	useEffect(() => {
 		if (onClickPlayer) return;
 		setRewardStatus(rewardState.neutral);
@@ -236,7 +250,21 @@ export function PlayerDisplay({ data, display, onClickPlayer, isPlaying, selecte
 			<PlayerIcon color={data.color}/>
 			<p className='player-name'>{data.name}</p>
 			{ isPlaying && <>
-				<p className='player-score'>${playersSignal.value[data.index].score ? playersSignal.value[data.index].score : 0}</p>
+				<p className='player-score'>${currentScore}</p>
+			</> }
+			{ isFinalJeopardy && <>
+				<NumberInput
+					label={"Wager"}
+					value={wager}
+					setValue={setWager}
+					minVal={0}
+					maxVal={currentScore > 500 ? currentScore : 500}
+					incPerDigit
+					topLabel
+					includePlusMinus
+					plusFunc={winWager}
+					minusFunc={loseWager}
+				/>
 			</> }
 		</div>
 	);

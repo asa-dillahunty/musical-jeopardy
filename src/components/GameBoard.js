@@ -8,7 +8,7 @@ import { FaCheck, FaEyeSlash } from 'react-icons/fa';
 import { SpotlightBackGround } from '../util/stolen';
 import { GiDoubleQuaver, GiRollingDices } from 'react-icons/gi';
 import { PlayerContainer, PlayerDisplay } from './PlayGame';
-import { getGameSessionFromStorage, playersSignal, updatePlayerScore } from '../util/session';
+import { playersSignal, updatePlayerScore } from '../util/session';
 import { FaXmark } from 'react-icons/fa6';
 import { SongSelect } from './SongSelect';
 

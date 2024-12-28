@@ -27,7 +27,11 @@
 }
 
 .player-icon-wrapper {
-	width: 100px;
+	width: min-content;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-direction: column;
 	padding: 15px 15px;
 	border-radius: 5px;
 }

@@ -1,8 +1,10 @@
 import React, { useEffect } from "react";
 import './NumberInput.css';
 import { AiOutlineDownSquare, AiOutlineUpSquare } from "react-icons/ai";
+import { FaXmark } from "react-icons/fa6";
+import { FaCheck } from "react-icons/fa";
 
-const NumberInput = ({ label, value, setValue, maxVal, minVal, incPerDigit }) => {
+const NumberInput = ({ label, value, setValue, maxVal, minVal, incPerDigit, topLabel, includePlusMinus, plusFunc, minusFunc }) => {
 
 	const handleIncrement = (place) => {
 		if (value < maxVal) setValue(value + (10**place));
@@ -29,6 +31,26 @@ const NumberInput = ({ label, value, setValue, maxVal, minVal, incPerDigit }) =>
 					<AiOutlineUpSquare onClick={() => handleIncrement(maxDigits - i - 1)} />
 					<div className="number-input-value"> { valueString[i] } </div>
 					<AiOutlineDownSquare onClick={() => handleDecrement(maxDigits - i - 1)} />
+				</div>
+			)
+		}
+
+		if (includePlusMinus) {
+			digits.push(
+				<div className="number-input-button-container">
+					<button className="failure" onClick={minusFunc}><FaXmark /></button>
+					<button className="success" onClick={plusFunc}><FaCheck /></button>
+				</div>
+			)
+		}
+
+		if (topLabel) {
+			return (
+				<div className="compact-number-inputs top-label">
+					<div className="number-input-label">{label}</div>
+					<div className="number-input-digis">
+						{ digits.map((digit) => digit) }
+					</div>
 				</div>
 			)
 		}

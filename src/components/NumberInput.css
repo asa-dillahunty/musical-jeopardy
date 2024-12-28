@@ -9,6 +9,17 @@
 	user-select: none;
 }
 
+.compact-number-inputs.top-label {
+	flex-direction: column;
+}
+
+.compact-number-inputs > .number-input-digis {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: center;
+}
+
 .compact-number-inputs > .number-input-label {
 	margin: 0 3px;
 }
@@ -33,4 +44,47 @@
 
 .compact-number-inputs > .number-input-button-container > svg:hover {
 	cursor: pointer;
+}
+
+.compact-number-inputs > .number-input-button-container > svg path:hover {
+	cursor: pointer;
+}
+
+.number-input-button-container button {
+	width: 20px;
+	height: 20px;
+	border: none;
+	border-radius: 1px;
+	margin: 5px;
+	margin-top: 7px;
+	margin-bottom: 7px;
+
+	pointer-events: all;
+	cursor: pointer;
+
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	color: white;
+	font-size: 10px;
+	font-weight: bold;
+	box-shadow: inset -1px -1px white;
+
+	transition-property: box-shadow, transform;
+	transition-duration: .3s;
+	position: relative;
+}
+
+.number-input-button-container button:hover {
+	transform: translate(1px, 1px);
+	box-shadow: none;
+}
+
+.number-input-button-container button.success {
+	background-color: green;
+}
+
+.number-input-button-container button.failure {
+	background-color: red;
+	font-size: 14px;
 }

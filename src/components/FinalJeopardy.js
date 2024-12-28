@@ -44,6 +44,8 @@ function FinalJeopardy({ songData, token, onFinish }) {
 					</div> :
 					<div className='final-jeopardy-card-wrapper'>
 						<p>It's time for Final Jeopardy!</p>
+						<p>Your hint is:</p>
+						<p><strong>{songData.category}</strong></p>
 						<button onClick={() => setStartedPlaying(true)}>Let's Go!!</button>
 					</div>
 				}	
@@ -52,7 +54,7 @@ function FinalJeopardy({ songData, token, onFinish }) {
 					widgetNeedsRefresh={widgetNeedsRefresh}
 					toggleRefresh={refreshWidget}
 				/>
-				<PlayerContainer isPlaying/>
+				<PlayerContainer isPlaying isFinalJeopardy/>
 			</span>
 		</div>
 	);
