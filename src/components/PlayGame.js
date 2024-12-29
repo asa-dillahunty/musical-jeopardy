@@ -6,6 +6,7 @@ import { useGame } from '../util/firebaseAPIs';
 import ClickBlocker from './ClickBlocker';
 import { getGameSessionFromStorage, numPlayersSignal, playersSignal, storeGameSession, updatePlayerName, updatePlayerScore } from '../util/session';
 import FinalJeopardy from './FinalJeopardy';
+import { ScoreBoard } from './ScoreBoard';
 
 // const players = [
 // 	{ name: "Player 1", color: "red" },
@@ -25,6 +26,7 @@ function PlayGame({ gameID, token, setChosenGameID }) {
 	const { data: gameData, isLoading, isError } = useGame(gameID);
 	const [playersInitialized, setPlayersInitialized ] = useState(false);
 	const [revealedCards, setRevealedCards] = useState([{}, {}, {}]);
+	const [showScoreBoard, setShowScoreBoard] = useState(false);
 
 	// useEffect(() => {
 	// 	if (!isLoading) {
@@ -40,6 +42,11 @@ function PlayGame({ gameID, token, setChosenGameID }) {
 		else {
 			setSelectedBoard(selectedBoard + 1);
 		}
+	}
+
+	const onFinishFinalJeopardy = () => {
+		setPlayFinalJeopardy(false);
+		setShowScoreBoard(true);
 	}
 
 	const updateSessionStorage = () => {
@@ -84,12 +91,15 @@ function PlayGame({ gameID, token, setChosenGameID }) {
 			<PlayerSetup setPlayersInitialized={setPlayersInitialized} />
 		);
 	}
+	else if(showScoreBoard) {
+		return <ScoreBoard />
+	}
 	else if (playFinalJeopardy) {
 		return (
 			<FinalJeopardy
 				token={token}
 				songData={gameData.finalJeopardy}
-				onFinish={() => setPlayFinalJeopardy(false)}
+				onFinish={onFinishFinalJeopardy}
 			/>
 		);
 	}

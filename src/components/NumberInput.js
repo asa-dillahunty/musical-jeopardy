@@ -48,7 +48,7 @@ const NumberInput = ({ label, value, setValue, maxVal, minVal, incPerDigit, topL
 			return (
 				<div className="compact-number-inputs top-label">
 					<div className="number-input-label">{label}</div>
-					<div className="number-input-digis">
+					<div className="number-input-digits">
 						{ digits.map((digit) => digit) }
 					</div>
 				</div>

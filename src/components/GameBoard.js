@@ -477,7 +477,7 @@ function GameBoard({ board, token, preview, editing, updateBoard, setSelectedBoa
 									header={j === 0}
 									editing={editing}
 									setSelectedCard={setSelectedCard}
-									revealed={getRevealed(i,j)}
+									revealed={editing ? false : getRevealed(i,j)}
 									isDailyDouble={isDailyDouble(i,j)}
 								/>
 							)}
