@@ -21,3 +21,11 @@ div.currently-playing-widget svg:hover {
 	cursor: pointer;
 	background-color: rgba(0, 0, 0, 0.113);
 }
+
+.web-playback-testing {
+	display: none;
+}
+
+.static .web-playback-testing {
+	display: flex;
+}

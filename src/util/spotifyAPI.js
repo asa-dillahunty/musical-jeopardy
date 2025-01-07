@@ -1,5 +1,5 @@
 const clientId = '88ad68ab4d984a1d9e77d8b1377651ab';
-const scopes = 'user-read-playback-state user-modify-playback-state';
+const scopes = 'streaming user-read-email user-read-private user-read-playback-state user-modify-playback-state';
 
 export function spotifyLogin() {
 	const redirectUrl = window.location.origin + "/";
@@ -130,6 +130,21 @@ export async function resumePlayback(accessToken) {
 		headers: {
 			'Authorization': `Bearer ${accessToken}`,
 		},
+	});
+	// maybe check for error ?
+	return response.ok;
+}
+
+export async function transferPlayback(accessToken, deviceID) {
+	console.log("transferring playback", deviceID);
+	const response = await fetch(`https://api.spotify.com/v1/me/player`, {
+		method: 'PUT',
+		headers: {
+			'Authorization': `Bearer ${accessToken}`,
+		},
+		body: JSON.stringify({
+            device_ids: [deviceID],
+        }),
 	});
 	// maybe check for error ?
 	return response.ok;

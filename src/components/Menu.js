@@ -2,6 +2,8 @@ import { useState } from 'react';
 import EditGame from './EditGame';
 import GameSelector from './GameSelector';
 import PlayGame from './PlayGame';
+import WebPlayback from './WebPlayback';
+import { konamiSetup } from '../util/konami';
 
 function Menu ({ token, page, setPage, userID }) {
 	const [chosenGameID, setChosenGameID] = useState();
@@ -50,6 +52,7 @@ function Menu ({ token, page, setPage, userID }) {
 				<div className="menu-container">
 					<button onClick={() => setPage(menuOptions.buildSelection)}>Build/Edit Board</button>
 					<button onClick={() => setPage(menuOptions.playSelection)}>Play Game</button>
+					<WebPlayback token={token} />
 				</div>
 			);
 	}
