@@ -1,45 +1,45 @@
 .score-board {
-    background-color: black;
-    height: 100%;
+  background-color: black;
+  height: 100%;
 
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 
-    padding: 30px;
-    color: white;
+  padding: 30px;
+  color: white;
 }
 
 .score-board li {
-    text-align: left;
-    position: relative;
-    display: grid;
-    grid-template-columns: 1fr 5fr 2fr;
+  text-align: left;
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 5fr 2fr;
 }
 
 .score-board svg {
-    position: absolute;
-    left: -85px;
-    font-size: 40px;
+  position: absolute;
+  left: -85px;
+  font-size: 40px;
 }
 
 .score-board li:nth-child(-n + 3) {
-    font-size: 36px;
+  font-size: 36px;
 }
 
 .score-board li:nth-child(1) svg {
-    color: gold;
+  color: gold;
 }
 
 .score-board li:nth-child(2) svg {
-    color: silver;
+  color: silver;
 }
 
 .score-board li:nth-child(3) svg {
-    color: brown;
+  color: brown;
 }
 
 .score-board li:nth-child(3) {
-    margin-bottom: 10px;
+  margin-bottom: 10px;
 }

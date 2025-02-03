@@ -1,41 +1,41 @@
 .sketch-wrapper {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 .sketch-wrapper .button-toolbar {
-    position: absolute;
-    top: 5px;
-    right: 5px;
-    font-size: 30px;
-    gap: 5px;
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  font-size: 30px;
+  gap: 5px;
 
-    display: flex;
-    flex-direction: row;
+  display: flex;
+  flex-direction: row;
 }
 
 .sketch-wrapper .button-toolbar button {
-    font-size: 30px;
-    padding: 6px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border-radius: 5px;
+  font-size: 30px;
+  padding: 6px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 5px;
 
-    cursor: pointer;
-    transition: transform .2s;
+  cursor: pointer;
+  transition: transform 0.2s;
 }
 
 .sketch-wrapper .button-toolbar button:hover {
-    transform: translateY(3px);
+  transform: translateY(3px);
 }
 
 .sketch-canvas {
-    width: 80vw;
-    height: 80vh;
+  width: 80vw;
+  height: 80vh;
 }
 
 /* button.clear-sketch {
@@ -46,31 +46,31 @@
 } */
 
 .sketch-wrapper button.done {
-	width: 8ch;
-	height: 60px;
-	border: none;
-	border-radius: 8px;
-	margin: 15px;
+  width: 8ch;
+  height: 60px;
+  border: none;
+  border-radius: 8px;
+  margin: 15px;
 
-	pointer-events: all;
-	cursor: pointer;
+  pointer-events: all;
+  cursor: pointer;
 
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	color: white;
-	font-size: 36px;
-	font-weight: bold;
-	box-shadow: 2px 2px white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  font-size: 36px;
+  font-weight: bold;
+  box-shadow: 2px 2px white;
 
-	transition-property: box-shadow, transform;
-	transition-duration: .3s;
-	position: relative;
+  transition-property: box-shadow, transform;
+  transition-duration: 0.3s;
+  position: relative;
 
-    background-color: var(--jeopardy-blue);
+  background-color: var(--jeopardy-blue);
 }
 
 .sketch-wrapper button.done:hover {
-	transform: translate(2px, 2px);
-	box-shadow: none;
+  transform: translate(2px, 2px);
+  box-shadow: none;
 }

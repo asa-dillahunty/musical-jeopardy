@@ -1,31 +1,31 @@
 div.currently-playing-widget {
-	display: flex;
-	flex-direction: row;
-	align-items: center;
-	justify-content: center;
-	margin-top: 10px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  margin-top: 10px;
 }
 
 div.currently-playing-widget progress {
-	margin: 0px 10px;
+  margin: 0px 10px;
 }
 
 div.currently-playing-widget svg {
-	transition: all .2s;
-	margin-left: 10px;
-	border-radius: 5px;
-	padding: 3px;
+  transition: all 0.2s;
+  margin-left: 10px;
+  border-radius: 5px;
+  padding: 3px;
 }
 
 div.currently-playing-widget svg:hover {
-	cursor: pointer;
-	background-color: rgba(0, 0, 0, 0.113);
+  cursor: pointer;
+  background-color: rgba(0, 0, 0, 0.113);
 }
 
 .web-playback-testing {
-	display: none;
+  display: none;
 }
 
 .static .web-playback-testing {
-	display: flex;
+  display: flex;
 }

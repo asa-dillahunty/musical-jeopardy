@@ -1,122 +1,124 @@
 ul.game-selector-list {
-	list-style-type: none;
-	padding: 0;
-	margin: 0;
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
 }
 
 ul.game-selector-list li {
-	--li-border-width: 4px;
+  --li-border-width: 4px;
 
-	padding: 10px 15px;
-	margin: auto;
-	max-width: 300px;
-	background-color: var(--jeopardy-blue);
-	border: calc(var(--li-border-width)/2) solid black;
-	border-left-width: var(--li-border-width);
-	border-right-width: var(--li-border-width);
+  padding: 10px 15px;
+  margin: auto;
+  max-width: 300px;
+  background-color: var(--jeopardy-blue);
+  border: calc(var(--li-border-width) / 2) solid black;
+  border-left-width: var(--li-border-width);
+  border-right-width: var(--li-border-width);
 
-	color: var(--jeopardy-yellow);
-	text-align: left;
-	font-weight: bold;
-	word-wrap: break-word;
+  color: var(--jeopardy-yellow);
+  text-align: left;
+  font-weight: bold;
+  word-wrap: break-word;
 }
 
 ul.game-selector-list li:first-child {
-	border-top-width: var(--li-border-width);
+  border-top-width: var(--li-border-width);
 }
 ul.game-selector-list li:last-child {
-	border-bottom-width: var(--li-border-width);
+  border-bottom-width: var(--li-border-width);
 }
 
 ul.game-selector-list li:hover {
-	opacity: .8;
-	cursor: pointer;
+  opacity: 0.8;
+  cursor: pointer;
 }
 
-#new-game-button, .static #ask-gemini-button {
-	border-radius: 5px;
-	margin-top: 10px;
-	padding: 10px 10px;
-	background-color: var(--jeopardy-blue);
-	color: white;
-	font-weight: bold;
+#new-game-button,
+.static #ask-gemini-button {
+  border-radius: 5px;
+  margin-top: 10px;
+  padding: 10px 10px;
+  background-color: var(--jeopardy-blue);
+  color: white;
+  font-weight: bold;
 
-	display: flex;
-	flex-direction: row;
-	align-items: center;
-	justify-content: center;
-	gap: 8px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
 
-	/* width: 20ch; */
+  /* width: 20ch; */
 }
 
-#new-game-button:hover, .static #ask-gemini-button:hover {
-	opacity: .8;
-	cursor: pointer;
+#new-game-button:hover,
+.static #ask-gemini-button:hover {
+  opacity: 0.8;
+  cursor: pointer;
 }
 
 #ask-gemini-button {
-	display: none;
+  display: none;
 }
 
 section.selection-section {
-	padding-bottom: 30px;
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	align-items: center;
+  padding-bottom: 30px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 .form-wrapper {
-	background-color: antiquewhite;
-	padding: 32px;
-	border-radius: 15px;
+  background-color: antiquewhite;
+  padding: 32px;
+  border-radius: 15px;
 }
 
 .loading-gemini-message {
-	color: white;
-	background-color: var(--jeopardy-blue);
-	display: flex;
-	flex-direction: row;
+  color: white;
+  background-color: var(--jeopardy-blue);
+  display: flex;
+  flex-direction: row;
 
-	align-items: center;
-	justify-content: center;
-	
-	padding: 32px;
-	border-radius: 15px;
-	gap: 32px;
+  align-items: center;
+  justify-content: center;
+
+  padding: 32px;
+  border-radius: 15px;
+  gap: 32px;
 }
 
 .loading-gemini-message .sparkle-wrapper {
-	font-size: 90px;
-	animation: spin 1s ease-in 0s infinite;
+  font-size: 90px;
+  animation: spin 1s ease-in 0s infinite;
 }
 
 .loading-gemini-message .text-wrapper {
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	justify-content: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 .loading-gemini-message h3 {
-	font-size: 64px;
-	margin: 0;
+  font-size: 64px;
+  margin: 0;
 }
 
 .loading-gemini-message p {
-	font-size: 24px;
-	margin: 0;
+  font-size: 24px;
+  margin: 0;
 }
 
 @keyframes spin {
-	0% {
-		transform: rotate(0deg);
-	}
-	50% {
-		transform: rotate(180deg);
-	}
-	100% {
-		transform: rotate(360deg);
-	}
+  0% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(180deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }

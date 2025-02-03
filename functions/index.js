@@ -1,10 +1,10 @@
-const {onRequest} = require("firebase-functions/v2/https");
+const { onRequest } = require("firebase-functions/v2/https");
 const logger = require("firebase-functions/logger");
-const functions = require('firebase-functions');
+const functions = require("firebase-functions");
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 
 exports.askGemini = onRequest(
-  { secrets: ["GEM_FLASH_API_KEY"]}, 
+  { secrets: ["GEM_FLASH_API_KEY"] },
   async (request, response) => {
     try {
       const cols = Number(request.query.cols);
@@ -12,13 +12,30 @@ exports.askGemini = onRequest(
       const numBoards = Number(request.query.numBoards);
 
       // if they're not numbers, or bad numbers
-      if (!cols || !rows || !numBoards) throw new functions.https.HttpsError('invalid-argument', 'invalid query data');
-      if (cols > 6 || cols < 3) throw new functions.https.HttpsError('invalid-argument', 'bad number of cols');
-      if (rows > 5 || rows < 3) throw new functions.https.HttpsError('invalid-argument', 'bad number of rows');
-      if (numBoards > 3 || numBoards < 1) throw new functions.https.HttpsError('invalid-argument', 'bad number of boards');
+      if (!cols || !rows || !numBoards)
+        throw new functions.https.HttpsError(
+          "invalid-argument",
+          "invalid query data",
+        );
+      if (cols > 6 || cols < 3)
+        throw new functions.https.HttpsError(
+          "invalid-argument",
+          "bad number of cols",
+        );
+      if (rows > 5 || rows < 3)
+        throw new functions.https.HttpsError(
+          "invalid-argument",
+          "bad number of rows",
+        );
+      if (numBoards > 3 || numBoards < 1)
+        throw new functions.https.HttpsError(
+          "invalid-argument",
+          "bad number of boards",
+        );
 
       const genAI = new GoogleGenerativeAI(process.env.GEM_FLASH_API_KEY);
-      const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash", 
+      const model = genAI.getGenerativeModel({
+        model: "gemini-1.5-flash",
         generationConfig: {
           candidateCount: 1, // I'm not gonna display options to the user
           temperature: 1.5, // essentially 'randomness', with 0 being no randomness and 2 being the most allowed
@@ -28,19 +45,19 @@ exports.askGemini = onRequest(
       const prompt = buildPrompt(cols, rows, numBoards);
 
       const result = await model.generateContent(prompt);
-      
+
       // logger.info("Hello logs!", {structuredData: true});
       // response.send("Hello from Firebase!");
 
       response.json({ result: result });
     } catch (e) {
-      throw new functions.https.HttpsError('internal', 'unknown error - 219');
+      throw new functions.https.HttpsError("internal", "unknown error - 219");
     }
-  }
+  },
 );
 
 function buildPrompt(cols, rows, numBoards) {
-	return `
+  return `
 You are tasked with building a JSON object used for a musical version of the game Jeopardy. You must build ${numBoards} boards with ${cols} categories, ${rows} songs per category, and one song for final jeopardy with a hint.
 
 Although you must name a specific song to be played, much of this game's emphasis is on who the artist is. When players make their guesses to score points, they must guess the artist, so try to put emphasis on the artists when making categories and deciding difficulty.
@@ -124,5 +141,5 @@ An example of the JSON object with 2 boards, 3 categories, 3 songs per category,
   }
 }
 \`\`\`
-`
+`;
 }
