@@ -87,7 +87,7 @@ export function PlayCard({
   const winWager = () => {
     updatePlayerScore(
       selectedPlayer.index,
-      playersSignal.value[selectedPlayer.index].score + dailyDoubleWager,
+      playersSignal.value[selectedPlayer.index].score + dailyDoubleWager
     );
     setSelectedCard({});
   };
@@ -95,7 +95,7 @@ export function PlayCard({
   const loseWager = () => {
     updatePlayerScore(
       selectedPlayer.index,
-      playersSignal.value[selectedPlayer.index].score - dailyDoubleWager,
+      playersSignal.value[selectedPlayer.index].score - dailyDoubleWager
     );
     setSelectedCard({});
   };
@@ -261,14 +261,14 @@ function BoardCell({
           className="game-cell populated"
           onClick={() => setSelectedCard({ i, j })}
         >
-          <p>{"$" + 100 * j * multiplier}</p>
+          <p>{"$" + 200 * j * multiplier}</p>
           <p>{val.name}</p>
           <p>{val.artists[0].name}</p>
           {isDailyDouble && <GiDoubleQuaver />}
         </div>
       ) : (
         <div className="game-cell" onClick={() => setSelectedCard({ i, j })}>
-          <p>{"$" + 100 * j * multiplier}</p>
+          <p>{"$" + 200 * j * multiplier}</p>
           {isDailyDouble && <GiDoubleQuaver />}
         </div>
       );
@@ -284,7 +284,7 @@ function BoardCell({
         );
       return (
         <div className="game-cell" onClick={() => setSelectedCard({ i, j })}>
-          <p>{"$" + 100 * j * multiplier}</p>
+          <p>{"$" + 200 * j * multiplier}</p>
         </div>
       );
     }
@@ -447,25 +447,25 @@ function GameBoard({
   };
 
   const onClickPlayerFunc = (player, prevStatus) => {
-    const calcScore = Number.parseInt(selectedCard.j) * board.multiplier * 100;
+    const calcScore = Number.parseInt(selectedCard.j) * board.multiplier * 200;
 
     if (prevStatus === "neutral") {
       // it was a success, add the score
       updatePlayerScore(
         player.index,
-        playersSignal.value[player.index].score + calcScore,
+        playersSignal.value[player.index].score + calcScore
       );
     } else if (prevStatus === "success") {
       // it was a fail, but we just added ^. Subtract twice
       updatePlayerScore(
         player.index,
-        playersSignal.value[player.index].score - 2 * calcScore,
+        playersSignal.value[player.index].score - 2 * calcScore
       );
     } else if (prevStatus === "fail") {
       // was a fail, but should be neutral, just add it back
       updatePlayerScore(
         player.index,
-        playersSignal.value[player.index].score + calcScore,
+        playersSignal.value[player.index].score + calcScore
       );
     }
   };
@@ -500,10 +500,10 @@ function GameBoard({
                               header={j === 0}
                               editing={false}
                             />
-                          ),
+                          )
                       )}
                   </div>
-                ),
+                )
             )}
         </div>
       </div>
@@ -551,10 +551,10 @@ function GameBoard({
                               revealed={editing ? false : getRevealed(i, j)}
                               isDailyDouble={isDailyDouble(i, j)}
                             />
-                          ),
+                          )
                       )}
                   </div>
-                ),
+                )
             )}
           {
             // how do we display the selected card?
