@@ -48,7 +48,7 @@ function GameSelector({ setPage, setChosenGameID, editing, userID, token }) {
       })
       .catch((e) => {
         alert(
-          "Encountered an issue. Please try again, but not too many times if it persists.",
+          "Encountered an issue. Please try again, but not too many times if it persists."
         );
         setAskingGemini(false);
         console.error(e.message);

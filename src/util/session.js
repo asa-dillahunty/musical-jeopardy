@@ -24,47 +24,47 @@ const loadFromStorage = (key, fallback) => {
 
 // Define signals for each piece of state
 export const playersSignal = signal(
-  loadFromStorage("players", initialState.players),
+  loadFromStorage("players", initialState.players)
 );
 export const numPlayersSignal = signal(loadFromStorage("numPlayers", 2));
 export const viewedCardsSignal = signal(loadFromStorage("viewedCards", []));
 export const currentGameIdSignal = signal(
-  loadFromStorage("currentGameId", null),
+  loadFromStorage("currentGameId", null)
 );
 export const gameBoardSignal = signal(
-  loadFromStorage("gameBoard", { boardNumber: 1, state: "normal" }),
+  loadFromStorage("gameBoard", { boardNumber: 1, state: "normal" })
 );
 
 // Save the state to local storage whenever it changes
 playersSignal.subscribe(() =>
-  localStorage.setItem("players", JSON.stringify(playersSignal.value)),
+  localStorage.setItem("players", JSON.stringify(playersSignal.value))
 );
 numPlayersSignal.subscribe(() =>
-  localStorage.setItem("numPlayers", JSON.stringify(numPlayersSignal.value)),
+  localStorage.setItem("numPlayers", JSON.stringify(numPlayersSignal.value))
 );
 viewedCardsSignal.subscribe(() =>
-  localStorage.setItem("viewedCards", JSON.stringify(viewedCardsSignal.value)),
+  localStorage.setItem("viewedCards", JSON.stringify(viewedCardsSignal.value))
 );
 currentGameIdSignal.subscribe(() =>
   localStorage.setItem(
     "currentGameId",
-    JSON.stringify(currentGameIdSignal.value),
-  ),
+    JSON.stringify(currentGameIdSignal.value)
+  )
 );
 gameBoardSignal.subscribe(() =>
-  localStorage.setItem("gameBoard", JSON.stringify(gameBoardSignal.value)),
+  localStorage.setItem("gameBoard", JSON.stringify(gameBoardSignal.value))
 );
 
 export const updatePlayerName = (playerIndex, name) => {
   playersSignal.value = playersSignal.value.map((player, index) =>
-    playerIndex === index ? { ...player, name } : player,
+    playerIndex === index ? { ...player, name } : player
   );
 };
 
 export const updatePlayerScore = (playerIndex, score) => {
   score = parseInt(score);
   const playersCopy = playersSignal.value.map((player, index) =>
-    playerIndex === index ? { ...player, score } : player,
+    playerIndex === index ? { ...player, score } : player
   );
   playersSignal.value = [...playersCopy];
 };

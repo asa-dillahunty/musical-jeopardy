@@ -129,7 +129,7 @@ function PlayGame({ gameID, token, setChosenGameID }) {
               <div key={index} onClick={() => setSelectedBoard(index)}>
                 <GameBoard board={val} preview={true} />
               </div>
-            ),
+            )
         )}
         <div
           className="fake-game-cell"
@@ -252,7 +252,7 @@ export function PlayerDisplay({
   const winWager = () => {
     updatePlayerScore(
       data.index,
-      playersSignal.value[data.index].score + wager,
+      playersSignal.value[data.index].score + wager
     );
     // setSelectedCard({});
   };
@@ -260,7 +260,7 @@ export function PlayerDisplay({
   const loseWager = () => {
     updatePlayerScore(
       data.index,
-      playersSignal.value[data.index].score - wager,
+      playersSignal.value[data.index].score - wager
     );
     // setSelectedCard({});
   };

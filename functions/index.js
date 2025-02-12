@@ -15,27 +15,27 @@ exports.askGemini = onRequest(
       if (!cols || !rows || !numBoards)
         throw new functions.https.HttpsError(
           "invalid-argument",
-          "invalid query data",
+          "invalid query data"
         );
       if (cols > 6 || cols < 3)
         throw new functions.https.HttpsError(
           "invalid-argument",
-          "bad number of cols",
+          "bad number of cols"
         );
       if (rows > 5 || rows < 3)
         throw new functions.https.HttpsError(
           "invalid-argument",
-          "bad number of rows",
+          "bad number of rows"
         );
       if (numBoards > 3 || numBoards < 1)
         throw new functions.https.HttpsError(
           "invalid-argument",
-          "bad number of boards",
+          "bad number of boards"
         );
 
       const genAI = new GoogleGenerativeAI(process.env.GEM_FLASH_API_KEY);
       const model = genAI.getGenerativeModel({
-        model: "gemini-1.5-flash",
+        model: "gemini-2.0-flash",
         generationConfig: {
           candidateCount: 1, // I'm not gonna display options to the user
           temperature: 1.5, // essentially 'randomness', with 0 being no randomness and 2 being the most allowed
@@ -53,7 +53,7 @@ exports.askGemini = onRequest(
     } catch (e) {
       throw new functions.https.HttpsError("internal", "unknown error - 219");
     }
-  },
+  }
 );
 
 function buildPrompt(cols, rows, numBoards) {
@@ -62,9 +62,9 @@ You are tasked with building a JSON object used for a musical version of the gam
 
 Although you must name a specific song to be played, much of this game's emphasis is on who the artist is. When players make their guesses to score points, they must guess the artist, so try to put emphasis on the artists when making categories and deciding difficulty.
 
-Songs within their category must have something in common with the category. For example, if the category is West Coast Hip-Hop, one song chosen could be something like Gin and Juice by Snoop Dog, because the song's artist, Snoop Dog, is from the West Coast Hip-Hop scene. Another example is making a category called Taylor's Feats with songs by artists that are featured on other Taylor Swift songs. So for example, we could choose a song by Panic! At The Disco, because they were featured in Taylor Swift's song Me!. 
+Songs within their category must have something in common with the category. For example, if the category is West Coast Hip-Hop, one song chosen could be something like Gin and Juice by Snoop Dog, because the song's artist, Snoop Dog, is from the West Coast Hip-Hop scene. Another example could play off of a classic jeopardy category type, like "In Inconsequential", where artist's names must be made from the letters that make up "inconsequential." Examples of artists could be Selena, Queen, or Lit.
 
-Be very creative when deciding the categories. Brainstorm categories that are novel and imaginative. Don't limit yourself to things that are predictable or closely related.
+Be very creative when deciding the categories. Brainstorm categories that are novel and imaginative. Don't limit yourself to things that are predictable or closely related. Draw inspiration from classic Jeopardy categories.
 
 Remember
 - DO NOT use any examples that I gave you
@@ -81,27 +81,27 @@ An example of the JSON object with 2 boards, 3 categories, 3 songs per category,
   "board1": {
     "categories": [
       {
-        "name": "Taylor's Feats",
+        "name": "In Inconsequential",
         "songs": [
-          {"song": "Build God, Then We'll Talk", "artist": "Panic! At The Disco"},
-          {"song": "Deli", "artist": "Ice Spice"},
-          {"song": "Don't", "artist": "Ed Sheeran"}
+          {"artist": "Selena", "song": "Bidi Bidi Bom Bom"},
+          {"artist": "Queen", "song": "Radio Ga Ga"},
+          {"artist": "Nico", "song": "Janitor of Lunacy"}
         ]
       },
       {
         "name": "West Coast Hip-Hop",
         "songs": [
-          {"song": "Gin and Juice", "artist": "Snoop Dogg"},
-          {"song": "The Watcher", "artist": "Dr. Dre"},
-          {"song": "Express Yourself", "artist": "N.W.A."}
+          {"artist": "Snoop Dogg", "song": "Gin and Juice"},
+          {"artist": "Dr. Dre", "song": "The Watcher"},
+          {"artist": "N.W.A.", "song": "Express Yourself"}
         ]
       },
       {
         "name": "In The Family",
         "songs": [
-          {"song": "Burnin' Up", "artist": "Jonas Brothers"},
-          {"song": "Circle The Drain", "artist": "Soccer Mommy"},
-          {"song": "Follow Me", "artist": "Uncle Kracker"}
+          {"artist": "Jonas Brothers", "song": "Burnin' Up"},
+          {"artist": "Soccer Mommy", "song": "Circle The Drain"},
+          {"artist": "Uncle Kracker", "song": "Follow Me"}
         ]
       }
     ]
@@ -111,33 +111,33 @@ An example of the JSON object with 2 boards, 3 categories, 3 songs per category,
       {
         "name": "Blue Collar",
         "songs": [
-          {"song": "Sue Me", "artist": "Sabrina Carpenter"},
-          {"song": "Angel in the Snow", "artist": "Elliott Smith"},
-          {"song": "Top of the World", "artist": "The Carpenters"}
+          {"artist": "Sabrina Carpenter", "song": "Sue Me"},
+          {"artist": "Elliott Smith", "song": "Angel in the Snow"},
+          {"artist": "The Carpenters", "song": "Top of the World"}
         ]
       },
       {
         "name": "YouTubers",
         "songs": [
-          {"song": "Bitch Lasagna", "artist": "PewDiePie"},
-          {"song": "It's Everyday Bro", "artist": "Jake Paul"},
-          {"song": "Con te partirò", "artist": "Ludwig Ahgren"}
+          {"artist": "PewDiePie", "song": "Bitch Lasagna"},
+          {"artist": "Jake Paul", "song": "It's Everyday Bro"},
+          {"artist": "Ludwig Ahgren", "song": "Con te partirò"}
         ]
       },
       {
         "name": "Royals",
         "songs": [
-          {"song": "Tennis Courts", "artist": "Lorde"},
-          {"song": "Let's Go Crazy", "artist": "Prince"},
-          {"song": "Under Pressure", "artist": "Queen"}
+          {"artist": "Lorde", "song": "Tennis Courts"},
+          {"artist": "Prince", "song": "Let's Go Crazy"},
+          {"artist": "Queen", "song": "Under Pressure"}
         ]
       }
     ]
   },
-  "finalJeopardy" : {
+  "finalJeopardy": {
     "song": "Move Along",
     "artist": "The All-American Rejects",
-    "hint": "We're not in Oklahoma anymore"
+    "hint": "These self-proclaimed outcasts hail from the Sooner State."
   }
 }
 \`\`\`

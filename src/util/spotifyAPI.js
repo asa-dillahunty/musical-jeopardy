@@ -37,7 +37,7 @@ export async function searchTracks(query, accessToken) {
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },
-    },
+    }
   );
   const data = await response.json();
   // if data.error
@@ -58,7 +58,7 @@ export async function getSingleTrack(songTitle, artist, accessToken) {
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },
-    },
+    }
   );
   const data = await response.json();
   // if data.error
@@ -100,7 +100,7 @@ export async function getCurrentlyPlaying(accessToken) {
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },
-    },
+    }
   );
   if (response.status === 204) {
     // nothing is currently playing

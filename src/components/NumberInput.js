@@ -45,7 +45,7 @@ const NumberInput = ({
           <AiOutlineDownSquare
             onClick={() => handleDecrement(maxDigits - i - 1)}
           />
-        </div>,
+        </div>
       );
     }
 
@@ -58,7 +58,7 @@ const NumberInput = ({
           <button className="success" onClick={plusFunc}>
             <FaCheck />
           </button>
-        </div>,
+        </div>
       );
     }
 

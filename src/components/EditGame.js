@@ -262,7 +262,7 @@ function EditGame({ gameID, token, setChosenGameID, userID }) {
               <div key={index} onClick={() => setSelectedBoard(index)}>
                 <GameBoard board={val} preview={true} />
               </div>
-            ),
+            )
         )}
         <div
           className="fake-game-cell"
