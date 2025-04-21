@@ -17,21 +17,21 @@
   background-color: white;
 }
 
-.edit-game .blocker .search-box {
+.blocker .search-box {
   overflow: scroll;
   max-height: 400px;
   background-color: antiquewhite;
 }
 
-.edit-game .blocker .search-box .search-item {
+.blocker .search-box .search-item {
   padding: 10px 0px;
 }
 
-.edit-game .blocker .search-box .search-item p {
+.blocker .search-box .search-item p {
   margin: 0;
   color: black;
 }
 
-.edit-game .blocker .search-box .search-item:hover {
+.blocker .search-box .search-item:hover {
   background-color: whitesmoke;
 }

@@ -14,6 +14,8 @@ import {
 } from "../util/session";
 import FinalJeopardy from "./FinalJeopardy";
 import { ScoreBoard } from "./ScoreBoard";
+import { SongSelect } from "./SongSelect";
+import { getTokenFromUrl } from "../util/spotifyAPI";
 
 // const players = [
 // 	{ name: "Player 1", color: "red" },
@@ -278,7 +280,7 @@ export function PlayerDisplay({
       style={display ? {} : { display: "none" }}
       onClick={handleClick}
     >
-      <PlayerIcon color={data.color} />
+      <PlayerIcon color={data.color} url={data.url} />
       <p className="player-name">{data.name}</p>
       {isPlaying && (
         <>
@@ -305,8 +307,48 @@ export function PlayerDisplay({
   );
 }
 
-function PlayerIcon({ color }) {
-  return <div className="player-icon" style={{ backgroundColor: color }}></div>;
+function PlayerIcon({ color, url, updateAlbumCover }) {
+  const [open, setOpen] = useState(false);
+  const [song, setSong] = useState(null);
+  const token = getTokenFromUrl();
+
+  const updateSong = (track) => {
+    setSong(track);
+    updateAlbumCover(track);
+  };
+
+  if (!url && song) url = song.album.images[0].url;
+  const extraStyles = url
+    ? {
+        backgroundImage: `url(${url})`,
+        backgroundPosition: "center",
+        backgroundSize: "cover",
+        backgroundRepeat: "no-repeat",
+      }
+    : { backgroundColor: color };
+
+  return (
+    <div>
+      <ClickBlocker custom block={open}>
+        <SongSelect
+          token={token}
+          onClose={() => {
+            setOpen(false);
+          }}
+          selectTrack={(track) => updateSong(track)}
+          val={song}
+        />
+      </ClickBlocker>
+
+      <div
+        onClick={() => {
+          if (updateAlbumCover) setOpen(true);
+        }}
+        className="player-icon"
+        style={extraStyles}
+      ></div>
+    </div>
+  );
 }
 
 function PlayerEdit({ selectedPlayer, setEditing }) {
@@ -326,6 +368,11 @@ function PlayerEdit({ selectedPlayer, setEditing }) {
     }
   };
 
+  const updateAlbumCover = (song) => {
+    if (!song) return;
+    selectedPlayer.url = song.album.images[0].url;
+  };
+
   useEffect(() => {
     if (inputRef.current) {
       inputRef.current.focus();
@@ -335,7 +382,11 @@ function PlayerEdit({ selectedPlayer, setEditing }) {
 
   return (
     <div className="player-edit">
-      <PlayerIcon color={selectedPlayer.color} />
+      <PlayerIcon
+        color={selectedPlayer.color}
+        url={selectedPlayer.url}
+        updateAlbumCover={updateAlbumCover}
+      />
       <input
         className="player-name-input"
         onChange={(e) => setPlayerName(e.target.value)}

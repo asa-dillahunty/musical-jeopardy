@@ -50,7 +50,7 @@ export function ScoreBoard() {
         {scoredPlayers.map((player, index) => {
           if (index < 3) {
             return (
-              <li>
+              <li key={index}>
                 <FaTrophy />
                 <div>{index + 1}.</div>
                 <div>{player.name}</div>
@@ -59,7 +59,7 @@ export function ScoreBoard() {
             );
           } else {
             return (
-              <li>
+              <li key={index}>
                 <div>{index + 1}.</div>
                 <div>{player.name}</div>
                 <div>{player.score}</div>
