@@ -15,6 +15,9 @@ export function SketchInput() {
   const onFinishSketch = () => {
     // right now this just downloads the image.
     // eventually we want this to do something else
+    canvasRef.current.exportPaths().then((val) => {
+      console.log(val);
+    });
     canvasRef.current
       .exportImage("png")
       .then((data) => {

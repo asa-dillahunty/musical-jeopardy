@@ -8,8 +8,16 @@ import ClickBlocker from "./ClickBlocker";
 import { useState } from "react";
 import { HiOutlineSparkles } from "react-icons/hi";
 import NumberInput from "./NumberInput";
+import { useAtomValue } from "jotai";
+import { AccessToken } from "../util/atoms";
+import { useUserId } from "../util/spotifyAPI";
+import { useNavigate } from "react-router-dom";
 
-function GameSelector({ setPage, setChosenGameID, editing, userID, token }) {
+function GameSelector({ editing }) {
+  const token = useAtomValue(AccessToken);
+  const userId = useUserId();
+  const navigate = useNavigate();
+
   const [askingGemini, setAskingGemini] = useState(false);
   const [openForm, setOpenForm] = useState(false);
   const [numBoards, setNumBoards] = useState(1);
@@ -19,16 +27,17 @@ function GameSelector({ setPage, setChosenGameID, editing, userID, token }) {
   const { data: gameList, isLoading, isError } = useGamesList();
   const deleteGameMutation = useDeleteGame();
 
-  const selectGame = (gameID) => {
-    setChosenGameID(gameID);
-    if (editing) setPage(menuOptions.buildSelected);
-    else setPage(menuOptions.playSelected);
+  const selectGame = (gameId) => {
+    if (!gameId) {
+      gameId = "new";
+    }
+    navigate(gameId);
   };
 
-  const handleDeleteGame = (e, gameID) => {
+  const handleDeleteGame = (e, gameId) => {
     e.stopPropagation();
     if (!window.confirm("Confirm Delete?")) return;
-    deleteGameMutation.mutateAsync(gameID);
+    deleteGameMutation.mutateAsync(gameId);
   };
 
   const askGemini = () => {
@@ -41,10 +50,10 @@ function GameSelector({ setPage, setChosenGameID, editing, userID, token }) {
       rows: numRows,
     };
 
-    queryGemini(token, userID, options)
+    queryGemini(token, userId, options)
       .then((gameData) => {
         setAskingGemini(false);
-        selectGame("");
+        selectGame();
       })
       .catch((e) => {
         alert(
@@ -53,7 +62,7 @@ function GameSelector({ setPage, setChosenGameID, editing, userID, token }) {
         setAskingGemini(false);
         console.error(e.message);
       });
-    // testFunc(token, userID).then((gameData) => {
+    // testFunc(token, userId).then((gameData) => {
     // 	selectGame("");
     // });
   };
@@ -64,8 +73,8 @@ function GameSelector({ setPage, setChosenGameID, editing, userID, token }) {
     return <p>Some error. Contact site owner.</p>;
   }
 
-  const myGames = gameList.filter((game) => game.userID === userID);
-  const otherGames = gameList.filter((game) => game.userID !== userID);
+  const myGames = gameList.filter((game) => game.userID === userId);
+  const otherGames = gameList.filter((game) => game.userID !== userId);
 
   return (
     <section className="selection-section">
@@ -110,7 +119,7 @@ function GameSelector({ setPage, setChosenGameID, editing, userID, token }) {
         </span>
       </ClickBlocker>
       <h2>Select a Game to {editing ? "Edit" : "Play"}!</h2>
-      <button onClick={() => setPage(menuOptions.mainMenu)}>Back</button>
+      <button onClick={() => navigate("/menu")}>Back</button>
       <p>My Games</p>
       <ul className="game-selector-list">
         {myGames.map((game, index) => (
@@ -132,7 +141,7 @@ function GameSelector({ setPage, setChosenGameID, editing, userID, token }) {
       </ul>
       {editing && (
         <>
-          <button id="new-game-button" onClick={() => selectGame("")}>
+          <button id="new-game-button" onClick={() => selectGame()}>
             New Game
             <FaPlus />
           </button>

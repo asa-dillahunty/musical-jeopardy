@@ -11,6 +11,7 @@ import {
   getFirestore,
   getDoc,
 } from "firebase/firestore";
+import { getDatabase } from "firebase/database";
 import { getFunctions } from "firebase/functions";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 // TODO: Add SDKs for Firebase products that you want to use
@@ -32,6 +33,8 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
 const db = getFirestore(app);
+const rtdb = getDatabase(app);
+
 export const functions = getFunctions(app);
 
 const GAMES_COLLECTION = "games";
@@ -123,10 +126,7 @@ const fetchGamesList = async () => {
 };
 
 export const useGamesList = () => {
-  return useQuery(GAMES_QUERY_KEY, fetchGamesList, {
-    staleTime: 60000, // 1 minute
-    cacheTime: 300000, // 5 minutes
-  });
+  return useQuery(GAMES_QUERY_KEY, fetchGamesList);
 };
 
 // create session function

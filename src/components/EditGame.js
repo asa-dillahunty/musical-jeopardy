@@ -5,6 +5,10 @@ import { useCreateGame, useGame, useUpdateGame } from "../util/firebaseAPIs";
 import ClickBlocker from "./ClickBlocker";
 import { SongSelect } from "./SongSelect";
 import { getGameFromStorage, storeGame } from "../util/session";
+import { useUserId } from "../util/spotifyAPI";
+import { useAtomValue } from "jotai";
+import { AccessToken } from "../util/atoms";
+import { useNavigate, useParams } from "react-router-dom";
 
 // what's the game object look like?
 /*
@@ -91,7 +95,13 @@ function createGrid(oldGrid) {
   return boardGrid;
 }
 
-function EditGame({ gameID, token, setChosenGameID, userID }) {
+function EditGame({}) {
+  const token = useAtomValue(AccessToken);
+  const userId = useUserId();
+  const { gameId } = useParams();
+
+  const navigate = useNavigate();
+
   const [game, setGame] = useState();
   const [numBoards, setNumBoards] = useState();
   const [selectedBoard, setSelectedBoard] = useState(null);
@@ -100,7 +110,13 @@ function EditGame({ gameID, token, setChosenGameID, userID }) {
   const [finalJeopardySong, setFinalJeopardySong] = useState(null);
   const [finalJeopardyCategory, setFinalJeopardyCategory] = useState("");
 
-  const { data: gameData, isLoading, isError } = useGame(gameID);
+  // if new game, gameId doesn't exist
+  const {
+    data: gameData,
+    isLoading,
+    isError,
+  } = useGame(gameId === "new" ? "" : gameId);
+
   const createGameMutation = useCreateGame();
   const updateGameMutation = useUpdateGame();
 
@@ -121,9 +137,9 @@ function EditGame({ gameID, token, setChosenGameID, userID }) {
   };
 
   const saveGame = () => {
-    if (!gameID) {
-      createGameMutation.mutateAsync(game).then((gameID) => {
-        setChosenGameID(gameID);
+    if (!gameId || gameId === "new") {
+      createGameMutation.mutateAsync(game).then((gameId) => {
+        navigate(`/menu/edit/${gameId}`);
       });
     } else {
       updateGameMutation.mutateAsync(game).then(() => {
@@ -145,8 +161,8 @@ function EditGame({ gameID, token, setChosenGameID, userID }) {
             setFinalJeopardySong(currGame.finalJeopardy.song);
           }
         } else {
-          const newGame = getNewGame(gameID);
-          newGame.userID = userID;
+          const newGame = getNewGame(gameId);
+          newGame.userID = userId;
           setGame(newGame);
           setNumBoards(newGame.numBoards);
           setGameName(newGame.name);
@@ -171,7 +187,7 @@ function EditGame({ gameID, token, setChosenGameID, userID }) {
         }
       }
     }
-  }, [gameID, setGame, setNumBoards, setGameName, gameData, isLoading]);
+  }, [gameId, setGame, setNumBoards, setGameName, gameData, isLoading]);
 
   useEffect(() => {
     if (game && gameName) {

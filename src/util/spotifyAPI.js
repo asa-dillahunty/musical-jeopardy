@@ -1,14 +1,18 @@
+import { useAtomValue } from "jotai";
+import { useQuery } from "react-query";
+import { AccessToken } from "./atoms";
+
 const clientId = "88ad68ab4d984a1d9e77d8b1377651ab";
 const scopes =
   "streaming user-read-email user-read-private user-read-playback-state user-modify-playback-state";
 
 export function spotifyLogin() {
-  const redirectUrl = window.location.origin + "/";
+  const redirectUrl = window.location.origin + "/callback";
   const authUrl = `https://accounts.spotify.com/authorize?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUrl)}&scope=${encodeURIComponent(scopes)}&response_type=token`;
   window.location = authUrl;
 }
 
-// // Function to get access token from URL
+// Function to get access token from URL
 export function getTokenFromUrl() {
   const hash = window.location.hash.substring(1);
   const params = hash.split("&").reduce((acc, current) => {
@@ -19,7 +23,7 @@ export function getTokenFromUrl() {
   return params.access_token;
 }
 
-export async function getUserId(accessToken) {
+async function getUserData(accessToken) {
   const response = await fetch(`https://api.spotify.com/v1/me`, {
     headers: {
       Authorization: `Bearer ${accessToken}`,
@@ -27,7 +31,28 @@ export async function getUserId(accessToken) {
   });
   const data = await response.json();
   console.log(data);
-  return data.id;
+  return data;
+}
+
+export function userDataQuery(accessToken) {
+  const isEnabled = accessToken !== null && accessToken !== "";
+  return {
+    queryKey: ["userId"],
+    queryFn: async () => getUserData(accessToken),
+    enabled: isEnabled,
+  };
+}
+
+export function useUserData() {
+  const token = useAtomValue(AccessToken);
+  const { data: userData } = useQuery(userDataQuery(token));
+  return userData;
+}
+
+export function useUserId() {
+  const userData = useUserData();
+  if (userData) return userData.id;
+  else return userData;
 }
 
 export async function searchTracks(query, accessToken) {

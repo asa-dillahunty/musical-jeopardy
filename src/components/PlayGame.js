@@ -16,6 +16,9 @@ import FinalJeopardy from "./FinalJeopardy";
 import { ScoreBoard } from "./ScoreBoard";
 import { SongSelect } from "./SongSelect";
 import { getTokenFromUrl } from "../util/spotifyAPI";
+import { useAtomValue } from "jotai";
+import { AccessToken } from "../util/atoms";
+import { useParams } from "react-router-dom";
 
 // const players = [
 // 	{ name: "Player 1", color: "red" },
@@ -29,10 +32,13 @@ import { getTokenFromUrl } from "../util/spotifyAPI";
 // 	{ name: "Player 9", color: "orange" },
 // ]
 
-function PlayGame({ gameID, token, setChosenGameID }) {
+function PlayGame({}) {
+  const token = useAtomValue(AccessToken);
+  const { gameId } = useParams();
+
   const [selectedBoard, setSelectedBoard] = useState(null);
   const [playFinalJeopardy, setPlayFinalJeopardy] = useState(false);
-  const { data: gameData, isLoading, isError } = useGame(gameID);
+  const { data: gameData, isLoading, isError } = useGame(gameId);
   const [playersInitialized, setPlayersInitialized] = useState(false);
   const [revealedCards, setRevealedCards] = useState([{}, {}, {}]);
   const [showScoreBoard, setShowScoreBoard] = useState(false);
@@ -59,7 +65,7 @@ function PlayGame({ gameID, token, setChosenGameID }) {
 
   const updateSessionStorage = () => {
     const sessionData = {
-      id: gameID,
+      id: gameId,
       selectedBoard: selectedBoard,
       playFinalJeopardy: playFinalJeopardy,
       playersInitialized: playersInitialized,
@@ -76,13 +82,13 @@ function PlayGame({ gameID, token, setChosenGameID }) {
   useEffect(() => {
     // load from storage the active session
     const sessionData = getGameSessionFromStorage();
-    if (sessionData?.id !== gameID) return;
+    if (sessionData?.id !== gameId) return;
 
     setSelectedBoard(sessionData.selectedBoard);
     setPlayFinalJeopardy(sessionData.playFinalJeopardy);
     setPlayersInitialized(sessionData.playersInitialized);
     setRevealedCards(sessionData.revealedCards);
-  }, [gameID]);
+  }, [gameId]);
 
   if (isLoading) {
     return <p>Loading</p>;
