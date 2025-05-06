@@ -4,6 +4,19 @@ import { AiOutlineDownSquare, AiOutlineUpSquare } from "react-icons/ai";
 import { FaXmark } from "react-icons/fa6";
 import { FaCheck } from "react-icons/fa";
 
+interface NumberInputProps {
+  label: string;
+  value: number;
+  setValue: (val: number) => void;
+  maxVal: number;
+  minVal: number;
+  incPerDigit?: boolean;
+  topLabel?: boolean;
+  includePlusMinus?: boolean;
+  plusFunc?: () => void;
+  minusFunc?: () => void;
+}
+
 const NumberInput = ({
   label,
   value,
@@ -12,15 +25,15 @@ const NumberInput = ({
   minVal,
   incPerDigit,
   topLabel,
-  includePlusMinus,
+  includePlusMinus = false,
   plusFunc,
   minusFunc,
-}) => {
-  const handleIncrement = (place) => {
+}: NumberInputProps) => {
+  const handleIncrement = (place: number) => {
     if (value < maxVal) setValue(value + 10 ** place);
   };
 
-  const handleDecrement = (place) => {
+  const handleDecrement = (place: number) => {
     if (value > minVal) setValue(value - 10 ** place);
   };
 

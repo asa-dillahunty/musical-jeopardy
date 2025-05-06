@@ -1,18 +1,21 @@
 import "./sass/FinalJeopardy.css";
 import { useEffect, useState } from "react";
 import { PlayCard } from "./GameBoard";
-import { PlayerContainer } from "../pages/PlayGame";
 import CurrentlyPlayingWidget from "./CurrentlyPlayingWidget";
 import { playTrack } from "../util/spotifyAPI";
 import { QRCodeSVG } from "qrcode.react";
 import { generatePartyCode } from "../util/lobbyStuff";
+import { PlayersContainer } from "./players/PlayersContainer";
+import { useAtomValue } from "jotai";
+import { AccessToken } from "../util/atoms";
 
 const JEOPARDY_THEME_URI = "spotify:track:4qkYiZablQoG7f0Qu4Nd1c";
 
-function FinalJeopardy({ songData, token, onFinish }) {
+function FinalJeopardy({ songData, onFinish }) {
+  const token = useAtomValue(AccessToken);
   const [startedPlaying, setStartedPlaying] = useState(false);
   const [widgetNeedsRefresh, setWidgetNeedsRefresh] = useState(false);
-  const [partyId, setPartyId] = useState();
+  const [partyId, setPartyId] = useState<string>();
 
   const refreshWidget = () => {
     setWidgetNeedsRefresh(!widgetNeedsRefresh);
@@ -43,7 +46,6 @@ function FinalJeopardy({ songData, token, onFinish }) {
         {startedPlaying ? (
           <div className="final-jeopardy-card-wrapper">
             <PlayCard
-              token={token}
               val={songData.song}
               refreshWidget={refreshWidget}
               revealCard={() => {}}
@@ -69,11 +71,10 @@ function FinalJeopardy({ songData, token, onFinish }) {
           {partyId}
         </p>
         <CurrentlyPlayingWidget
-          token={token}
           widgetNeedsRefresh={widgetNeedsRefresh}
           toggleRefresh={refreshWidget}
         />
-        <PlayerContainer isPlaying isFinalJeopardy />
+        <PlayersContainer isPlaying isFinalJeopardy />
       </span>
     </div>
   );

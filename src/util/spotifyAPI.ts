@@ -57,12 +57,31 @@ export function useUserId() {
   else return userData;
 }
 
-export async function searchTracks(query: string, accessToken: string) {
+export function useSearchTracks() {
+  const token = useAtomValue(AccessToken);
+
+  return (query: string) => {
+    return useQuery({
+      queryKey: ["track_query", query],
+      queryFn: () => searchTracksQuery({ query, token }),
+      enabled: Boolean(query && query !== ""),
+      staleTime: Infinity, // these should never expire
+    });
+  };
+}
+
+async function searchTracksQuery({
+  query,
+  token,
+}: {
+  query: string;
+  token: string;
+}) {
   const response = await fetch(
     `https://api.spotify.com/v1/search?q=${query}&type=track`,
     {
       headers: {
-        Authorization: `Bearer ${accessToken}`,
+        Authorization: `Bearer ${token}`,
       },
     }
   );
@@ -71,11 +90,6 @@ export async function searchTracks(query: string, accessToken: string) {
   // if data.error.message ==="The access token expired"
   console.log(data);
   return data.tracks.items;
-
-  // // Example usage
-  // searchTracks('Beatles').then(tracks => {
-  // console.log(tracks);
-  // });
 }
 
 export async function getSingleTrack(

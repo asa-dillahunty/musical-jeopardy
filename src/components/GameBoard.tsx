@@ -7,10 +7,14 @@ import CurrentlyPlayingWidget from "./CurrentlyPlayingWidget";
 import { FaCheck, FaEyeSlash } from "react-icons/fa";
 import { SpotlightBackGround } from "../util/stolen";
 import { GiDoubleQuaver, GiRollingDices } from "react-icons/gi";
-import { PlayerContainer, PlayerDisplay } from "../pages/PlayGame";
-import { playersSignal, updatePlayerScore } from "../util/session";
 import { FaXmark } from "react-icons/fa6";
 import { SongSelect } from "./SongSelect";
+import usePersistedState from "../util/usePersistedState";
+import { useParams } from "react-router-dom";
+import { PlayersContainer } from "./players/PlayersContainer";
+import { PlayerDisplay } from "./players/PlayerDisplay";
+import { AccessToken, PlayersAtom, useUpdatePlayerScore } from "../util/atoms";
+import { useAtomValue } from "jotai";
 
 // what's the game object look like?
 /*
@@ -44,7 +48,6 @@ if we are playing the game, we want here to be card
 	as well as eventually players, their scores, etc.
 */
 export function PlayCard({
-  token,
   setSelectedCard,
   val,
   refreshWidget,
@@ -55,9 +58,12 @@ export function PlayCard({
   dailyDoubleWager,
   setDailyDoubleWager,
 }) {
+  const token = useAtomValue(AccessToken);
   const [isAnswerVisible, setIsAnswerVisible] = useState(false);
   const [startedPlaying, setStartedPlaying] = useState(false);
   const [placingWager, setPlacingWager] = useState(isDailyDouble);
+  const players = useAtomValue(PlayersAtom);
+  const updatePlayerScore = useUpdatePlayerScore();
 
   const showAnswer = () => {
     revealCard();
@@ -87,7 +93,7 @@ export function PlayCard({
   const winWager = () => {
     updatePlayerScore(
       selectedPlayer.index,
-      playersSignal.value[selectedPlayer.index].score + dailyDoubleWager
+      players[selectedPlayer.index].score + dailyDoubleWager
     );
     setSelectedCard({});
   };
@@ -95,7 +101,7 @@ export function PlayCard({
   const loseWager = () => {
     updatePlayerScore(
       selectedPlayer.index,
-      playersSignal.value[selectedPlayer.index].score - dailyDoubleWager
+      players[selectedPlayer.index].score - dailyDoubleWager
     );
     setSelectedCard({});
   };
@@ -123,9 +129,7 @@ export function PlayCard({
     artistList += `, ${val.artists[i].name}`;
   }
 
-  const currentScore = selectedPlayer
-    ? playersSignal.value[selectedPlayer.index].score
-    : 0;
+  const currentScore = selectedPlayer ? players[selectedPlayer.index].score : 0;
   if (placingWager) {
     return (
       <div className="selected-card">
@@ -210,11 +214,10 @@ export function PlayCard({
   );
 }
 
-function EditCard({ token, selectTrack, setSelectedCard, val }) {
+function EditCard({ selectTrack, setSelectedCard, val }) {
   return (
     <div className="selected-card editing">
       <SongSelect
-        token={token}
         onClose={() => setSelectedCard({})}
         selectTrack={selectTrack}
         val={val}
@@ -338,28 +341,37 @@ function BoardValueNumberInputs({
 }
 
 function GameBoard({
+  boardIndex,
   board,
-  token,
   preview,
   editing,
   updateBoard,
-  setSelectedBoard,
   playNextBoard,
-  revealedCards,
-  updateRevealed,
+  returnToGame,
 }) {
+  const { gameId } = useParams();
   const [selectedCard, setSelectedCard] = useState({});
   const [widgetNeedsRefresh, setWidgetNeedsRefresh] = useState(false);
   const [selectedPlayer, setSelectedPlayer] = useState(null);
   const [dailyDoubleWager, setDailyDoubleWager] = useState(500);
+  const updatePlayerScore = useUpdatePlayerScore();
+  const players = useAtomValue(PlayersAtom);
 
-  const revealCard = (i, j) => {
+  // TODO: should "any" here be boards?
+  const [revealedCards, setRevealedCards] = usePersistedState<[any, any, any]>(
+    gameId + "-" + boardIndex + "-" + "revealed",
+    [{}, {}, {}]
+  );
+
+  const revealCard = (i: number, j: number) => {
     if (!revealedCards[i]) revealedCards[i] = {};
     revealedCards[i][j] = true;
-    updateRevealed();
+
+    // ASK: is this fine?
+    setRevealedCards(JSON.parse(JSON.stringify(revealedCards)));
   };
 
-  const getRevealed = (i, j) => {
+  const getRevealed = (i: number, j: number) => {
     if (!revealedCards[i]) return false;
     else return revealedCards[i][j] === true;
   };
@@ -451,22 +463,16 @@ function GameBoard({
 
     if (prevStatus === "neutral") {
       // it was a success, add the score
-      updatePlayerScore(
-        player.index,
-        playersSignal.value[player.index].score + calcScore
-      );
+      updatePlayerScore(player.index, players[player.index].score + calcScore);
     } else if (prevStatus === "success") {
       // it was a fail, but we just added ^. Subtract twice
       updatePlayerScore(
         player.index,
-        playersSignal.value[player.index].score - 2 * calcScore
+        players[player.index].score - 2 * calcScore
       );
     } else if (prevStatus === "fail") {
       // was a fail, but should be neutral, just add it back
-      updatePlayerScore(
-        player.index,
-        playersSignal.value[player.index].score + calcScore
-      );
+      updatePlayerScore(player.index, players[player.index].score + calcScore);
     }
   };
 
@@ -512,7 +518,12 @@ function GameBoard({
   return (
     <div className="edit-board">
       <div>
-        <button onClick={() => setSelectedBoard(null)}>Done</button>
+        <button onClick={() => returnToGame()}>Back</button>
+        {!editing && (
+          <button onClick={() => setRevealedCards([{}, {}, {}])}>
+            Reset Board
+          </button>
+        )}
       </div>
       {editing && (
         <BoardValueNumberInputs
@@ -562,14 +573,12 @@ function GameBoard({
               <></>
             ) : editing ? (
               <EditCard
-                token={token}
                 selectTrack={selectTrack}
                 setSelectedCard={setSelectedCard}
                 val={board.grid[selectedCard.i][selectedCard.j]}
               />
             ) : (
               <PlayCard
-                token={token}
                 setSelectedCard={setSelectedCard}
                 val={board.grid[selectedCard.i][selectedCard.j]}
                 refreshWidget={refreshWidget}
@@ -596,7 +605,7 @@ function GameBoard({
           )}
         </div>
         {!editing && (
-          <PlayerContainer
+          <PlayersContainer
             isSidebar
             isPlaying={!selectedIsDailyDouble}
             onClickPlayer={
@@ -609,11 +618,10 @@ function GameBoard({
       {!editing && (
         <>
           <CurrentlyPlayingWidget
-            token={token}
             widgetNeedsRefresh={widgetNeedsRefresh}
             toggleRefresh={refreshWidget}
           />
-          <PlayerContainer isPlaying />
+          <PlayersContainer isPlaying />
         </>
       )}
     </div>

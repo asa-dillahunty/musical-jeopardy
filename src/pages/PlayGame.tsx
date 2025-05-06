@@ -1,60 +1,34 @@
 import "./sass/PlayGame.css";
-import { useEffect, useRef, useState } from "react";
-import NumberInput from "../components/NumberInput";
+import { useState } from "react";
 import GameBoard from "../components/GameBoard";
 import { useGame } from "../util/firebaseAPIs";
-import ClickBlocker from "../components/ClickBlocker";
-import {
-  getGameSessionFromStorage,
-  numPlayersSignal,
-  playersSignal,
-  storeGameSession,
-  updatePlayerName,
-  updatePlayerScore,
-} from "../util/session";
 import FinalJeopardy from "../components/FinalJeopardy";
 import { ScoreBoard } from "../components/ScoreBoard";
-import { SongSelect } from "../components/SongSelect";
-import { getTokenFromUrl } from "../util/spotifyAPI";
-import { useAtomValue } from "jotai";
-import { AccessToken } from "../util/atoms";
-import { useParams } from "react-router-dom";
-
-// const players = [
-// 	{ name: "Player 1", color: "red" },
-// 	{ name: "Player 2", color: "blue" },
-// 	{ name: "Player 3", color: "yellow" },
-// 	{ name: "Player 4", color: "green" },
-// 	{ name: "Player 5", color: "black" },
-// 	{ name: "Player 6", color: "white" },
-// 	{ name: "Player 7", color: "pink" },
-// 	{ name: "Player 8", color: "purple" },
-// 	{ name: "Player 9", color: "orange" },
-// ]
+import { useNavigate, useParams } from "react-router-dom";
+import usePersistedState from "../util/usePersistedState";
+import PlayerSetup from "../components/players/PlayerSetup";
 
 function PlayGame({}) {
-  const token = useAtomValue(AccessToken);
+  const navigate = useNavigate();
   const { gameId } = useParams();
 
-  const [selectedBoard, setSelectedBoard] = useState(null);
+  // const [selectedBoard, setSelectedBoard] = usePersistedState(gameId + "-" + "selectedBoard", null);
+  const [selectedBoardIndex, setSelectedBoardIndex] = usePersistedState(
+    gameId + "-" + "selectedBoardIndex",
+    -1
+  );
   const [playFinalJeopardy, setPlayFinalJeopardy] = useState(false);
   const { data: gameData, isLoading, isError } = useGame(gameId);
-  const [playersInitialized, setPlayersInitialized] = useState(false);
-  const [revealedCards, setRevealedCards] = useState([{}, {}, {}]);
+  const [playersInitialized, setPlayersInitialized] =
+    usePersistedState<boolean>(gameId + "-" + "playersInitialized", false);
   const [showScoreBoard, setShowScoreBoard] = useState(false);
 
-  // useEffect(() => {
-  // 	if (!isLoading) {
-  // 		setSelectedBoard(0);
-  // 	}
-  // }, [isLoading]);
-
   const playNextState = () => {
-    if (selectedBoard === gameData.numBoards - 1) {
-      setSelectedBoard(null);
+    if (selectedBoardIndex === gameData.numBoards - 1) {
+      setSelectedBoardIndex(-1);
       setPlayFinalJeopardy(true);
     } else {
-      setSelectedBoard(selectedBoard + 1);
+      setSelectedBoardIndex(selectedBoardIndex + 1);
     }
   };
 
@@ -62,33 +36,6 @@ function PlayGame({}) {
     setPlayFinalJeopardy(false);
     setShowScoreBoard(true);
   };
-
-  const updateSessionStorage = () => {
-    const sessionData = {
-      id: gameId,
-      selectedBoard: selectedBoard,
-      playFinalJeopardy: playFinalJeopardy,
-      playersInitialized: playersInitialized,
-      revealedCards: revealedCards,
-    };
-    storeGameSession(sessionData);
-  };
-
-  const updateRevealed = () => {
-    setRevealedCards(JSON.parse(JSON.stringify(revealedCards)));
-    updateSessionStorage();
-  };
-
-  useEffect(() => {
-    // load from storage the active session
-    const sessionData = getGameSessionFromStorage();
-    if (sessionData?.id !== gameId) return;
-
-    setSelectedBoard(sessionData.selectedBoard);
-    setPlayFinalJeopardy(sessionData.playFinalJeopardy);
-    setPlayersInitialized(sessionData.playersInitialized);
-    setRevealedCards(sessionData.revealedCards);
-  }, [gameId]);
 
   if (isLoading) {
     return <p>Loading</p>;
@@ -105,27 +52,26 @@ function PlayGame({}) {
   } else if (playFinalJeopardy) {
     return (
       <FinalJeopardy
-        token={token}
         songData={gameData.finalJeopardy}
         onFinish={onFinishFinalJeopardy}
       />
     );
-  } else if (selectedBoard !== null) {
+  } else if (selectedBoardIndex !== -1) {
     return (
       <GameBoard
-        board={gameData.boards[selectedBoard]}
+        boardIndex={selectedBoardIndex}
+        board={gameData.boards[selectedBoardIndex]}
         preview={false}
-        token={token}
-        setSelectedBoard={setSelectedBoard}
         editing={false}
         playNextBoard={playNextState}
-        revealedCards={revealedCards[selectedBoard]}
-        updateRevealed={updateRevealed}
+        returnToGame={() => setSelectedBoardIndex(-1)}
       />
     );
   }
   return (
     <div className="edit-game">
+      <button onClick={() => navigate("/play")}>Back</button>
+      <button onClick={() => setPlayersInitialized(false)}>Player Setup</button>
       <div>
         <p>{gameData.name}</p>
       </div>
@@ -134,7 +80,7 @@ function PlayGame({}) {
         {gameData.boards.map(
           (val, index) =>
             index < gameData.numBoards && (
-              <div key={index} onClick={() => setSelectedBoard(index)}>
+              <div key={index} onClick={() => setSelectedBoardIndex(index)}>
                 <GameBoard board={val} preview={true} />
               </div>
             )
@@ -151,260 +97,3 @@ function PlayGame({}) {
 }
 
 export default PlayGame;
-
-function PlayerSetup({ setPlayersInitialized }) {
-  const [editing, setEditing] = useState(false);
-  const [selectedPlayer, setSelectedPlayer] = useState(null);
-  const [numPlayers, setNumPlayers] = useState(numPlayersSignal.value);
-
-  const openEdit = (player) => {
-    setEditing(true);
-    setSelectedPlayer(player);
-  };
-
-  const finishSetup = () => {
-    numPlayersSignal.value = numPlayers;
-    setPlayersInitialized(true);
-  };
-
-  return (
-    <div className="player-setup-wrapper">
-      <ClickBlocker custom block={editing}>
-        <PlayerEdit selectedPlayer={selectedPlayer} setEditing={setEditing} />
-      </ClickBlocker>
-      <NumberInput
-        label={"Total Players"}
-        value={numPlayers}
-        setValue={setNumPlayers}
-        maxVal={playersSignal.value.length}
-        minVal={1}
-      />
-      <PlayerContainer onClickPlayer={openEdit} numPlayers={numPlayers} />
-      <button onClick={() => finishSetup()} className="ready-button">
-        Ready
-      </button>
-    </div>
-  );
-}
-
-export function PlayerContainer({
-  onClickPlayer,
-  numPlayers,
-  isPlaying,
-  isSidebar,
-  selectedPlayer,
-  isFinalJeopardy,
-}) {
-  if (!numPlayers) numPlayers = numPlayersSignal.value;
-  const className = isSidebar ? "player-container sidebar" : "player-container";
-
-  return (
-    <div className={className}>
-      {playersSignal.value.map((player, index) => {
-        return (
-          <PlayerDisplay
-            data={player}
-            display={index < numPlayers}
-            onClickPlayer={onClickPlayer}
-            isPlaying={isPlaying}
-            selectedPlayer={selectedPlayer}
-            key={index}
-            isFinalJeopardy={isFinalJeopardy}
-          />
-        );
-      })}
-    </div>
-  );
-}
-
-const rewardState = {
-  success: "success",
-  fail: "fail",
-  neutral: "neutral",
-};
-
-export function PlayerDisplay({
-  data,
-  display,
-  onClickPlayer,
-  isPlaying,
-  selectedPlayer,
-  isFinalJeopardy,
-}) {
-  const [rewardStatus, setRewardStatus] = useState(rewardState.neutral);
-  const [wager, setWager] = useState(500);
-  let className = "player-icon-wrapper";
-  if (onClickPlayer) className += " selectable";
-  if (rewardStatus === rewardState.fail) className += " fail";
-  if (rewardStatus === rewardState.success) className += " success";
-  if (selectedPlayer?.index === data.index) className += " selected";
-
-  const handleClick = () => {
-    if (!onClickPlayer) return;
-
-    if (!isPlaying) {
-      onClickPlayer(data);
-      return;
-    } else {
-      onClickPlayer(data, rewardStatus);
-    }
-
-    if (rewardStatus === rewardState.neutral)
-      setRewardStatus(rewardState.success);
-    else if (rewardStatus === rewardState.success)
-      setRewardStatus(rewardState.fail);
-    else if (rewardStatus === rewardState.fail)
-      setRewardStatus(rewardState.neutral);
-  };
-
-  const winWager = () => {
-    updatePlayerScore(
-      data.index,
-      playersSignal.value[data.index].score + wager
-    );
-    // setSelectedCard({});
-  };
-
-  const loseWager = () => {
-    updatePlayerScore(
-      data.index,
-      playersSignal.value[data.index].score - wager
-    );
-    // setSelectedCard({});
-  };
-
-  const currentScore = playersSignal?.value[data.index]?.score ?? 0;
-
-  useEffect(() => {
-    if (onClickPlayer) return;
-    setRewardStatus(rewardState.neutral);
-  }, [onClickPlayer]);
-
-  return (
-    <div
-      className={className}
-      style={display ? {} : { display: "none" }}
-      onClick={handleClick}
-    >
-      <PlayerIcon color={data.color} url={data.url} />
-      <p className="player-name">{data.name}</p>
-      {isPlaying && (
-        <>
-          <p className="player-score">${currentScore}</p>
-        </>
-      )}
-      {isFinalJeopardy && (
-        <>
-          <NumberInput
-            label={"Wager"}
-            value={wager}
-            setValue={setWager}
-            minVal={0}
-            maxVal={currentScore > 500 ? currentScore : 500}
-            incPerDigit
-            topLabel
-            includePlusMinus
-            plusFunc={winWager}
-            minusFunc={loseWager}
-          />
-        </>
-      )}
-    </div>
-  );
-}
-
-function PlayerIcon({ color, url, updateAlbumCover }) {
-  const [open, setOpen] = useState(false);
-  const [song, setSong] = useState(null);
-  const token = getTokenFromUrl();
-
-  const updateSong = (track) => {
-    setSong(track);
-    updateAlbumCover(track);
-  };
-
-  if (!url && song) url = song.album.images[0].url;
-  const extraStyles = url
-    ? {
-        backgroundImage: `url(${url})`,
-        backgroundPosition: "center",
-        backgroundSize: "cover",
-        backgroundRepeat: "no-repeat",
-      }
-    : { backgroundColor: color };
-
-  return (
-    <div>
-      <ClickBlocker custom block={open}>
-        <SongSelect
-          token={token}
-          onClose={() => {
-            setOpen(false);
-          }}
-          selectTrack={(track) => updateSong(track)}
-          val={song}
-        />
-      </ClickBlocker>
-
-      <div
-        onClick={() => {
-          if (updateAlbumCover) setOpen(true);
-        }}
-        className="player-icon"
-        style={extraStyles}
-      ></div>
-    </div>
-  );
-}
-
-function PlayerEdit({ selectedPlayer, setEditing }) {
-  const [playerName, setPlayerName] = useState(selectedPlayer?.name);
-
-  const inputRef = useRef(null);
-
-  const attemptSave = (name) => {
-    if (name.trim() === "") return;
-    updatePlayerName(selectedPlayer.index, name.trim().slice(0, 10).trim());
-    setEditing(false);
-  };
-
-  const handleKeyDown = (event) => {
-    if (event.key === "Enter") {
-      attemptSave(playerName);
-    }
-  };
-
-  const updateAlbumCover = (song) => {
-    if (!song) return;
-    selectedPlayer.url = song.album.images[0].url;
-  };
-
-  useEffect(() => {
-    if (inputRef.current) {
-      inputRef.current.focus();
-      inputRef.current.select();
-    }
-  }, []);
-
-  return (
-    <div className="player-edit">
-      <PlayerIcon
-        color={selectedPlayer.color}
-        url={selectedPlayer.url}
-        updateAlbumCover={updateAlbumCover}
-      />
-      <input
-        className="player-name-input"
-        onChange={(e) => setPlayerName(e.target.value)}
-        placeholder="Player Name"
-        value={playerName}
-        onKeyDown={handleKeyDown}
-        ref={inputRef}
-      />
-      <div>
-        <button onClick={() => attemptSave(playerName)}>save</button>
-        <button onClick={() => setEditing(false)}>close</button>
-      </div>
-    </div>
-  );
-}

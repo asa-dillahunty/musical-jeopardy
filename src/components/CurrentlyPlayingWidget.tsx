@@ -6,8 +6,11 @@ import {
 } from "../util/spotifyAPI";
 import "./sass/CurrentlyPlayingWidget.css";
 import { BsArrowClockwise, BsPauseFill, BsPlayFill } from "react-icons/bs";
+import { useAtomValue } from "jotai";
+import { AccessToken } from "../util/atoms";
 
-function PlayButton({ paused, setPaused, token }) {
+function PlayButton({ paused, setPaused }) {
+  const token = useAtomValue(AccessToken);
   const togglePause = () => {
     if (paused) resumePlayback(token);
     else pausePlayback(token);
@@ -20,10 +23,10 @@ function PlayButton({ paused, setPaused, token }) {
 }
 
 export default function CurrentlyPlayingWidget({
-  token,
   widgetNeedsRefresh,
   toggleRefresh,
 }) {
+  const token = useAtomValue(AccessToken);
   const [progress, setProgress] = useState(0);
   const [duration, setDuration] = useState(1);
   const [paused, setPaused] = useState(true);
@@ -72,7 +75,7 @@ export default function CurrentlyPlayingWidget({
       <span>{Math.floor(progress / 1000)}s</span>
       <progress value={progress} max={duration}></progress>
       <span>{Math.floor(duration / 1000)}s</span>
-      <PlayButton paused={paused} setPaused={setPaused} token={token} />
+      <PlayButton paused={paused} setPaused={setPaused} />
       <BsArrowClockwise onClick={refreshWidget} />
     </div>
   );

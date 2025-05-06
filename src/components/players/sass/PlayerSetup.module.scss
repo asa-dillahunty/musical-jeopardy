@@ -1,0 +1,35 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+
+  .readyButton {
+    font-size: 20px;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-weight: bold;
+    background-color: rgb(184, 255, 131);
+
+    transition: transform 0.3s;
+    // width: min-content;
+  }
+
+  .readyButton:hover {
+    transform: translateY(-5px);
+  }
+
+  .resetButton {
+    font-size: 20px;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-weight: bold;
+    background-color: rgb(255, 131, 131);
+
+    transition: transform 0.3s;
+  }
+
+  .resetButton:hover {
+    transform: translateY(-5px);
+  }
+}

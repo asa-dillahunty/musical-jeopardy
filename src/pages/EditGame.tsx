@@ -6,8 +6,6 @@ import ClickBlocker from "../components/ClickBlocker";
 import { SongSelect } from "../components/SongSelect";
 import { getGameFromStorage, storeGame } from "../util/session";
 import { useUserId } from "../util/spotifyAPI";
-import { useAtomValue } from "jotai";
-import { AccessToken } from "../util/atoms";
 import { useNavigate, useParams } from "react-router-dom";
 
 // what's the game object look like?
@@ -96,15 +94,14 @@ function createGrid(oldGrid) {
 }
 
 function EditGame({}) {
-  const token = useAtomValue(AccessToken);
   const userId = useUserId();
   const { gameId } = useParams();
 
   const navigate = useNavigate();
 
   const [game, setGame] = useState();
-  const [numBoards, setNumBoards] = useState();
-  const [selectedBoard, setSelectedBoard] = useState(null);
+  const [numBoards, setNumBoards] = useState<number>(2);
+  const [selectedBoardIndex, setSelectedBoardIndex] = useState(-1);
   const [gameName, setGameName] = useState("");
   const [selectingFinalJeopardy, setSelectingFinalJeopardy] = useState(false);
   const [finalJeopardySong, setFinalJeopardySong] = useState(null);
@@ -219,21 +216,22 @@ function EditGame({}) {
     return <p>Some error. Contact site owner.</p>;
   }
 
-  if (selectedBoard !== null) {
+  if (selectedBoardIndex !== -1) {
     return (
       <GameBoard
-        board={game.boards[selectedBoard]}
+        boardIndex={selectedBoardIndex}
+        board={game.boards[selectedBoardIndex]}
         preview={false}
-        token={token}
         updateBoard={updateGame}
-        setSelectedBoard={setSelectedBoard}
         editing={true}
+        returnToGame={() => setSelectedBoardIndex(-1)}
       />
     );
   }
 
   return (
     <div className="edit-game">
+      <button onClick={() => navigate("/edit")}>back</button>
       <ClickBlocker custom block={selectingFinalJeopardy}>
         <div className="fake-game-cell category">
           <textarea
@@ -243,7 +241,6 @@ function EditGame({}) {
           />
         </div>
         <SongSelect
-          token={token}
           onClose={() => {
             setSelectingFinalJeopardy(false);
             updateFinalJeopardy();
@@ -275,7 +272,7 @@ function EditGame({}) {
         {game.boards.map(
           (val, index) =>
             index < numBoards && (
-              <div key={index} onClick={() => setSelectedBoard(index)}>
+              <div key={index} onClick={() => setSelectedBoardIndex(index)}>
                 <GameBoard board={val} preview={true} />
               </div>
             )

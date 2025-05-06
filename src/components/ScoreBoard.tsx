@@ -1,12 +1,13 @@
 import { FaTrophy } from "react-icons/fa6";
-import { numPlayersSignal, playersSignal } from "../util/session";
 import "./sass/ScoreBoard.css";
 import confetti from "canvas-confetti";
 import { useEffect } from "react";
+import { useAtomValue } from "jotai";
+import { NumPlayersAtom, PlayersAtom } from "../util/atoms";
 
 export function ScoreBoard() {
-  const numPlayers = numPlayersSignal.value;
-  const players = playersSignal.value;
+  const numPlayers = useAtomValue(NumPlayersAtom);
+  const players = useAtomValue(PlayersAtom);
   const scoredPlayers = players
     .filter((player) => player.index < numPlayers)
     .sort((a, b) => b.score - a.score);

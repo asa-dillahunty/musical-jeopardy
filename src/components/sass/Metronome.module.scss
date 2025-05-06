@@ -21,6 +21,7 @@ $line-spacing: 12px;
 .metronomeSizer {
   aspect-ratio: 1;
   width: 300px;
+  max-width: 50%;
 
   background-color: $container-color;
   border-radius: 5%;

@@ -1,6 +1,6 @@
 import "./App.css";
 import Login from "./pages/Login";
-import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
+import { Route, Routes, useLocation } from "react-router-dom";
 import FinalSubmission from "./pages/FinalSubmission";
 import AccessTokenHandler from "./pages/AccessTokenHandler";
 import GameSelector from "./pages/GameSelector";
@@ -8,24 +8,15 @@ import EditGame from "./pages/EditGame";
 import PlayGame from "./pages/PlayGame";
 import JoinParty from "./pages/JoinParty";
 import Menu from "./pages/Menu";
+import AppHeader from "./components/AppHeader";
 
 function App() {
-  const navigate = useNavigate();
   const location = useLocation();
 
   const isMobilePage = location.pathname.startsWith("/join");
   return (
     <div className="app">
-      {!isMobilePage && (
-        <header className="app-header">
-          <button onClick={() => localStorage.clear()}>
-            clear local storage
-          </button>
-          <span onClick={() => navigate("/menu")} className="header-title">
-            MUSICAL JEOPARDY
-          </span>
-        </header>
-      )}
+      {!isMobilePage && <AppHeader />}
 
       <main>
         <Routes>
