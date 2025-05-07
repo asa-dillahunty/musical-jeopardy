@@ -11,9 +11,15 @@ export default function AppHeader() {
   const location = useLocation();
   const atLogin = location.pathname === "/";
 
+  const dev = window.location.hostname === "localhost";
+
   return (
     <header className={styles.appHeader}>
-      <button onClick={() => localStorage.clear()}>clear local storage</button>
+      {dev && (
+        <button onClick={() => localStorage.clear()}>
+          clear local storage
+        </button>
+      )}
       <span onClick={() => navigate("/menu")} className={styles.headerTitle}>
         MUSICAL JEOPARDY
       </span>

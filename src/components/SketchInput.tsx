@@ -3,9 +3,17 @@ import "./sass/SketchInput.css";
 import { useRef } from "react";
 import { FaRedo, FaUndo } from "react-icons/fa";
 import { FaEraser } from "react-icons/fa6";
-import { ReactSketchCanvas, ReactSketchCanvasRef } from "react-sketch-canvas";
+import {
+  CanvasPath,
+  ReactSketchCanvas,
+  ReactSketchCanvasRef,
+} from "react-sketch-canvas";
 
-export function SketchInput() {
+export function SketchInput({
+  onSubmit,
+}: {
+  onSubmit: (val: CanvasPath[]) => void;
+}) {
   const styles = {
     border: "0.0625rem solid #9c9c9c",
     borderRadius: "0.25rem",
@@ -17,19 +25,19 @@ export function SketchInput() {
     // right now this just downloads the image.
     // eventually we want this to do something else
     canvasRef.current.exportPaths().then((val) => {
-      console.log(val);
+      onSubmit(val);
     });
-    canvasRef.current
-      .exportImage("png")
-      .then((data) => {
-        const link = document.createElement("a");
-        link.href = data;
-        link.download = "drawing";
-        link.click();
-      })
-      .catch((e) => {
-        console.log(e);
-      });
+    // canvasRef.current
+    //   .exportImage("png")
+    //   .then((data) => {
+    //     const link = document.createElement("a");
+    //     link.href = data;
+    //     link.download = "drawing";
+    //     link.click();
+    //   })
+    //   .catch((e) => {
+    //     console.log(e);
+    //   });
   };
 
   return (

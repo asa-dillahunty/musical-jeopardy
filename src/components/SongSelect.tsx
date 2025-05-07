@@ -4,16 +4,7 @@ import { AiOutlineSearch } from "react-icons/ai";
 
 import styles from "./sass/SongSelect.module.scss";
 import Loading from "./Loading";
-
-type Artist = { name: string };
-type Album = { images: { url: string }[]; name: string };
-type Track = {
-  name: string;
-  uri: string;
-  artists: Artist[];
-  album: Album;
-  duration_ms: number;
-};
+import { Track } from "../util/models";
 
 export function reduceSongData(song: Track) {
   return {

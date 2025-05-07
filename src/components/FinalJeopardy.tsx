@@ -7,12 +7,22 @@ import { QRCodeSVG } from "qrcode.react";
 import { generatePartyCode } from "../util/lobbyStuff";
 import { PlayersContainer } from "./players/PlayersContainer";
 import { useAtomValue } from "jotai";
-import { AccessToken } from "../util/atoms";
+import { AccessToken, NumPlayersAtom, PlayersAtom } from "../util/atoms";
+import { Track } from "../util/models";
+import { writePlayersData } from "../util/firebaseAPIs";
 
 const JEOPARDY_THEME_URI = "spotify:track:4qkYiZablQoG7f0Qu4Nd1c";
 
-function FinalJeopardy({ songData, onFinish }) {
+interface FinalJeopardyProps {
+  songData: { song: Track; category: string };
+  onFinish: () => void;
+}
+
+function FinalJeopardy({ songData, onFinish }: FinalJeopardyProps) {
   const token = useAtomValue(AccessToken);
+  const players = useAtomValue(PlayersAtom);
+  const numPlayers = useAtomValue(NumPlayersAtom);
+
   const [startedPlaying, setStartedPlaying] = useState(false);
   const [widgetNeedsRefresh, setWidgetNeedsRefresh] = useState(false);
   const [partyId, setPartyId] = useState<string>();
@@ -35,10 +45,11 @@ function FinalJeopardy({ songData, onFinish }) {
 
   useEffect(() => {
     if (!partyId) {
-      // generate one
-      setPartyId(generatePartyCode());
+      const newPartyId = generatePartyCode();
+      writePlayersData(newPartyId, players, numPlayers);
+      setPartyId(newPartyId);
     }
-  }, []);
+  }, [partyId]);
 
   return (
     <div className="login-wrapper">

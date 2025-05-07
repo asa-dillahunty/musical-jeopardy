@@ -11,9 +11,10 @@ import {
   getFirestore,
   getDoc,
 } from "firebase/firestore";
-import { getDatabase } from "firebase/database";
+import { child, get, getDatabase, ref, set } from "firebase/database";
 import { getFunctions } from "firebase/functions";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { PlayerType } from "./models";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -136,37 +137,56 @@ export const useGamesList = () => {
   return useQuery({ queryKey: [GAMES_QUERY_KEY], queryFn: fetchGamesList });
 };
 
-export interface JeopardyGame {
-  id: string;
-  name: string;
-  numBoards: number;
-  userId: string;
-
-  boards: [JeopardyBoard, JeopardyBoard, JeopardyBoard];
+export async function writePlayersData(
+  partyId: string,
+  players: PlayerType[],
+  numPlayers: number
+) {
+  console.log("writing players data");
+  // ensure partyId is all caps
+  partyId = partyId.toUpperCase();
+  return set(ref(rtdb, `${partyId}`), {
+    players,
+    numPlayers,
+  });
 }
 
-export interface JeopardyBoard {
-  cols: number;
-  rows: number;
+export async function getPlayersData(partyId: string) {
+  // ensure partyId is all caps
+  partyId = partyId.toUpperCase();
 
-  dailyDoublePositions: DailyDoublePosition[];
-
-  multiplier: number;
-  dailyDoubles: number;
-
-  grid: BoardGrid;
+  const dbRef = ref(rtdb);
+  const snapshot = await get(child(dbRef, `${partyId}`));
+  if (snapshot.exists()) {
+    console.log(snapshot.val());
+    return snapshot.val();
+  } else {
+    console.log("No data available");
+    return [];
+  }
 }
 
-export interface BoardGrid {
-  0: string[];
-  1: string[];
-  2: string[];
-  3: string[];
-  4: string[];
-  5: string[];
+export function usePartyPlayersListQuery(partyId: string) {
+  // ensure partyId is all caps
+  partyId = partyId.toUpperCase();
+
+  return useQuery({
+    queryKey: ["rtdb_party_players_list", partyId],
+    queryFn: async () => getPlayersData(partyId),
+    enabled: Boolean(
+      partyId !== undefined && partyId !== null && partyId !== ""
+    ),
+  });
 }
 
-export interface DailyDoublePosition {
-  i: number;
-  j: number;
-}
+// subscribe to something
+// const dbRef = ref(getDatabase());
+// get(child(dbRef, `users/${userId}`)).then((snapshot) => {
+//   if (snapshot.exists()) {
+//     console.log(snapshot.val());
+//   } else {
+//     console.log("No data available");
+//   }
+// }).catch((error) => {
+//   console.error(error);
+// });
