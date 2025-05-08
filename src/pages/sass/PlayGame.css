@@ -1,0 +1,184 @@
+.player-container {
+  display: flex;
+  flex-direction: row;
+  width: 520px;
+  flex-wrap: wrap;
+  margin: auto;
+  justify-content: center;
+  user-select: none;
+}
+
+.player-icon-wrapper.selectable:hover {
+  /* background-color: #0004; */
+  position: relative;
+  cursor: pointer;
+}
+
+.player-icon-wrapper.selectable:hover::before {
+  content: "";
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #0004;
+  border-radius: 5px;
+}
+
+.player-icon-wrapper {
+  width: min-content;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  padding: 15px 15px;
+  border-radius: 5px;
+}
+
+.player-icon {
+  width: 100px;
+  height: 100px;
+  border-radius: 5px;
+}
+
+.player-name {
+  padding: 0;
+  margin: 10px 0 0 0;
+}
+
+.player-edit {
+  padding: 50px;
+  border-radius: 10px;
+  background-color: white;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.player-name-input {
+  font-size: 28px;
+  text-align: center;
+  border: none;
+  outline: none;
+  field-sizing: content;
+
+  padding-bottom: 7px;
+  border-bottom: 4px solid transparent;
+  transition: border 0.3s;
+}
+
+.player-name-input:focus-visible {
+  border-bottom: 4px solid rgb(146, 224, 255);
+}
+
+.player-edit button {
+  font-size: 20px;
+  padding: 10px 20px;
+  margin: 0 5px;
+  border-radius: 5px;
+  font-weight: bold;
+  transition: transform 0.3s;
+}
+
+.player-edit button:hover {
+  transform: translateY(-5px);
+}
+
+.player-edit button:first-child {
+  background-color: rgb(146, 224, 255);
+  color: black;
+}
+
+.player-setup-wrapper button.ready-button {
+  font-size: 20px;
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-weight: bold;
+  background-color: rgb(184, 255, 131);
+
+  margin-top: 60px;
+  transition: transform 0.3s;
+}
+
+.player-setup-wrapper button.ready-button:hover {
+  transform: translateY(-5px);
+}
+
+.win-loss-buttons {
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+  justify-content: center;
+}
+
+.win-loss-buttons > div {
+  width: 10px;
+  height: 10px;
+}
+
+.win-loss-buttons > div:first-child {
+  background-color: green;
+}
+
+.win-loss-buttons > div:last-child {
+  background-color: red;
+}
+
+/* sidebar styling */
+.player-container.sidebar {
+  position: absolute;
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+  width: min-content;
+  height: min-content;
+  max-height: 180px;
+  margin: none;
+
+  right: 0;
+  top: 50%;
+  transform: translate(100%, -50%);
+}
+
+.sidebar .player-icon-wrapper {
+  width: min-content;
+  display: flex;
+  flex-direction: row;
+
+  align-items: center;
+  justify-content: center;
+  margin-right: 0;
+  padding: 5px;
+
+  position: relative;
+}
+
+.sidebar .player-icon-wrapper.selectable.fail {
+  background-color: rgba(255, 0, 0, 0.2);
+}
+
+.sidebar .player-icon-wrapper.selectable.success {
+  background-color: rgba(0, 255, 0, 0.2);
+}
+
+.player-icon-wrapper.selectable.selected {
+  background-color: rgba(0, 0, 255, 0.2);
+}
+
+.sidebar .player-icon {
+  width: 35px;
+  height: 35px;
+}
+
+.sidebar .player-name {
+  padding: 0;
+  margin: 0 10px;
+  text-wrap: nowrap;
+}
+
+.sidebar .player-score {
+  display: none;
+}

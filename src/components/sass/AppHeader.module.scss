@@ -1,0 +1,68 @@
+.appHeader {
+  background-color: #282c34;
+  min-height: 10vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+
+  position: relative;
+}
+
+.headerTitle {
+  &:hover {
+    cursor: pointer;
+  }
+}
+
+.expirationClock {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  display: flex;
+  align-items: center;
+  background: rgba(33, 33, 33, 0.8);
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  color: white;
+  font-size: 0.9rem;
+
+  opacity: 0;
+  animation: fadeInAndUp 2s ease-out 5s 1 forwards;
+}
+
+.expirationTextUrgent {
+  color: red;
+  margin-right: 0.75rem;
+}
+
+.expirationText {
+  margin-right: 0.75rem;
+}
+
+.expirationRefresh {
+  background: transparent;
+  border: 1px solid white;
+  border-radius: 3px;
+  padding: 0.25rem 0.5rem;
+  color: white;
+  cursor: pointer;
+  transition: background 0.2s;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.2);
+  }
+}
+
+@keyframes fadeInAndUp {
+  from {
+    opacity: 0;
+    transform: translateY(300%);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

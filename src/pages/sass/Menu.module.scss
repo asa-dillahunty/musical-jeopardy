@@ -1,0 +1,37 @@
+.menuContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  gap: 20px;
+  padding: 20px;
+}
+
+.menuButton {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+
+  pointer-events: all;
+  cursor: pointer;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  font-size: 36px;
+  font-weight: bold;
+  box-shadow: 2px 2px white;
+
+  transition-property: box-shadow, transform;
+  transition-duration: 0.3s;
+  position: relative;
+
+  background-color: var(--jeopardy-blue);
+
+  &:hover {
+    transform: translate(2px, 2px);
+    box-shadow: none;
+  }
+}

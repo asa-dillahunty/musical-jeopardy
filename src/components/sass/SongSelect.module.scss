@@ -1,0 +1,161 @@
+.questionBox {
+  --temp-blue: rgb(227, 229, 255);
+  --temp-black: rgb(35, 40, 60);
+
+  width: 500px;
+  height: 500px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  position: relative;
+
+  //   background-color: var(--jeopardy-yellow);
+  background-color: var(--temp-black);
+  border: 3px solid var(--jeopardy-yellow);
+
+  border-radius: 5px;
+  overflow: hidden;
+
+  button.closeButton {
+    cursor: pointer;
+    margin-top: 5px;
+    margin-bottom: 5px;
+  }
+}
+
+.searchBar {
+  width: 100%;
+  box-sizing: border-box;
+  background-color: var(--temp-black);
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 5px; // gap should equal right padding
+  position: relative;
+
+  // top right bottom left
+  padding: 10px 5px 10px 15px;
+
+  font-size: 24px;
+
+  input {
+    padding: 1ch 20px;
+    padding-left: 1ch;
+    font-size: 24px;
+    flex-grow: 1;
+    border: none;
+    border-radius: 5px;
+    box-sizing: border-box;
+    margin: 0;
+  }
+
+  .searchButton {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    padding: 5px 20px;
+    // subtract searchBar (top+bottom) padding and add input border width (top+bottom twice)
+    height: 100%;
+    box-sizing: border-box;
+    border-radius: 3px;
+    transition: background-color 0.3s, color 0.3s;
+
+    font-weight: bold;
+    color: white;
+
+    &:hover {
+      cursor: pointer;
+      //   background-color: #fff67b40;
+      color: black;
+      background-color: var(--jeopardy-yellow);
+    }
+  }
+}
+
+.searchBox {
+  overflow: scroll;
+  height: 400px;
+  width: 100%;
+
+  box-sizing: border-box;
+  background-color: antiquewhite;
+
+  .searchItem {
+    &:first-child {
+      border-top-left-radius: 0;
+      border-top-right-radius: 0;
+    }
+
+    &:last-child {
+      border-bottom-left-radius: 0;
+      border-bottom-right-radius: 0;
+    }
+  }
+}
+
+.searchItem {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem;
+  border-radius: 0.375rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  box-sizing: border-box;
+
+  &:hover {
+    background-color: var(--jeopardy-yellow);
+  }
+
+  img {
+    width: 48px;
+    height: 48px;
+    border-radius: 0.375rem;
+    object-fit: cover;
+    margin-right: 1rem;
+  }
+}
+
+.info {
+  flex: 1;
+  min-width: 0;
+
+  p {
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+.title {
+  font-weight: 500;
+  color: #111;
+}
+
+.artist,
+.album {
+  font-size: 0.75rem;
+  color: #666;
+}
+
+.duration {
+  font-size: 0.75rem;
+  color: #666;
+  margin-left: 1rem;
+}
+
+.selectedSearchItem {
+  background-color: var(--temp-blue);
+  &:hover {
+    cursor: default;
+    background-color: var(--temp-blue);
+  }
+
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
+  max-width: 100%;
+}
