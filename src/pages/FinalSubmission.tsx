@@ -17,6 +17,8 @@ import { PlayersContainer } from "../components/players/PlayersContainer";
 import { PlayerType } from "../util/models";
 import { CanvasPath } from "react-sketch-canvas";
 import NumberInput from "../components/NumberInput";
+import { SongDisplay } from "../components/SongSelect";
+import { WhoAreYou } from "../util/savedTracks";
 
 type Unsubscribe = () => void;
 
@@ -161,9 +163,9 @@ export default function FinalSubmission({}) {
   // player select
   return (
     <div className={styles.container}>
-      <span>{partyId}</span>
-      <p>Who are you?</p>
-      <PlayersContainer onClickPlayer={selectPlayer} />
+      <span>Party ID: {partyId.toUpperCase()}</span>
+      <SongDisplay track={WhoAreYou} />
+      <PlayersContainer onClickPlayer={selectPlayer} mobile />
     </div>
   );
 }

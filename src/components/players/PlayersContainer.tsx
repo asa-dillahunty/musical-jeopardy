@@ -9,6 +9,7 @@ export interface PlayerContainerProps {
   isSidebar?: boolean;
   selectedPlayer?: PlayerType;
   isFinalJeopardy?: boolean;
+  mobile?: boolean;
 }
 
 export function PlayersContainer({
@@ -17,10 +18,13 @@ export function PlayersContainer({
   isSidebar = false,
   selectedPlayer,
   isFinalJeopardy = false,
+  mobile = false,
 }: PlayerContainerProps) {
   const numPlayers = useAtomValue(NumPlayersAtom);
   const players = useAtomValue(PlayersAtom);
-  const className = isSidebar ? "player-container sidebar" : "player-container";
+  let className = "player-container";
+  if (isSidebar) className += " sidebar";
+  if (mobile) className += " mobile";
 
   return (
     <div className={className}>

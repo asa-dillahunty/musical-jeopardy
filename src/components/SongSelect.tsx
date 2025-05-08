@@ -83,7 +83,7 @@ interface SongDisplayProps {
   onSelect?: (track: Track) => void;
 }
 
-function SongDisplay({ track, onSelect }: SongDisplayProps) {
+export function SongDisplay({ track, onSelect }: SongDisplayProps) {
   const minutes = Math.floor(track.duration_ms / 60000);
   const seconds = Math.floor((track.duration_ms % 60000) / 1000)
     .toString()
