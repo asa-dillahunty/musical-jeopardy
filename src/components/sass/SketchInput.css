@@ -45,7 +45,8 @@
     font-size: 30px;
 } */
 
-.sketch-wrapper button.done {
+.sketch-wrapper button.done,
+.sketch-wrapper button.show-canvas {
   width: 8ch;
   height: 60px;
   border: none;
@@ -63,14 +64,30 @@
   font-weight: bold;
   box-shadow: 2px 2px white;
 
-  transition-property: box-shadow, transform;
+  transition-property: box-shadow, transform, background-color;
   transition-duration: 0.3s;
   position: relative;
 
   background-color: var(--jeopardy-blue);
 }
 
+.sketch-wrapper button.show-canvas {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  color: black;
+  background-color: var(--jeopardy-yellow);
+}
+
 .sketch-wrapper button.done:hover {
   transform: translate(2px, 2px);
+  box-shadow: none;
+}
+
+.sketch-wrapper button.show-canvas:hover {
+  transform: translate(calc(-50%+2px), calc(-50%+2px));
+  background-color: #b49a06;
   box-shadow: none;
 }

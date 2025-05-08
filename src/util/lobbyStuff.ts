@@ -1,5 +1,7 @@
 export function generatePartyCode() {
-  return "ABC";
+  const dev = window.location.hostname === "localhost";
+  if (dev) return "ABC";
+
   return randomString(3);
 }
 

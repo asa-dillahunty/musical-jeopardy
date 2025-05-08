@@ -8,10 +8,15 @@ import { generatePartyCode } from "../util/lobbyStuff";
 import { PlayersContainer } from "./players/PlayersContainer";
 import { useAtomValue } from "jotai";
 import { AccessToken, NumPlayersAtom, PlayersAtom } from "../util/atoms";
-import { Track } from "../util/models";
-import { writePlayersData } from "../util/firebaseAPIs";
+import { PlayerType, Track } from "../util/models";
+import { subscribeToPlayersList, writePlayersData } from "../util/firebaseAPIs";
+import FinalJeopardyPlayersContainer from "./players/FinalJeopardyPlayersContainer";
 
 const JEOPARDY_THEME_URI = "spotify:track:4qkYiZablQoG7f0Qu4Nd1c";
+
+type Unsubscribe = () => void;
+
+let currentUnsubscribe: Unsubscribe | null = null;
 
 interface FinalJeopardyProps {
   songData: { song: Track; category: string };
@@ -26,9 +31,17 @@ function FinalJeopardy({ songData, onFinish }: FinalJeopardyProps) {
   const [startedPlaying, setStartedPlaying] = useState(false);
   const [widgetNeedsRefresh, setWidgetNeedsRefresh] = useState(false);
   const [partyId, setPartyId] = useState<string>();
+  const [rtdbPlayers, setRtdbPlayers] = useState<PlayerType[]>([]);
 
   const refreshWidget = () => {
     setWidgetNeedsRefresh(!widgetNeedsRefresh);
+  };
+
+  const subscribe = (partyId: string) => {
+    if (!partyId) return;
+
+    if (currentUnsubscribe) currentUnsubscribe();
+    currentUnsubscribe = subscribeToPlayersList(partyId, setRtdbPlayers);
   };
 
   useEffect(() => {
@@ -46,10 +59,18 @@ function FinalJeopardy({ songData, onFinish }: FinalJeopardyProps) {
   useEffect(() => {
     if (!partyId) {
       const newPartyId = generatePartyCode();
-      writePlayersData(newPartyId, players, numPlayers);
+      writePlayersData(newPartyId, players, numPlayers).then(() =>
+        subscribe(newPartyId)
+      );
       setPartyId(newPartyId);
     }
   }, [partyId]);
+
+  // make new players using the score from the atom, and everything else from the rtdb instance
+  const displayedPlayers = players.map((player, index) => {
+    // player here should have wager/sketch/ready undefined, so we should be good
+    return { ...rtdbPlayers[index], ...player };
+  });
 
   return (
     <div className="login-wrapper">
@@ -75,18 +96,31 @@ function FinalJeopardy({ songData, onFinish }: FinalJeopardyProps) {
             <button onClick={() => setStartedPlaying(true)}>Let's Go!!</button>
           </div>
         )}
-        <p>Scan here to join!</p>
-        <QRCodeSVG value={window.location.host + "/join/" + partyId} />
-        <p>
-          Or go to {window.location.host + "/join"} and enter the code:{" "}
-          {partyId}
-        </p>
-        <CurrentlyPlayingWidget
-          widgetNeedsRefresh={widgetNeedsRefresh}
-          toggleRefresh={refreshWidget}
-        />
-        <PlayersContainer isPlaying isFinalJeopardy />
       </span>
+      <CurrentlyPlayingWidget
+        widgetNeedsRefresh={widgetNeedsRefresh}
+        toggleRefresh={refreshWidget}
+      />
+      {!rtdbPlayers && <PlayersContainer isPlaying isFinalJeopardy />}
+      {rtdbPlayers && (
+        <FinalJeopardyPlayersContainer
+          players={displayedPlayers}
+          numPlayers={numPlayers}
+        />
+      )}
+      <p>Scan here to join!</p>
+      {/* <QRCodeSVG value={window.location.host + "/join/" + partyId} /> */}
+      <QRCodeSVG
+        value={
+          "https://www.data-stealer.com/hehe?redirectUrl=" +
+          window.location.host +
+          "/join/" +
+          partyId
+        }
+      />
+      <p>
+        Or go to {window.location.host + "/join"} and enter the code: {partyId}
+      </p>
     </div>
   );
 }

@@ -11,8 +11,10 @@ import {
 
 export function SketchInput({
   onSubmit,
+  disabled = false,
 }: {
   onSubmit: (val: CanvasPath[]) => void;
+  disabled?: boolean;
 }) {
   const styles = {
     border: "0.0625rem solid #9c9c9c",
@@ -46,18 +48,21 @@ export function SketchInput({
         <button
           className="clear-sketch"
           onClick={() => canvasRef.current?.clearCanvas()}
+          disabled={disabled}
         >
           <FaEraser />
         </button>
         <button
           className="undo-sketch"
           onClick={() => canvasRef.current?.undo()}
+          disabled={disabled}
         >
           <FaUndo />
         </button>
         <button
           className="redo-sketch"
           onClick={() => canvasRef.current?.redo()}
+          disabled={disabled}
         >
           <FaRedo />
         </button>
@@ -72,9 +77,11 @@ export function SketchInput({
         strokeColor="white"
         canvasColor="rgb(0, 0, 137)"
       />
-      <button className="done" onClick={onFinishSketch}>
-        Done
-      </button>
+      {!disabled && (
+        <button className="done" onClick={onFinishSketch} disabled={disabled}>
+          Done
+        </button>
+      )}
     </div>
   );
 }

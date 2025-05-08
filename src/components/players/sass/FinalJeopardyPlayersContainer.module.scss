@@ -1,0 +1,138 @@
+.overlay {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.modalWrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.wagerContainer {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #fffbe6;
+  border: 4px solid #ffd700;
+  border-radius: 16px;
+  padding: 2rem;
+  width: 60%;
+  max-width: 600px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.25);
+  text-align: center;
+  z-index: 10;
+  animation: fadeIn 0.5s ease-in;
+}
+
+.wagerAmount {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 1.5rem;
+}
+
+.resultButtons {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 1rem;
+}
+
+.resultButton {
+  width: 80px;
+  height: 80px;
+  border: none;
+  border-radius: 12px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 2.5rem;
+  color: white;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.25);
+  transition: transform 0.2s, box-shadow 0.2s;
+  cursor: pointer;
+}
+
+.resultButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.35);
+}
+
+.success {
+  background-color: #4caf50;
+}
+
+.failure {
+  background-color: #f44336;
+}
+
+.revealButton {
+  width: 14ch;
+  height: 60px;
+  border: none;
+  border-radius: 8px;
+  margin: 15px;
+
+  pointer-events: all;
+  cursor: pointer;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  font-size: 36px;
+  font-weight: bold;
+  box-shadow: 2px 2px white;
+
+  transition-property: box-shadow, transform;
+  transition-duration: 0.3s;
+  position: relative;
+
+  background-color: var(--jeopardy-blue);
+
+  &:hover {
+    transform: translate(2px, 2px);
+    box-shadow: none;
+  }
+}
+
+.closeButton {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  padding: 0;
+  margin: 0;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  font-size: 24px;
+
+  background-color: var(--jeopardy-yellow);
+
+  width: 48px;
+  height: 48px;
+
+  border-radius: 100%;
+  border: none;
+  transition: background-color 0.3s;
+
+  &:hover {
+    background-color: #b49a06;
+    cursor: pointer;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -60%);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%);
+  }
+}

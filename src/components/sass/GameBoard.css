@@ -171,7 +171,7 @@
   animation: rotate-in 1s forwards;
 }
 
-.daily-double .result-button-box {
+.result-button-box {
   position: absolute;
   z-index: 3;
   width: 100%;
@@ -184,7 +184,7 @@
   align-items: center;
 }
 
-.daily-double .result-button-box button {
+.result-button-box button {
   width: 80px;
   height: 80px;
   border: none;
@@ -207,7 +207,7 @@
   position: relative;
 }
 
-.daily-double .result-button-box button:hover {
+.result-button-box button:hover {
   transform: translate(2px, 2px);
   box-shadow: none;
 }
@@ -224,11 +224,11 @@
 	border-radius:8px;
 } */
 
-.daily-double .result-button-box button.success {
+.result-button-box button.success {
   background-color: green;
 }
 
-.daily-double .result-button-box button.failure {
+.result-button-box button.failure {
   background-color: red;
   font-size: 60px;
 }
@@ -252,9 +252,7 @@
   font-family: "Wendy One", sans-serif;
   font-size: 72px;
   color: rgb(140, 33, 52);
-  text-shadow:
-    0 10px 7px rgba(0, 0, 0, 0.4),
-    -2px -5px 0 #fff;
+  text-shadow: 0 10px 7px rgba(0, 0, 0, 0.4), -2px -5px 0 #fff;
   letter-spacing: -3px;
   padding: 10px 0;
   margin: 0;
@@ -373,8 +371,7 @@
 		color 4: #242424
 		color 5: #131313
 	*/
-  background:
-    linear-gradient(27deg, #151515 5px, transparent 5px) 0 5px,
+  background: linear-gradient(27deg, #151515 5px, transparent 5px) 0 5px,
     linear-gradient(207deg, #151515 5px, transparent 5px) 10px 0px,
     linear-gradient(27deg, #222 5px, transparent 5px) 0px 10px,
     linear-gradient(207deg, #222 5px, transparent 5px) 10px 5px,

@@ -1,9 +1,16 @@
+import { CanvasPath } from "react-sketch-canvas";
+
 export type PlayerType = {
   index: number;
   name: string;
   color: string;
   url?: string;
   score: number;
+
+  // the following are final jeopardy only
+  ready?: boolean;
+  wager?: number;
+  sketch?: CanvasPath[];
 };
 
 export type Artist = { name: string };

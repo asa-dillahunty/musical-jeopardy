@@ -164,7 +164,7 @@
   background-color: rgba(0, 255, 0, 0.2);
 }
 
-.sidebar .player-icon-wrapper.selectable.selected {
+.player-icon-wrapper.selectable.selected {
   background-color: rgba(0, 0, 255, 0.2);
 }
 

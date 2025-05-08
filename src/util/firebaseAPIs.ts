@@ -11,10 +11,19 @@ import {
   getFirestore,
   getDoc,
 } from "firebase/firestore";
-import { child, get, getDatabase, ref, set } from "firebase/database";
+import {
+  child,
+  get,
+  getDatabase,
+  onValue,
+  ref,
+  set,
+  update,
+} from "firebase/database";
 import { getFunctions } from "firebase/functions";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { PlayerType } from "./models";
+import { CanvasPath } from "react-sketch-canvas";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -179,14 +188,56 @@ export function usePartyPlayersListQuery(partyId: string) {
   });
 }
 
-// subscribe to something
-// const dbRef = ref(getDatabase());
-// get(child(dbRef, `users/${userId}`)).then((snapshot) => {
-//   if (snapshot.exists()) {
-//     console.log(snapshot.val());
-//   } else {
-//     console.log("No data available");
-//   }
-// }).catch((error) => {
-//   console.error(error);
-// });
+export function subscribeToPlayersList(
+  partyId: string,
+  callback: (player: PlayerType[]) => void
+) {
+  // ensure partyId is all caps
+  partyId = partyId.toUpperCase();
+
+  const playerRef = ref(rtdb, `${partyId}/players`);
+  return onValue(playerRef, (snapshot) => {
+    const players = snapshot.val() as PlayerType[];
+    callback(players);
+  });
+}
+
+export function subscribeToPlayer(
+  partyId: string,
+  playerIndex: number,
+  callback: (player: PlayerType) => void
+) {
+  partyId = partyId.toUpperCase();
+  const playerRef = ref(rtdb, `${partyId}/players/${playerIndex}`);
+  return onValue(playerRef, (snapshot) => {
+    const player = snapshot.val() as PlayerType;
+    callback(player);
+  });
+}
+
+export async function setPlayerReady(
+  partyId: string,
+  playerIndex: number,
+  ready: boolean
+) {
+  partyId = partyId.toUpperCase();
+  return set(ref(rtdb, `${partyId}/players/${playerIndex}/ready`), ready);
+}
+
+export async function setPlayerWager(
+  partyId: string,
+  playerIndex: number,
+  wager: number
+) {
+  partyId = partyId.toUpperCase();
+  return set(ref(rtdb, `${partyId}/players/${playerIndex}/wager`), wager);
+}
+
+export async function setPlayerSketch(
+  partyId: string,
+  playerIndex: number,
+  sketch: CanvasPath[]
+) {
+  partyId = partyId.toUpperCase();
+  return set(ref(rtdb, `${partyId}/players/${playerIndex}/sketch`), sketch);
+}
