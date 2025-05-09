@@ -7,4 +7,15 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
+
+  gap: 50px;
+
+  :global(.compact-number-inputs) {
+    font-size: 36px;
+  }
+
+  :global(.compact-number-inputs > .number-input-label) {
+    margin: 50px 0px;
+    margin-top: 10px;
+  }
 }

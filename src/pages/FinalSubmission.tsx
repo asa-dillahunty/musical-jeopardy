@@ -132,7 +132,6 @@ export default function FinalSubmission({}) {
         <button onClick={deselectPlayer} disabled={submitted}>
           Back
         </button>
-        <p>{currentPlayer?.name}</p>
         <SketchInput onSubmit={onFinishSketch} disabled={submitted} />
       </div>
     );
@@ -143,7 +142,6 @@ export default function FinalSubmission({}) {
     return (
       <div className={styles.container}>
         <button onClick={deselectPlayer}>Back</button>
-        <p>{currentPlayer?.name}</p>
         {currentPlayer && (
           <NumberInput
             label={"Wager"}
@@ -163,7 +161,6 @@ export default function FinalSubmission({}) {
   // player select
   return (
     <div className={styles.container}>
-      <span>Party ID: {partyId.toUpperCase()}</span>
       <SongDisplay track={WhoAreYou} />
       <PlayersContainer onClickPlayer={selectPlayer} mobile />
     </div>
