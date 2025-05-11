@@ -1,8 +1,21 @@
 import { useState, useEffect } from "react";
 import "./sass/ImportGame.css";
-import { getGeminiPrompt, validateJeopardyData } from "../util/gemini";
+import {
+  createBoardFromJSON,
+  getGeminiPrompt,
+  validateJeopardyData,
+} from "../util/gemini";
+import { useAtomValue } from "jotai";
+import { AccessToken, AccessTokenExpiration, UserId } from "../util/atoms";
+import { useNavigate } from "react-router-dom";
+import { storeGame } from "../util/session";
 
 export default function ImportGame() {
+  const token = useAtomValue(AccessToken);
+  const expiration = useAtomValue(AccessTokenExpiration);
+  const userId = useAtomValue(UserId);
+  const navigate = useNavigate();
+
   const [prompt, setPrompt] = useState(getGeminiPrompt);
   const [jsonInput, setJsonInput] = useState("");
   const [isValidJson, setIsValidJson] = useState(false);
@@ -16,23 +29,47 @@ export default function ImportGame() {
     }
   };
 
-  const validateInput = (jsonObj) => {
-    console.log("here", jsonObj);
-    // count num boards, columns, rows
-    let numBoards = 1;
-    if (jsonObj.board2) {
-      numBoards = 2;
+  const getBoardProperties = (jsonData) => {
+    const numBoards = Object.keys(jsonData).length - 1; // minus 1 for final jeopardy
+    const numColumns = jsonData.board1.categories.length;
+    const numRows = jsonData.board1.categories[0].songs.length;
+    return [numBoards, numColumns, numRows];
+  };
+
+  const validateInput = (jsonData) => {
+    const [numBoards, numColumns, numRows] = getBoardProperties(jsonData);
+    return validateJeopardyData(jsonData, numBoards, numColumns, numRows);
+  };
+
+  const handleImport = () => {
+    if (!token || token === "" || expiration - Date.now() <= 0) {
+      alert("No spotify token, please log in");
+      return;
     }
-    if (jsonObj.board3) {
-      numBoards = 3;
+    if (jsonInput.trim() === "") {
+      setIsValidJson(false);
+      return;
     }
+    try {
+      const jsonData = JSON.parse(jsonInput);
+      if (validateInput(jsonData)) {
+        const [numBoards, numColumns, numRows] = getBoardProperties(jsonData);
 
-    const numColumns = jsonObj.board1.categories.length;
-    const numRows = jsonObj.board1.categories.songs.length;
-
-    console.log(numBoards, numColumns, numRows);
-
-    return validateJeopardyData(jsonObj, numBoards, numColumns, numRows);
+        createBoardFromJSON(
+          jsonData,
+          numBoards,
+          numColumns,
+          numRows,
+          userId,
+          token
+        ).then((gameData) => {
+          storeGame(gameData);
+          navigate("/edit/new");
+        });
+      }
+    } catch {
+      setIsValidJson(false);
+    }
   };
 
   useEffect(() => {
@@ -42,7 +79,6 @@ export default function ImportGame() {
     }
     try {
       const data = JSON.parse(jsonInput);
-      console.log("trying validation");
       setIsValidJson(validateInput(data));
     } catch {
       setIsValidJson(false);
@@ -81,7 +117,7 @@ export default function ImportGame() {
           />
           <button
             className="import-game-button"
-            onClick={handleCopyPrompt}
+            onClick={handleImport}
             disabled={!isValidJson}
           >
             Import Game
