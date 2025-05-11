@@ -9,6 +9,7 @@ import PlayGame from "./pages/PlayGame";
 import JoinParty from "./pages/JoinParty";
 import Menu from "./pages/Menu";
 import AppHeader from "./components/AppHeader";
+import ImportGame from "./pages/ImportGame";
 
 function App() {
   const location = useLocation();
@@ -32,6 +33,8 @@ function App() {
 
           <Route path="/join" element={<JoinParty />} />
           <Route path="/join/:partyId" element={<FinalSubmission />} />
+
+          <Route path="/import" element={<ImportGame />} />
         </Routes>
       </main>
     </div>
