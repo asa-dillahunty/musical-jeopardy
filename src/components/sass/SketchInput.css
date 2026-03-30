@@ -87,7 +87,7 @@
 }
 
 .sketch-wrapper button.show-canvas:hover {
-  transform: translate(calc(-50%+2px), calc(-50%+2px));
+  transform: translate(calc(-50% + 2px), calc(-50% + 2px));
   background-color: #b49a06;
   box-shadow: none;
 }

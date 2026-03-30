@@ -1,9 +1,12 @@
-// src/Callback.jsx
-import { useSetAtom } from "jotai";
+import { useAtom, useSetAtom } from "jotai";
 import { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { AccessToken, AccessTokenExpiration } from "../util/atoms";
-import { spotifyLogin } from "../util/spotifyAPI";
+import {
+  AccessToken,
+  AccessTokenExpiration,
+  RefreshToken,
+} from "../util/atoms";
+import { getTokenFromCode, refreshAccessToken } from "../util/spotifyAPI";
 
 export default function AccessTokenHandler() {
   const location = useLocation();
@@ -11,6 +14,7 @@ export default function AccessTokenHandler() {
 
   const setAccessToken = useSetAtom(AccessToken);
   const setAccessTokenExpiration = useSetAtom(AccessTokenExpiration);
+  const setRefreshToken = useSetAtom(RefreshToken);
 
   useEffect(() => {
     const hash = location.hash.startsWith("#")
@@ -18,23 +22,28 @@ export default function AccessTokenHandler() {
       : location.search.slice(1);
 
     const params = new URLSearchParams(hash);
-    const token = params.get("access_token");
 
-    const expires_in = parseInt(params.get("expires_in") || "0");
-    const expiration = Date.now() + expires_in * 1000;
+    const code = params.get("code");
 
-    if (token) {
-      setAccessToken(token);
-      setAccessTokenExpiration(expiration);
+    getTokenFromCode(code).then(
+      ({ access_token, expires_in, refresh_token }) => {
+        if (access_token) {
+          const expiration = Date.now() + expires_in * 1000;
 
-      const previousLocation = getSessionUrl();
-      if (previousLocation !== "/menu")
-        console.log("resuming session (hopefully)");
+          setAccessToken(access_token);
+          setAccessTokenExpiration(expiration);
+          setRefreshToken(refresh_token);
 
-      navigate(previousLocation, { replace: true });
-    } else {
-      navigate("/", { replace: true });
-    }
+          const previousLocation = getSessionUrl();
+          if (previousLocation !== "/menu")
+            console.log("resuming session (hopefully)");
+
+          navigate(previousLocation, { replace: true });
+        } else {
+          navigate("/", { replace: true });
+        }
+      },
+    );
   }, [location, navigate]);
 
   return <p>Logging you in…</p>;
@@ -43,10 +52,21 @@ export default function AccessTokenHandler() {
 const SESSION_URL_STORAGE_KEY = "session_url_storage_key";
 
 export const useRefreshAccessToken = () => {
-  const location = useLocation();
+  const setAccessToken = useSetAtom(AccessToken);
+  const setAccessTokenExpiration = useSetAtom(AccessTokenExpiration);
+  const [refreshToken, setRefreshToken] = useAtom(RefreshToken);
+
   return () => {
-    saveSessionUrl(location.pathname);
-    spotifyLogin();
+    refreshAccessToken(refreshToken).then(
+      ({ access_token, refresh_token, expires_in }) => {
+        if (access_token) {
+          const expiration = Date.now() + expires_in * 1000;
+          setAccessToken(access_token);
+          setAccessTokenExpiration(expiration);
+          setRefreshToken(refresh_token);
+        }
+      },
+    );
   };
 };
 

@@ -2,16 +2,101 @@ import { useAtomValue } from "jotai";
 import { AccessToken } from "./atoms";
 import { useQuery } from "@tanstack/react-query";
 
-const clientId = "88ad68ab4d984a1d9e77d8b1377651ab";
-const scopes =
-  "streaming user-read-email user-read-private user-read-playback-state user-modify-playback-state";
+/************ Auth Stuff ************/
 
-export function spotifyLogin() {
-  const redirectUrl = window.location.origin + "/callback";
-  const authUrl = `https://accounts.spotify.com/authorize?client_id=${clientId}&redirect_uri=${encodeURIComponent(
-    redirectUrl
-  )}&scope=${encodeURIComponent(scopes)}&response_type=token`;
-  window.location.href = authUrl;
+const clientId = "88ad68ab4d984a1d9e77d8b1377651ab";
+const scopes = [
+  "streaming",
+  "user-read-email",
+  "user-read-private",
+  "user-read-playback-state",
+  "user-read-currently-playing",
+  "user-modify-playback-state",
+].join(" ");
+
+export const getRedirectUrl = () => window.location.origin + "/callback";
+
+// this is pretty much taken from Spotify's website: https://developer.spotify.com/documentation/web-api/tutorials/code-pkce-flow
+async function getCodeChallenge() {
+  const generateRandomString = (length: number) => {
+    const possible =
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    const values = crypto.getRandomValues(new Uint8Array(length));
+    return values.reduce((acc, x) => acc + possible[x % possible.length], "");
+  };
+
+  const sha256 = async (plain) => {
+    const encoder = new TextEncoder();
+    const data = encoder.encode(plain);
+    return window.crypto.subtle.digest("SHA-256", data);
+  };
+
+  const base64encode = (input) => {
+    return btoa(String.fromCharCode(...new Uint8Array(input)))
+      .replace(/=/g, "")
+      .replace(/\+/g, "-")
+      .replace(/\//g, "_");
+  };
+
+  const codeVerifier = generateRandomString(64);
+  const hashed = await sha256(codeVerifier);
+  const codeChallenge = base64encode(hashed);
+  return { codeVerifier, codeChallenge };
+}
+
+export async function spotifyLogin() {
+  const redirectUrl = getRedirectUrl();
+  const authUrl = new URL("https://accounts.spotify.com/authorize");
+
+  const { codeVerifier, codeChallenge } = await getCodeChallenge();
+
+  window.localStorage.setItem("code_verifier", codeVerifier);
+  const params = {
+    response_type: "code",
+    client_id: clientId,
+    scope: scopes,
+    code_challenge_method: "S256",
+    code_challenge: codeChallenge,
+    redirect_uri: redirectUrl,
+  };
+
+  authUrl.search = new URLSearchParams(params).toString();
+  window.location.href = authUrl.toString();
+}
+
+export async function getTokenFromCode(code: string) {
+  const codeVerifier = localStorage.getItem("code_verifier");
+  const redirectUrl = getRedirectUrl();
+
+  const url = "https://accounts.spotify.com/api/token";
+  const payload = {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+    },
+    body: new URLSearchParams({
+      client_id: clientId,
+      grant_type: "authorization_code",
+      code,
+      redirect_uri: redirectUrl,
+      code_verifier: codeVerifier,
+    }),
+  };
+
+  const body = await fetch(url, payload);
+  const response = await body.json();
+  if (response.error) {
+    alert("Error with Spotify Auth" + response.error);
+    console.log(response);
+    return;
+  }
+
+  localStorage.setItem("access_token", response.access_token);
+  return {
+    access_token: response.access_token,
+    expires_in: response.expires_in,
+    refresh_token: response.refresh_token,
+  };
 }
 
 // Function to get access token from URL
@@ -24,6 +109,37 @@ export function getTokenFromUrl() {
   }, {});
   return params.access_token;
 }
+
+export async function refreshAccessToken(refreshToken: string) {
+  const url = "https://accounts.spotify.com/api/token";
+
+  const payload = {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+    },
+    body: new URLSearchParams({
+      grant_type: "refresh_token",
+      refresh_token: refreshToken,
+      client_id: clientId,
+    }),
+  };
+  const body = await fetch(url, payload);
+  const response = await body.json();
+
+  if (response.error) {
+    console.error("error" + response.error);
+    return;
+  }
+
+  return {
+    access_token: response.access_token,
+    refresh_token: response.refresh_token,
+    expires_in: response.expires_in,
+  };
+}
+
+/************ User Data ************/
 
 async function getUserData(accessToken: string) {
   const response = await fetch(`https://api.spotify.com/v1/me`, {
@@ -57,6 +173,8 @@ export function useUserId() {
   else return userData;
 }
 
+/************ Search Stuff ************/
+
 export function useSearchTracks() {
   const token = useAtomValue(AccessToken);
 
@@ -83,7 +201,7 @@ async function searchTracksQuery({
       headers: {
         Authorization: `Bearer ${token}`,
       },
-    }
+    },
   );
   const data = await response.json();
   // if data.error
@@ -95,7 +213,7 @@ async function searchTracksQuery({
 export async function getSingleTrack(
   songTitle: string,
   artist: string,
-  accessToken: string
+  accessToken: string,
 ) {
   const response = await fetch(
     `https://api.spotify.com/v1/search?q=${songTitle} ${artist}&type=track&limit=1`,
@@ -103,7 +221,7 @@ export async function getSingleTrack(
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },
-    }
+    },
   );
   const data = await response.json();
   // if data.error
@@ -112,10 +230,12 @@ export async function getSingleTrack(
   return data.tracks.items[0];
 }
 
+/************ Control Playback ************/
+
 // Function to play a track
 export async function playTrack(trackUri: string, accessToken: string) {
   console.log("playing track: ", trackUri);
-  if (window.location.hostname === "localhost") {
+  if (window.location.hostname === "127.0.0.1") {
     console.log("NOT");
     return;
   }
@@ -134,7 +254,7 @@ export async function playTrack(trackUri: string, accessToken: string) {
 
 export async function getCurrentlyPlaying(accessToken: string) {
   console.log("getting currently playing");
-  if (window.location.hostname === "localhost") {
+  if (window.location.hostname === "127.0.0.1") {
     console.log("NOT");
     return null;
   }
@@ -145,7 +265,7 @@ export async function getCurrentlyPlaying(accessToken: string) {
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },
-    }
+    },
   );
   if (response.status === 204) {
     // nothing is currently playing

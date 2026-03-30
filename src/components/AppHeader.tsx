@@ -11,7 +11,7 @@ export default function AppHeader() {
   const location = useLocation();
   const atLogin = location.pathname === "/";
 
-  const dev = window.location.hostname === "localhost";
+  const dev = window.location.hostname === "127.0.0.1";
 
   return (
     <header className={styles.appHeader}>
@@ -36,7 +36,7 @@ function TokenStatus() {
   //   const [expiration, setExpiration] = useState(Date.now() + 5 * 60 * 1000 + 5);
   const refreshToken = useRefreshAccessToken();
   const [timeLeft, setTimeLeft] = useState<number>(
-    Math.max(0, expiration - Date.now())
+    Math.max(0, expiration - Date.now()),
   );
 
   const minutes = Math.floor(timeLeft / 60000);

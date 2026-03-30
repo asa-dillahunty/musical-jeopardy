@@ -50,7 +50,7 @@ const NumberInput = ({
     let digits = [];
     for (let i = 0; i < maxDigits; i++) {
       digits.push(
-        <div className="number-input-button-container">
+        <div className="number-input-button-container" key={i}>
           <AiOutlineUpSquare
             onClick={() => handleIncrement(maxDigits - i - 1)}
           />
@@ -58,20 +58,20 @@ const NumberInput = ({
           <AiOutlineDownSquare
             onClick={() => handleDecrement(maxDigits - i - 1)}
           />
-        </div>
+        </div>,
       );
     }
 
     if (includePlusMinus) {
       digits.push(
-        <div className="number-input-button-container">
+        <div className="number-input-button-container" key={maxDigits}>
           <button className="failure" onClick={minusFunc}>
             <FaXmark />
           </button>
           <button className="success" onClick={plusFunc}>
             <FaCheck />
           </button>
-        </div>
+        </div>,
       );
     }
 

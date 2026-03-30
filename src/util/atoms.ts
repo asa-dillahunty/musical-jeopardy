@@ -5,8 +5,9 @@ import { PlayerType } from "./models";
 export const AccessToken = atomWithStorage("spotify_access_token", "");
 export const AccessTokenExpiration = atomWithStorage(
   "spotify_access_token_expiration",
-  0
+  0,
 );
+export const RefreshToken = atomWithStorage("spotify_refresh_token", "");
 export const UserId = atom<string>();
 
 export const NumPlayersAtom = atomWithStorage("Num_Players", 2);
@@ -26,7 +27,7 @@ const getPlayersAtomDefault = () => [
 
 export const PlayersAtom = atomWithStorage<PlayerType[]>(
   "Players_Data",
-  getPlayersAtomDefault()
+  getPlayersAtomDefault(),
 );
 
 export const useResetPlayers = () => {

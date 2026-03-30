@@ -5,6 +5,8 @@ import react from "@vitejs/plugin-react-swc";
 export default defineConfig({
   plugins: [react()],
   server: {
-    port: 3000, // Change the port here
+    // this needs to be 127.0.0.1 (instead of localhost) for the spotify api to respect me 🤪
+    host: "127.0.0.1",
+    port: 3000,
   },
 });
