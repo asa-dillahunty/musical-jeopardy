@@ -1,9 +1,11 @@
 # Musical Jeopardy!
 
 This app is supposed to be Jeopardy, but instead of clues the cards will play songs.
-Eventually, users will be able to create jeopardy boards including categories and
+Users are be able to create jeopardy boards including categories and
 selecting individual songs for each of the cards. It is intended to function
 just like jeopardy and is not for commercial use.
+
+- Link to deployed version: [https://musical-jeopardy.firebaseapp.com/](https://musical-jeopardy.firebaseapp.com/)
 
 Some useful links for continuing the project:
 
