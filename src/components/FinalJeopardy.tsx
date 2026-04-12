@@ -60,7 +60,7 @@ function FinalJeopardy({ songData, onFinish }: FinalJeopardyProps) {
     if (!partyId) {
       const newPartyId = generatePartyCode();
       writePlayersData(newPartyId, players, numPlayers).then(() =>
-        subscribe(newPartyId)
+        subscribe(newPartyId),
       );
       setPartyId(newPartyId);
     }
@@ -73,8 +73,8 @@ function FinalJeopardy({ songData, onFinish }: FinalJeopardyProps) {
   });
 
   return (
-    <div className="login-wrapper">
-      <span className="login-text">
+    <div className="final-jeopardy-wrapper">
+      <span>
         {startedPlaying ? (
           <div className="final-jeopardy-card-wrapper">
             <PlayCard

@@ -1,0 +1,65 @@
+/************** VARIABLES **************/
+$jeopardy-blue: rgb(0, 0, 137);
+$jeopardy-yellow: rgb(255, 212, 70);
+
+$success-green: green;
+$failure-red: red;
+
+/************** MIXINS **************/
+@mixin tactile-button(
+  $background-color: $jeopardy-blue,
+  $shadow-color: white,
+  $offset: 0.3rem,
+  $radius: 0.4rem
+) {
+  // width: 200px;
+  border: none;
+
+  background-color: $background-color;
+  border-radius: $radius;
+  padding: 1% 2%;
+  box-shadow: $offset $offset 0 $shadow-color;
+
+  cursor: pointer;
+
+  transition-property: box-shadow, transform;
+  transition-duration: 0.3s;
+
+  &:hover {
+    transform: translate($offset, $offset);
+    box-shadow: 0 0 0 $shadow-color;
+  }
+}
+
+@mixin flex-default($direction) {
+  display: flex;
+  flex-direction: $direction;
+  justify-content: center;
+  align-items: center;
+}
+
+@mixin back-button {
+  @include tactile-button($jeopardy-yellow, black, 0.2rem);
+  @include flex-default(row);
+  font-weight: bold;
+  justify-content: space-between;
+  color: black;
+  padding-left: 0.8rem;
+  padding-right: 1.2rem;
+  svg {
+    margin-right: 1rem;
+  }
+}
+
+/************** ANIMATIONS **************/
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(180deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}

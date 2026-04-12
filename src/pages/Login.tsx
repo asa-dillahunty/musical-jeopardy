@@ -1,7 +1,8 @@
-import "./sass/Login.css";
 import { spotifyLogin } from "../util/spotifyAPI";
-import logo from "../Spotify_Full_Logo_Black_RGB.svg";
+import logo from "../assets/Spotify_Full_Logo_Black_RGB.svg";
 import { clearSessionUrl } from "./AccessTokenHandler";
+
+import styles from "./sass/Login.module.scss";
 
 function Login() {
   const performLogin = () => {
@@ -11,10 +12,10 @@ function Login() {
   };
 
   return (
-    <div className="login-wrapper">
-      <span className="login-text">Login with</span>
+    <div className={styles.loginWrapper}>
+      <span className={styles.loginText}>Login with</span>
       <img
-        className="btn-spotify"
+        className={styles.btnSpotify}
         onClick={performLogin}
         src={logo}
         alt="Spotify logo. Login button"

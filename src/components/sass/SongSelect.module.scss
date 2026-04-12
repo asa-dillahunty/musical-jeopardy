@@ -62,7 +62,9 @@
     height: 100%;
     box-sizing: border-box;
     border-radius: 3px;
-    transition: background-color 0.3s, color 0.3s;
+    transition:
+      background-color 0.3s,
+      color 0.3s;
 
     font-weight: bold;
     color: white;
@@ -77,7 +79,7 @@
 }
 
 .searchBox {
-  overflow: scroll;
+  overflow: auto;
   height: 400px;
   width: 100%;
 

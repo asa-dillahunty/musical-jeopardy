@@ -1,0 +1,114 @@
+@use "../../variables.scss" as *;
+
+.backButton {
+  @include back-button;
+}
+
+ul.gameSelectorList {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+
+  li {
+    --li-border-width: 4px;
+
+    padding: 10px 15px;
+    margin: auto;
+    max-width: 300px;
+    background-color: $jeopardy-blue;
+    border: calc(var(--li-border-width) / 2) solid black;
+    border-left-width: var(--li-border-width);
+    border-right-width: var(--li-border-width);
+
+    color: $jeopardy-yellow;
+    text-align: left;
+    font-weight: bold;
+    word-wrap: break-word;
+
+    &:first-child {
+      border-top-width: var(--li-border-width);
+    }
+
+    &:last-child {
+      border-bottom-width: var(--li-border-width);
+    }
+
+    &:hover {
+      opacity: 0.8;
+      cursor: pointer;
+    }
+  }
+}
+
+#newGameButton,
+#askGeminiButton {
+  @include tactile-button($jeopardy-blue, white, 0.2rem);
+  @include flex-default(row);
+
+  color: white;
+  font-weight: bold;
+
+  margin-top: 1rem;
+  gap: 8px;
+
+  &:hover {
+    opacity: 0.8;
+  }
+}
+
+section.selectionSection {
+  @include flex-default(column);
+  padding-bottom: 30px;
+}
+
+.formWrapper {
+  background-color: antiquewhite;
+  padding: 32px;
+  border-radius: 15px;
+
+  & > div {
+    @include flex-default(row);
+  }
+
+  & > button {
+    &:nth-child(even) {
+      @include tactile-button($jeopardy-blue, black, 0.2rem);
+      color: white;
+    }
+    &:nth-child(odd) {
+      @include tactile-button($jeopardy-yellow, black, 0.2rem);
+      color: black;
+    }
+    margin: 2rem 1rem 0 1rem;
+  }
+}
+
+.loadingGeminiMessage {
+  @include flex-default(row);
+
+  color: white;
+  background-color: var(--jeopardy-blue);
+
+  padding: 32px;
+  border-radius: 15px;
+  gap: 32px;
+
+  .sparkleWrapper {
+    font-size: 90px;
+    animation: spin 1s ease-in 0s infinite;
+  }
+
+  .textWrapper {
+    @include flex-default(column);
+  }
+
+  h3 {
+    font-size: 64px;
+    margin: 0;
+  }
+
+  p {
+    font-size: 24px;
+    margin: 0;
+  }
+}
