@@ -16,3 +16,11 @@ updates:
       web:
         patterns:
           - "*"
+  - package-ecosystem: "npm"
+    directory: "/functions"
+    schedule:
+      interval: "monthly"
+    groups:
+      functions:
+        patterns:
+          - "*"

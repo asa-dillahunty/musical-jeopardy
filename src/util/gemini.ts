@@ -24,27 +24,27 @@ export function validateJeopardyData(data, numBoards, numCategories, numSongs) {
 
       if (!board.categories || !Array.isArray(board.categories)) {
         throw new Error(
-          `Board ${boardKey} is missing 'categories' or it is not an array.`
+          `Board ${boardKey} is missing 'categories' or it is not an array.`,
         );
       }
 
       if (board.categories.length !== numCategories) {
         throw new Error(
-          `Board ${boardKey} has ${board.categories.length} categories, expected ${numCategories}.`
+          `Board ${boardKey} has ${board.categories.length} categories, expected ${numCategories}.`,
         );
       }
 
       board.categories.forEach((category) => {
         if (!category.songs || !Array.isArray(category.songs)) {
           throw new Error(
-            `Category '${category.name}' in ${boardKey} is missing 'songs' or it is not an array.`
+            `Category '${category.name}' in ${boardKey} is missing 'songs' or it is not an array.`,
           );
         }
 
         // Check the number of songs in the category
         if (category.songs.length !== numSongs) {
           throw new Error(
-            `Category '${category.name}' in ${boardKey} has ${category.songs.length} songs, expected ${numSongs}.`
+            `Category '${category.name}' in ${boardKey} has ${category.songs.length} songs, expected ${numSongs}.`,
           );
         }
 
@@ -105,7 +105,7 @@ export async function createBoardFromJSON(
   numCategories,
   numSongs,
   userID,
-  accessToken
+  accessToken,
 ) {
   const newGame = getNewGame();
   newGame.numBoards = numBoards;
@@ -126,7 +126,7 @@ export async function createBoardFromJSON(
             .then(reduceSongData)
             .then((songData) => {
               board.grid[j][k + 1] = songData; // Update grid when resolved
-            })
+            }),
         );
       }
     }
@@ -136,7 +136,7 @@ export async function createBoardFromJSON(
     getSingleTrack(
       data.finalJeopardy.song,
       data.finalJeopardy.artist,
-      accessToken
+      accessToken,
     )
       .then(reduceSongData)
       .then((songData) => {
@@ -144,7 +144,7 @@ export async function createBoardFromJSON(
           category: data.finalJeopardy.hint,
           song: songData, // Update finalJeopardy song when resolved
         };
-      })
+      }),
   );
 
   await Promise.all(songPromises);
@@ -153,7 +153,7 @@ export async function createBoardFromJSON(
   return newGame;
 }
 
-export async function queryGemini(token, userID, options) {
+export async function queryGemini(token: string, userID: string, options) {
   const { numBoards, cols, rows } = options;
   console.log("Querying Gemini", options);
   // const cols = 3;
@@ -174,7 +174,8 @@ export async function queryGemini(token, userID, options) {
 
     const data = await response.json();
     console.log("Response from askGemini:", data);
-    const actualText = data.result.response.candidates[0].content.parts[0].text;
+    // const actualText = data.result.response.candidates[0].content.parts[0].text;
+    const actualText = data.result;
     const cleanedText = actualText.replace(/```json|```/g, "").trim();
     const gameJSON = JSON.parse(cleanedText);
     validateJeopardyData(gameJSON, numBoards, cols, rows);
@@ -184,7 +185,7 @@ export async function queryGemini(token, userID, options) {
       cols,
       rows,
       userID,
-      token
+      token,
     );
     storeGame(newGame);
     return newGame;
