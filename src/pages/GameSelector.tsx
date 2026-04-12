@@ -1,7 +1,6 @@
-import "./sass/GameSelector.css";
 import { useDeleteGame, useGamesList } from "../util/firebaseAPIs";
 import { FaRegTrashCan, FaWandMagicSparkles } from "react-icons/fa6";
-import { FaPlus } from "react-icons/fa";
+import { FaAngleLeft, FaPlus } from "react-icons/fa";
 import { queryGemini } from "../util/gemini";
 import ClickBlocker from "../components/ClickBlocker";
 import { useState } from "react";
@@ -11,6 +10,8 @@ import { useAtomValue } from "jotai";
 import { AccessToken } from "../util/atoms";
 import { useUserId } from "../util/spotifyAPI";
 import { useNavigate } from "react-router-dom";
+
+import styles from "./sass/GameSelector.module.scss";
 
 function GameSelector({ editing }: { editing?: boolean }) {
   const token = useAtomValue(AccessToken);
@@ -56,7 +57,7 @@ function GameSelector({ editing }: { editing?: boolean }) {
       })
       .catch((e) => {
         alert(
-          "Encountered an issue. Please try again, but not too many times if it persists."
+          "Encountered an issue. Please try again, but not too many times if it persists.",
         );
         setAskingGemini(false);
         console.error(e.message);
@@ -76,10 +77,10 @@ function GameSelector({ editing }: { editing?: boolean }) {
   const otherGames = gameList.filter((game) => game.userID !== userId);
 
   return (
-    <section className="selection-section">
+    <section className={styles.selectionSection}>
       <ClickBlocker block={openForm} custom>
-        <div className="form-wrapper">
-          <div className="value-container">
+        <div className={styles.formWrapper}>
+          <div className={styles.valueContainer}>
             <NumberInput
               label={"Number of Boards"}
               value={numBoards}
@@ -107,20 +108,22 @@ function GameSelector({ editing }: { editing?: boolean }) {
         </div>
       </ClickBlocker>
       <ClickBlocker block={askingGemini} custom>
-        <span className="loading-gemini-message">
-          <div className="sparkle-wrapper">
+        <span className={styles.loadingGeminiMessage}>
+          <div className={styles.sparkleWrapper}>
             <HiOutlineSparkles />
           </div>
-          <div className="text-wrapper">
+          <div className={styles.textWrapper}>
             <h3>Asking Gemini!</h3>
             <p>(It's not very smart)</p>
           </div>
         </span>
       </ClickBlocker>
       <h2>Select a Game to {editing ? "Edit" : "Play"}!</h2>
-      <button onClick={() => navigate("/menu")}>Back</button>
+      <button onClick={() => navigate("/menu")} className={styles.backButton}>
+        <FaAngleLeft /> Back
+      </button>
       <p>My Games</p>
-      <ul className="game-selector-list">
+      <ul className={styles.gameSelectorList}>
         {myGames.map((game, index) => (
           <li key={index} onClick={() => selectGame(game.id)}>
             {game.name}
@@ -131,7 +134,7 @@ function GameSelector({ editing }: { editing?: boolean }) {
         ))}
       </ul>
       <p>Public Games</p>
-      <ul className="game-selector-list">
+      <ul className={styles.gameSelectorList}>
         {otherGames.map((game, index) => (
           <li key={index} onClick={() => selectGame(game.id)}>
             {game.name}
@@ -140,11 +143,11 @@ function GameSelector({ editing }: { editing?: boolean }) {
       </ul>
       {editing && (
         <>
-          <button id="new-game-button" onClick={() => selectGame()}>
+          <button id={styles.newGameButton} onClick={() => selectGame()}>
             New Game
             <FaPlus />
           </button>
-          <button id="ask-gemini-button" onClick={() => setOpenForm(true)}>
+          <button id={styles.askGeminiButton} onClick={() => setOpenForm(true)}>
             Ask Gemini
             <FaWandMagicSparkles />
           </button>

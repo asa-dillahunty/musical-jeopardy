@@ -275,7 +275,7 @@ function EditGame({}) {
               <div key={index} onClick={() => setSelectedBoardIndex(index)}>
                 <GameBoard board={val} preview={true} />
               </div>
-            )
+            ),
         )}
         <div
           className="fake-game-cell"
