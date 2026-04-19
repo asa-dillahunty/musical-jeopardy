@@ -12,7 +12,6 @@ $failure-red: red;
   $offset: 0.3rem,
   $radius: 0.4rem
 ) {
-  // width: 200px;
   border: none;
 
   background-color: $background-color;
@@ -36,19 +35,6 @@ $failure-red: red;
   flex-direction: $direction;
   justify-content: center;
   align-items: center;
-}
-
-@mixin back-button {
-  @include tactile-button($jeopardy-yellow, black, 0.2rem);
-  @include flex-default(row);
-  font-weight: bold;
-  justify-content: space-between;
-  color: black;
-  padding-left: 0.8rem;
-  padding-right: 1.2rem;
-  svg {
-    margin-right: 1rem;
-  }
 }
 
 /************** ANIMATIONS **************/

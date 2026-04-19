@@ -1,0 +1,21 @@
+@use "../../../variables.scss" as *;
+
+@mixin backButton {
+  @include tactile-button($jeopardy-yellow, black, 0.3rem);
+  @include flex-default(row);
+
+  font-size: 1rem;
+  font-weight: bold;
+  gap: 0.25rem;
+  color: black;
+  padding-left: 0.8rem;
+  padding-right: 1.2rem;
+
+  svg {
+    font-size: 1.75rem;
+  }
+}
+
+.backButton {
+  @include backButton();
+}

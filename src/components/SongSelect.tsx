@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { useSearchTracks } from "../util/spotifyAPI";
+import { useHandleCommonErrors, useSearchTracks } from "../util/spotifyAPI";
 import { AiOutlineSearch } from "react-icons/ai";
 
 import styles from "./sass/SongSelect.module.scss";
@@ -30,8 +30,18 @@ export function SongSelect({ onClose, selectTrack, val }: SongSelectProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [inputVal, setInputVal] = useState("");
   const [queryVal, setQueryVal] = useState("");
+
   const searchTracks = useSearchTracks();
-  const { data: trackQueryResult, isPending } = searchTracks(queryVal);
+  const handleCommonErrors = useHandleCommonErrors();
+
+  // TODO: best not to handle common errors at the component level. consider making an error boundary that can do this
+  const {
+    data: trackQueryResult,
+    isPending,
+    isError: isSearchError,
+    error: searchError,
+  } = searchTracks(queryVal);
+
   const searchResults =
     trackQueryResult?.map((track: Track) => reduceSongData(track)) || [];
 
@@ -44,6 +54,12 @@ export function SongSelect({ onClose, selectTrack, val }: SongSelectProps) {
   const performQuery = () => {
     setQueryVal(inputVal);
   };
+
+  useEffect(() => {
+    if (isSearchError) {
+      handleCommonErrors(searchError);
+    }
+  }, [isSearchError, searchError]);
 
   useEffect(() => {
     inputRef.current?.focus();

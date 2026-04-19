@@ -1,9 +1,5 @@
 @use "../../variables.scss" as *;
 
-.backButton {
-  @include back-button;
-}
-
 ul.gameSelectorList {
   list-style-type: none;
   padding: 0;

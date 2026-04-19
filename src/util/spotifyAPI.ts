@@ -1,5 +1,5 @@
-import { useAtomValue } from "jotai";
-import { AccessToken } from "./atoms";
+import { useAtom, useAtomValue, useSetAtom } from "jotai";
+import { AccessToken, AccessTokenExpiration, RefreshToken } from "./atoms";
 import { useQuery } from "@tanstack/react-query";
 
 /************ Auth Stuff ************/
@@ -110,6 +110,23 @@ export function getTokenFromUrl() {
   return params.access_token;
 }
 
+export function useRefreshAccessToken() {
+  const setAccessToken = useSetAtom(AccessToken);
+  const setAccessTokenExpiration = useSetAtom(AccessTokenExpiration);
+  const [refreshToken, setRefreshToken] = useAtom(RefreshToken);
+
+  return async () => {
+    const { access_token, refresh_token, expires_in } =
+      refreshAccessToken(refreshToken);
+    if (access_token) {
+      const expiration = Date.now() + expires_in * 1000;
+      setAccessToken(access_token);
+      setAccessTokenExpiration(expiration);
+      setRefreshToken(refresh_token);
+    }
+  };
+}
+
 export async function refreshAccessToken(refreshToken: string) {
   const url = "https://accounts.spotify.com/api/token";
 
@@ -137,6 +154,38 @@ export async function refreshAccessToken(refreshToken: string) {
     refresh_token: response.refresh_token,
     expires_in: response.expires_in,
   };
+}
+
+/************ Error Messages and Handling ************/
+
+// https://developer.spotify.com/documentation/web-api/concepts/api-calls#response-status-codes
+// select error codes:
+//  400: Bad Request - The request could not be understood by the server due to malformed syntax. The message body will contain more information; see Response Schema.
+//  401: Unauthorized - The request requires user authentication or, if the request included authorization credentials, authorization has been refused for those credentials.
+//  403: Bad OAuth request (wrong consumer key, bad nonce, expired timestamp...). Unfortunately, re-authenticating the user won't help here.
+//  429: Too many requests - rate limited
+
+const EXPIRED_TOKEN_MESSAGE = "The access token expired";
+// {
+//   "error": {
+//     "status": 401,
+//     "message": "The access token expired"
+//   }
+// }
+
+export function useHandleCommonErrors() {
+  const refreshToken = useRefreshAccessToken();
+
+  async function handleCommonErrors(error: Error | null) {
+    console.log("handling common errors");
+    if (!error) return;
+
+    if (error.message === EXPIRED_TOKEN_MESSAGE) {
+      await refreshToken();
+    }
+  }
+
+  return handleCommonErrors;
 }
 
 /************ User Data ************/
@@ -170,6 +219,12 @@ export function useUserData() {
 export function useUserId() {
   const userData = useUserData();
   if (userData) return userData.id;
+  else return userData;
+}
+
+export function useUserImgUrl() {
+  const userData = useUserData();
+  if (userData && userData.images?.[0]?.url) return userData.images[0].url;
   else return userData;
 }
 

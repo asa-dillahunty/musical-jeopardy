@@ -1,4 +1,4 @@
-import { useAtom, useSetAtom } from "jotai";
+import { useSetAtom } from "jotai";
 import { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import {
@@ -6,7 +6,7 @@ import {
   AccessTokenExpiration,
   RefreshToken,
 } from "../util/atoms";
-import { getTokenFromCode, refreshAccessToken } from "../util/spotifyAPI";
+import { getTokenFromCode } from "../util/spotifyAPI";
 
 export default function AccessTokenHandler() {
   const location = useLocation();
@@ -50,25 +50,6 @@ export default function AccessTokenHandler() {
 }
 
 const SESSION_URL_STORAGE_KEY = "session_url_storage_key";
-
-export const useRefreshAccessToken = () => {
-  const setAccessToken = useSetAtom(AccessToken);
-  const setAccessTokenExpiration = useSetAtom(AccessTokenExpiration);
-  const [refreshToken, setRefreshToken] = useAtom(RefreshToken);
-
-  return () => {
-    refreshAccessToken(refreshToken).then(
-      ({ access_token, refresh_token, expires_in }) => {
-        if (access_token) {
-          const expiration = Date.now() + expires_in * 1000;
-          setAccessToken(access_token);
-          setAccessTokenExpiration(expiration);
-          setRefreshToken(refresh_token);
-        }
-      },
-    );
-  };
-};
 
 export const clearSessionUrl = () => {
   localStorage.setItem(SESSION_URL_STORAGE_KEY, "/menu");

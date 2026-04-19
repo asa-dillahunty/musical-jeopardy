@@ -12,6 +12,7 @@ import { useUserId } from "../util/spotifyAPI";
 import { useNavigate } from "react-router-dom";
 
 import styles from "./sass/GameSelector.module.scss";
+import BackButton from "../components/ui/BackButton";
 
 function GameSelector({ editing }: { editing?: boolean }) {
   const token = useAtomValue(AccessToken);
@@ -119,9 +120,7 @@ function GameSelector({ editing }: { editing?: boolean }) {
         </span>
       </ClickBlocker>
       <h2>Select a Game to {editing ? "Edit" : "Play"}!</h2>
-      <button onClick={() => navigate("/menu")} className={styles.backButton}>
-        <FaAngleLeft /> Back
-      </button>
+      <BackButton path="/menu" />
       <p>My Games</p>
       <ul className={styles.gameSelectorList}>
         {myGames.map((game, index) => (

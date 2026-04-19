@@ -4,7 +4,7 @@ import { AccessToken, AccessTokenExpiration } from "../util/atoms";
 import { useEffect, useState } from "react";
 
 import styles from "./sass/AppHeader.module.scss";
-import { useRefreshAccessToken } from "../pages/AccessTokenHandler";
+import { useRefreshAccessToken, useUserImgUrl } from "../util/spotifyAPI";
 
 export default function AppHeader() {
   const navigate = useNavigate();
@@ -13,6 +13,14 @@ export default function AppHeader() {
 
   const dev = window.location.hostname === "127.0.0.1";
 
+  const onClickHeader = () => {
+    if (atLogin) {
+      // we don't want to do anything here. The user is not logged in
+    } else {
+      navigate("/menu");
+    }
+  };
+
   return (
     <header className={styles.appHeader}>
       {dev && (
@@ -20,7 +28,7 @@ export default function AppHeader() {
           clear local storage
         </button>
       )}
-      <span onClick={() => navigate("/menu")} className={styles.headerTitle}>
+      <span onClick={onClickHeader} className={styles.headerTitle}>
         MUSICAL JEOPARDY
       </span>
 
@@ -38,6 +46,8 @@ function TokenStatus() {
   const [timeLeft, setTimeLeft] = useState<number>(
     Math.max(0, expiration - Date.now()),
   );
+
+  const userImgUrl = useUserImgUrl();
 
   const minutes = Math.floor(timeLeft / 60000);
   const seconds = Math.floor((timeLeft % 60000) / 1000)
@@ -78,6 +88,15 @@ function TokenStatus() {
 
   // we are good on time. No need to display
   if (minutes > 4) {
+    if (userImgUrl) {
+      return (
+        <img
+          src={userImgUrl}
+          alt="profile picture"
+          className={styles.profilePicture}
+        />
+      );
+    }
     return <></>;
   }
 

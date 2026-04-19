@@ -7,6 +7,13 @@ import { SongSelect } from "../components/SongSelect";
 import { getGameFromStorage, storeGame } from "../util/session";
 import { useUserId } from "../util/spotifyAPI";
 import { useNavigate, useParams } from "react-router-dom";
+import BackButton from "../components/ui/BackButton";
+import {
+  BoardGrid,
+  BoardGridIndex,
+  JeopardyBoard,
+  JeopardyGame,
+} from "../util/models";
 
 // what's the game object look like?
 /*
@@ -32,63 +39,49 @@ import { useNavigate, useParams } from "react-router-dom";
 	}
 */
 
-export function getNewGame() {
+export function getNewGame(gameId: string, userId: string): JeopardyGame {
   // new board
   const boardList = Array(3)
     .fill(undefined)
-    .map((_val, index) => createNewBoard(index));
+    .map((_val, index) => createNewBoard(index)) as [
+    JeopardyBoard,
+    JeopardyBoard,
+    JeopardyBoard,
+  ];
 
-  // generate 3 boards
-  // boardList.map((val,index) => val = createNewBoard(index));
-
-  const newGame = {
+  const newGame: JeopardyGame = {
+    id: gameId,
+    userId: userId,
     name: "",
     numBoards: 2,
     boards: boardList,
-    finalJeopardy: null,
   };
   return newGame;
 }
 
-function createNewBoard(index) {
+function createNewBoard(index: number): JeopardyBoard {
   // new board
   const boardGrid = createGrid();
   // generate an ID
-  const newBoard = {
+  const newBoard: JeopardyBoard = {
     cols: 6,
     rows: 5,
     grid: boardGrid,
     multiplier: index + 1,
     dailyDoubles: index + 1,
+    dailyDoublePositions: [],
   };
 
   return newBoard;
 }
 
-function createGrid(oldGrid) {
-  const boardGrid = {};
+function createGrid(oldGrid?: BoardGrid) {
+  const indices: BoardGridIndex[] = [0, 1, 2, 3, 4, 5];
 
-  boardGrid[0] = Array(6).fill(undefined);
-  boardGrid[1] = Array(6).fill(undefined);
-  boardGrid[2] = Array(6).fill(undefined);
-  boardGrid[3] = Array(6).fill(undefined);
-  boardGrid[4] = Array(6).fill(undefined);
-  boardGrid[5] = Array(6).fill(undefined);
-
-  boardGrid[0][0] = "";
-  boardGrid[1][0] = "";
-  boardGrid[2][0] = "";
-  boardGrid[3][0] = "";
-  boardGrid[4][0] = "";
-  boardGrid[5][0] = "";
-
-  if (!oldGrid) return boardGrid;
-  // else fill with old values
-  for (let i = 0; i < boardGrid.length; i++) {
-    for (let j = 0; j < boardGrid[i].length; j++) {
-      boardGrid[i][j] = oldGrid[i][j];
-    }
-  }
+  const boardGrid = indices.reduce((acc, i) => {
+    acc[i] = Array.from({ length: 6 }, (_, j) => oldGrid?.[i]?.[j] ?? "");
+    return acc;
+  }, {} as BoardGrid);
 
   return boardGrid;
 }
@@ -158,8 +151,8 @@ function EditGame({}) {
             setFinalJeopardySong(currGame.finalJeopardy.song);
           }
         } else {
-          const newGame = getNewGame(gameId);
-          newGame.userID = userId;
+          const newGame = getNewGame(gameId, userId);
+
           setGame(newGame);
           setNumBoards(newGame.numBoards);
           setGameName(newGame.name);
@@ -232,6 +225,7 @@ function EditGame({}) {
   return (
     <div className="edit-game">
       <button onClick={() => navigate("/edit")}>back</button>
+      {/* <BackButton path="/edit" /> */}
       <ClickBlocker custom block={selectingFinalJeopardy}>
         <div className="fake-game-cell category">
           <textarea

@@ -30,6 +30,10 @@ export interface JeopardyGame {
   userId: string;
 
   boards: [JeopardyBoard, JeopardyBoard, JeopardyBoard];
+  finalJeopardy?: {
+    category: string;
+    song: Track;
+  };
 }
 
 export interface JeopardyBoard {
@@ -43,6 +47,8 @@ export interface JeopardyBoard {
 
   grid: BoardGrid;
 }
+
+export type BoardGridIndex = 0 | 1 | 2 | 3 | 4 | 5;
 
 export interface BoardGrid {
   0: string[];

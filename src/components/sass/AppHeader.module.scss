@@ -56,6 +56,14 @@
   }
 }
 
+.profilePicture {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  height: calc(10vh - 2rem);
+  border-radius: 10%;
+}
+
 @keyframes fadeInAndUp {
   from {
     opacity: 0;
