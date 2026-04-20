@@ -4,7 +4,8 @@ import { AccessToken, AccessTokenExpiration } from "../util/atoms";
 import { useEffect, useState } from "react";
 
 import styles from "./sass/AppHeader.module.scss";
-import { useRefreshAccessToken, useUserImgUrl } from "../util/spotifyAPI";
+import { useRefreshAccessToken, useUserData } from "../util/spotifyAPI";
+import { GrLogout } from "react-icons/gr";
 
 export default function AppHeader() {
   const navigate = useNavigate();
@@ -40,6 +41,7 @@ export default function AppHeader() {
 function TokenStatus() {
   const expiration = useAtomValue(AccessTokenExpiration);
   const token = useAtomValue(AccessToken);
+  const navigate = useNavigate();
   //   const [expiration, setExpiration] = useState(Date.now() + 10000);
   //   const [expiration, setExpiration] = useState(Date.now() + 5 * 60 * 1000 + 5);
   const refreshToken = useRefreshAccessToken();
@@ -47,7 +49,7 @@ function TokenStatus() {
     Math.max(0, expiration - Date.now()),
   );
 
-  const userImgUrl = useUserImgUrl();
+  const userData = useUserData();
 
   const minutes = Math.floor(timeLeft / 60000);
   const seconds = Math.floor((timeLeft % 60000) / 1000)
@@ -88,13 +90,28 @@ function TokenStatus() {
 
   // we are good on time. No need to display
   if (minutes > 4) {
-    if (userImgUrl) {
+    const allUserData = () => {
+      if (!userData) return false;
+      if (!userData.images?.[0]?.url) return false;
+      if (!userData.display_name) return false;
+      return true;
+    };
+    if (allUserData()) {
       return (
-        <img
-          src={userImgUrl}
-          alt="profile picture"
-          className={styles.profilePicture}
-        />
+        <div className={styles.profileWrapper}>
+          {/* TODO: make this button actually log the user out and/or clear the related cache */}
+          {/* TODO: make this trigger an "Are you sure?" popup */}
+          <div className={styles.logoutButton} onClick={() => navigate("/")}>
+            <GrLogout />
+          </div>
+          <img
+            src={userData.images[0].url}
+            alt="profile picture"
+            className={styles.profilePicture}
+            onError={(curr) => (curr.currentTarget.style.display = "none")}
+          />
+          <span className={styles.profileName}>{userData.display_name}</span>
+        </div>
       );
     }
     return <></>;

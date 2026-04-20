@@ -13,6 +13,7 @@ $failure-red: red;
   $radius: 0.4rem
 ) {
   border: none;
+  border: 0.1rem solid $shadow-color;
 
   background-color: $background-color;
   border-radius: $radius;
@@ -30,7 +31,7 @@ $failure-red: red;
   }
 }
 
-@mixin flex-default($direction) {
+@mixin flex-default($direction: row) {
   display: flex;
   flex-direction: $direction;
   justify-content: center;

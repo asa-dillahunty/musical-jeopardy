@@ -1,17 +1,25 @@
+@use "./../../variables.scss" as *;
 .appHeader {
-  background-color: #282c34;
+  @include flex-default(column);
+  // align-items: flex-start;
   min-height: 10vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+
+  padding-left: 2rem;
+
+  // background-color: #282c34;
+  background-color: $jeopardy-blue;
+  border-bottom: 0.5rem solid white;
+
   font-size: calc(10px + 2vmin);
+  font-weight: bold;
   color: white;
+  color: $jeopardy-yellow;
 
   position: relative;
 }
 
 .headerTitle {
+  // text-shadow: 0.1rem 0.1rem 0 white;
   &:hover {
     cursor: pointer;
   }
@@ -56,12 +64,60 @@
   }
 }
 
-.profilePicture {
+.profileWrapper {
   position: absolute;
   top: 1rem;
   right: 1rem;
-  height: calc(10vh - 2rem);
-  border-radius: 10%;
+  height: calc(100% - 2rem);
+  box-sizing: border-box;
+  border: 0.1rem solid white;
+  // overflow: hidden;
+  border-radius: 0.4rem;
+
+  .logoutButton {
+    @include flex-default;
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0.01;
+    background-color: black;
+    border-radius: 0.4rem;
+
+    height: 100%;
+    width: 100%;
+
+    transition: opacity 0.7s;
+    cursor: pointer;
+
+    &:hover {
+      opacity: 1;
+    }
+
+    svg {
+      font-size: 2rem;
+    }
+  }
+
+  .profilePicture {
+    height: 100%;
+    border-radius: 0.4rem;
+  }
+
+  .profileName {
+    position: absolute;
+    top: -0.9rem;
+    left: 0;
+    transform: translateX(calc(-100% + 1rem));
+
+    font-size: 1rem;
+    background-color: black;
+    box-sizing: border-box;
+    border: 0.1rem solid white;
+
+    white-space: nowrap;
+    padding: 0.3rem 3rem;
+    border-radius: 0.4rem;
+  }
 }
 
 @keyframes fadeInAndUp {

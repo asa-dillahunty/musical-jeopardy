@@ -1,6 +1,6 @@
 import { useDeleteGame, useGamesList } from "../util/firebaseAPIs";
 import { FaRegTrashCan, FaWandMagicSparkles } from "react-icons/fa6";
-import { FaAngleLeft, FaPlus } from "react-icons/fa";
+import { FaPlus } from "react-icons/fa";
 import { queryGemini } from "../util/gemini";
 import ClickBlocker from "../components/ClickBlocker";
 import { useState } from "react";
@@ -10,9 +10,9 @@ import { useAtomValue } from "jotai";
 import { AccessToken } from "../util/atoms";
 import { useUserId } from "../util/spotifyAPI";
 import { useNavigate } from "react-router-dom";
+import BackButton from "../components/ui/BackButton";
 
 import styles from "./sass/GameSelector.module.scss";
-import BackButton from "../components/ui/BackButton";
 
 function GameSelector({ editing }: { editing?: boolean }) {
   const token = useAtomValue(AccessToken);

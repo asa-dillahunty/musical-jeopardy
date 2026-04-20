@@ -117,7 +117,7 @@ export function useRefreshAccessToken() {
 
   return async () => {
     const { access_token, refresh_token, expires_in } =
-      refreshAccessToken(refreshToken);
+      await refreshAccessToken(refreshToken);
     if (access_token) {
       const expiration = Date.now() + expires_in * 1000;
       setAccessToken(access_token);

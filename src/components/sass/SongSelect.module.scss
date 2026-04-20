@@ -1,3 +1,4 @@
+@use "./../../variables.scss" as *;
 .questionBox {
   --temp-blue: rgb(227, 229, 255);
   --temp-black: rgb(35, 40, 60);
@@ -19,9 +20,9 @@
   overflow: hidden;
 
   button.closeButton {
-    cursor: pointer;
-    margin-top: 5px;
-    margin-bottom: 5px;
+    @include tactile-button($jeopardy-yellow, white, 0.1rem);
+    margin-top: 0.5rem;
+    margin-bottom: 0.6rem;
   }
 }
 

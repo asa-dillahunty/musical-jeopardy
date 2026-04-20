@@ -1,3 +1,5 @@
+@use "./../../../variables.scss" as *;
+
 .wrapper {
   display: flex;
   flex-direction: column;
@@ -5,31 +7,14 @@
   align-items: center;
 
   .readyButton {
+    @include tactile-button(rgb(184, 255, 131), black);
     font-size: 20px;
-    padding: 10px 20px;
-    border-radius: 5px;
     font-weight: bold;
-    background-color: rgb(184, 255, 131);
-
-    transition: transform 0.3s;
-    // width: min-content;
-  }
-
-  .readyButton:hover {
-    transform: translateY(-5px);
   }
 
   .resetButton {
+    @include tactile-button(rgb(255, 131, 131), black);
     font-size: 20px;
-    padding: 10px 20px;
-    border-radius: 5px;
     font-weight: bold;
-    background-color: rgb(255, 131, 131);
-
-    transition: transform 0.3s;
-  }
-
-  .resetButton:hover {
-    transform: translateY(-5px);
   }
 }

@@ -7,6 +7,8 @@ import {
 } from "../../util/atoms";
 import { useAtomValue } from "jotai";
 
+import styles from "./sass/PlayerEdit.module.scss";
+
 interface PlayerEditProps {
   selectedPlayerIndex: number;
   setEditing: (val: boolean) => void;
@@ -66,8 +68,18 @@ export default function PlayerEdit({
         ref={inputRef}
       />
       <div>
-        <button onClick={() => attemptSave(playerName)}>save</button>
-        <button onClick={() => setEditing(false)}>close</button>
+        <button
+          onClick={() => attemptSave(playerName)}
+          className={styles.saveButton}
+        >
+          save
+        </button>
+        <button
+          onClick={() => setEditing(false)}
+          className={styles.closeButton}
+        >
+          close
+        </button>
       </div>
     </div>
   );

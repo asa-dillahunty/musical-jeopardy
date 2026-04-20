@@ -79,24 +79,6 @@
   border-bottom: 4px solid rgb(146, 224, 255);
 }
 
-.player-edit button {
-  font-size: 20px;
-  padding: 10px 20px;
-  margin: 0 5px;
-  border-radius: 5px;
-  font-weight: bold;
-  transition: transform 0.3s;
-}
-
-.player-edit button:hover {
-  transform: translateY(-5px);
-}
-
-.player-edit button:first-child {
-  background-color: rgb(146, 224, 255);
-  color: black;
-}
-
 .player-setup-wrapper button.ready-button {
   font-size: 20px;
   padding: 10px 20px;
