@@ -16,7 +16,7 @@ import { NumPlayersAtom, PlayersAtom } from "../util/atoms";
 import { PlayersContainer } from "../components/players/PlayersContainer";
 import { PlayerType } from "../util/models";
 import { CanvasPath } from "react-sketch-canvas";
-import NumberInput from "../components/NumberInput";
+import NumberInput from "../components/ui/NumberInput";
 import { SongDisplay } from "../components/SongSelect";
 import { WhoAreYou } from "../util/savedTracks";
 
@@ -59,7 +59,7 @@ export default function FinalSubmission({}) {
     currentUnsubscribe = subscribeToPlayer(
       partyId,
       player.index,
-      setCurrentPlayer
+      setCurrentPlayer,
     );
 
     // need to also display a back button

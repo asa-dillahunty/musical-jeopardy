@@ -1,8 +1,9 @@
 import { useEffect } from "react";
-import "./sass/NumberInput.css";
 import { AiOutlineDownSquare, AiOutlineUpSquare } from "react-icons/ai";
 import { FaXmark } from "react-icons/fa6";
 import { FaCheck } from "react-icons/fa";
+
+import styles from "./sass/NumberInput.module.scss";
 
 interface NumberInputProps {
   label: string;
@@ -50,11 +51,11 @@ const NumberInput = ({
     let digits = [];
     for (let i = 0; i < maxDigits; i++) {
       digits.push(
-        <div className="number-input-button-container" key={i}>
+        <div className={styles.numberInputContainer} key={i}>
           <AiOutlineUpSquare
             onClick={() => handleIncrement(maxDigits - i - 1)}
           />
-          <div className="number-input-value"> {valueString[i]} </div>
+          <div className={styles.numberInputValue}> {valueString[i]} </div>
           <AiOutlineDownSquare
             onClick={() => handleDecrement(maxDigits - i - 1)}
           />
@@ -64,11 +65,11 @@ const NumberInput = ({
 
     if (includePlusMinus) {
       digits.push(
-        <div className="number-input-button-container" key={maxDigits}>
-          <button className="failure" onClick={minusFunc}>
+        <div className={styles.numberInputContainer} key={maxDigits}>
+          <button className={styles.failure} onClick={minusFunc}>
             <FaXmark />
           </button>
-          <button className="success" onClick={plusFunc}>
+          <button className={styles.success} onClick={plusFunc}>
             <FaCheck />
           </button>
         </div>,
@@ -77,9 +78,9 @@ const NumberInput = ({
 
     if (topLabel) {
       return (
-        <div className="compact-number-inputs top-label">
-          <div className="number-input-label">{label}</div>
-          <div className="number-input-digits">
+        <div className={styles.compactNumberInputs + " " + styles.topLabel}>
+          <div className={styles.numberLabel}>{label}</div>
+          <div className={styles.numberInputDigits}>
             {digits.map((digit) => digit)}
           </div>
         </div>
@@ -87,17 +88,17 @@ const NumberInput = ({
     }
 
     return (
-      <div className="compact-number-inputs">
-        <div className="number-input-label">{label}</div>
+      <div className={styles.compactNumberInputs}>
+        <div className={styles.numberLabel}>{label}</div>
         {digits.map((digit) => digit)}
       </div>
     );
   }
   return (
-    <div className="compact-number-inputs">
-      <div className="number-input-label">{label}</div>
-      <div className="number-input-value">{value}</div>
-      <div className="number-input-button-container">
+    <div className={styles.compactNumberInputs}>
+      <div className={styles.numberLabel}>{label}</div>
+      <div className={styles.numberInputValue}>{value}</div>
+      <div className={styles.numberInputContainer}>
         <AiOutlineUpSquare onClick={() => handleIncrement(0)} />
         <AiOutlineDownSquare onClick={() => handleDecrement(0)} />
       </div>

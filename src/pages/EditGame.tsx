@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import NumberInput from "../components/NumberInput";
+import NumberInput from "../components/ui/NumberInput";
 import GameBoard from "../components/GameBoard";
 import { useCreateGame, useGame, useUpdateGame } from "../util/firebaseAPIs";
 import ClickBlocker from "../components/ClickBlocker";

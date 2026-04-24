@@ -2,7 +2,7 @@ import { useAtom, useAtomValue } from "jotai";
 import { useState } from "react";
 import { NumPlayersAtom, PlayersAtom, useResetPlayers } from "../../util/atoms";
 import ClickBlocker from "../ClickBlocker";
-import NumberInput from "../NumberInput";
+import NumberInput from "../ui/NumberInput";
 import PlayerEdit from "./PlayerEdit";
 import { PlayersContainer } from "./PlayersContainer";
 

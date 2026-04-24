@@ -1,0 +1,95 @@
+@use "./../../../variables.scss" as *;
+
+.compactNumberInputs {
+  @include flex-default(row);
+
+  font-size: 16px;
+  user-select: none;
+
+  &.topLabel {
+    flex-direction: column;
+  }
+
+  & > .numberInputDigits {
+    @include flex-default(row);
+  }
+}
+
+.numberInputContainer {
+  @include flex-default(column);
+  margin: 0px 1rem;
+
+  & > svg {
+    height: 30px;
+    width: 30px;
+
+    &:hover {
+      cursor: pointer;
+    }
+  }
+}
+
+.compactNumberInputs {
+  & > .numberInputLabel {
+    margin: 0 3px;
+  }
+
+  & > .numberInputValue {
+    @include flex-default(column);
+    margin: 0 3px;
+  }
+}
+
+.numberInputButtonContainer {
+  @include flex-default(column);
+
+  margin: 0 3px;
+
+  & > svg {
+    height: 30px;
+    width: 30px;
+
+    &:hover {
+      cursor: pointer;
+    }
+  }
+
+  button {
+    width: 20px;
+    height: 20px;
+    border: none;
+    border-radius: 1px;
+    margin: 5px;
+    margin-top: 7px;
+    margin-bottom: 7px;
+
+    pointer-events: all;
+    cursor: pointer;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-size: 10px;
+    font-weight: bold;
+    box-shadow: inset -1px -1px white;
+
+    transition-property: box-shadow, transform;
+    transition-duration: 0.3s;
+    position: relative;
+
+    &:hover {
+      transform: translate(1px, 1px);
+      box-shadow: none;
+    }
+  }
+
+  &.success {
+    background-color: green;
+  }
+
+  &.failure {
+    background-color: red;
+    font-size: 14px;
+  }
+}

@@ -5,7 +5,7 @@ import { queryGemini } from "../util/gemini";
 import ClickBlocker from "../components/ClickBlocker";
 import { useState } from "react";
 import { HiOutlineSparkles } from "react-icons/hi";
-import NumberInput from "../components/NumberInput";
+import NumberInput from "../components/ui/NumberInput";
 import { useAtomValue } from "jotai";
 import { AccessToken } from "../util/atoms";
 import { useUserId } from "../util/spotifyAPI";

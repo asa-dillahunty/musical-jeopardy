@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import "./sass/GameBoard.css";
-import NumberInput from "./NumberInput";
+import NumberInput from "./ui/NumberInput";
 import { AiFillCloseCircle } from "react-icons/ai";
 import { playTrack } from "../util/spotifyAPI";
 import CurrentlyPlayingWidget from "./CurrentlyPlayingWidget";
@@ -93,7 +93,7 @@ export function PlayCard({
   const winWager = () => {
     updatePlayerScore(
       selectedPlayer.index,
-      players[selectedPlayer.index].score + dailyDoubleWager
+      players[selectedPlayer.index].score + dailyDoubleWager,
     );
     setSelectedCard({});
   };
@@ -101,7 +101,7 @@ export function PlayCard({
   const loseWager = () => {
     updatePlayerScore(
       selectedPlayer.index,
-      players[selectedPlayer.index].score - dailyDoubleWager
+      players[selectedPlayer.index].score - dailyDoubleWager,
     );
     setSelectedCard({});
   };
@@ -360,7 +360,7 @@ function GameBoard({
   // TODO: should "any" here be boards?
   const [revealedCards, setRevealedCards] = usePersistedState<[any, any, any]>(
     gameId + "-" + boardIndex + "-" + "revealed",
-    [{}, {}, {}]
+    [{}, {}, {}],
   );
 
   const revealCard = (i: number, j: number) => {
@@ -468,7 +468,7 @@ function GameBoard({
       // it was a fail, but we just added ^. Subtract twice
       updatePlayerScore(
         player.index,
-        players[player.index].score - 2 * calcScore
+        players[player.index].score - 2 * calcScore,
       );
     } else if (prevStatus === "fail") {
       // was a fail, but should be neutral, just add it back
@@ -506,10 +506,10 @@ function GameBoard({
                               header={j === 0}
                               editing={false}
                             />
-                          )
+                          ),
                       )}
                   </div>
-                )
+                ),
             )}
         </div>
       </div>
@@ -562,10 +562,10 @@ function GameBoard({
                               revealed={editing ? false : getRevealed(i, j)}
                               isDailyDouble={isDailyDouble(i, j)}
                             />
-                          )
+                          ),
                       )}
                   </div>
-                )
+                ),
             )}
           {
             // how do we display the selected card?

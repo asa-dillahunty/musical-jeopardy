@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import NumberInput from "../NumberInput";
+import NumberInput from "../ui/NumberInput";
 import PlayerIcon from "./PlayerIcon";
 import { PlayerType } from "../../util/models";
 import { useAtomValue } from "jotai";
