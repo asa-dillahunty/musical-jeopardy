@@ -204,7 +204,7 @@ async function getUserData(accessToken: string) {
 export function userDataQuery(accessToken: string) {
   const isEnabled = accessToken !== null && accessToken !== "";
   return {
-    queryKey: ["userId"],
+    queryKey: ["userId", accessToken],
     queryFn: async () => getUserData(accessToken),
     enabled: isEnabled,
   };
