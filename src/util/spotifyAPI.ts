@@ -66,6 +66,8 @@ export async function spotifyLogin() {
 
 export async function getTokenFromCode(code: string) {
   const codeVerifier = localStorage.getItem("code_verifier");
+  if (!codeVerifier)
+    throw new Error("Bad Code Verifier. This should never happen.");
   const redirectUrl = getRedirectUrl();
 
   const url = "https://accounts.spotify.com/api/token";
@@ -97,17 +99,6 @@ export async function getTokenFromCode(code: string) {
     expires_in: response.expires_in,
     refresh_token: response.refresh_token,
   };
-}
-
-// Function to get access token from URL
-export function getTokenFromUrl() {
-  const hash = window.location.hash.substring(1);
-  const params = hash.split("&").reduce((acc, current) => {
-    const [key, value] = current.split("=");
-    acc[key] = value;
-    return acc;
-  }, {});
-  return params.access_token;
 }
 
 export function useRefreshAccessToken() {
@@ -146,7 +137,8 @@ export async function refreshAccessToken(refreshToken: string) {
 
   if (response.error) {
     console.error("error" + response.error);
-    return;
+    // this should probably throw an error and that error should be handled.
+    return {};
   }
 
   return {
