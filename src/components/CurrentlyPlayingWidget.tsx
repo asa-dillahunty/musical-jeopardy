@@ -34,7 +34,7 @@ export default function CurrentlyPlayingWidget({
   const refreshWidget = () => {
     getCurrentlyPlaying(token).then((val) => {
       console.log(val);
-      if (!val) {
+      if (!val || val.is_playing === false) {
         setProgress(0);
         setPaused(true);
         setDuration(1);

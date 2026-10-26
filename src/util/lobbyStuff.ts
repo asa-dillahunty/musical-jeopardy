@@ -1,6 +1,7 @@
+import { isLocalEnv } from "./konami";
+
 export function generatePartyCode() {
-  const dev = window.location.hostname === "127.0.0.1";
-  if (dev) return "ABC";
+  if (isLocalEnv()) return "ABC";
 
   return randomString(3);
 }

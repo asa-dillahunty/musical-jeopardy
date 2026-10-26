@@ -1,6 +1,7 @@
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import { AccessToken, AccessTokenExpiration, RefreshToken } from "./atoms";
 import { useQuery } from "@tanstack/react-query";
+import { isLocalEnv } from "./konami";
 
 /************ Auth Stuff ************/
 
@@ -25,13 +26,13 @@ async function getCodeChallenge() {
     return values.reduce((acc, x) => acc + possible[x % possible.length], "");
   };
 
-  const sha256 = async (plain) => {
+  const sha256 = async (plain: string) => {
     const encoder = new TextEncoder();
     const data = encoder.encode(plain);
     return window.crypto.subtle.digest("SHA-256", data);
   };
 
-  const base64encode = (input) => {
+  const base64encode = (input: ArrayBuffer) => {
     return btoa(String.fromCharCode(...new Uint8Array(input)))
       .replace(/=/g, "")
       .replace(/\+/g, "-")
@@ -282,26 +283,43 @@ export async function getSingleTrack(
 // Function to play a track
 export async function playTrack(trackUri: string, accessToken: string) {
   console.log("playing track: ", trackUri);
-  if (window.location.hostname === "127.0.0.1") {
+  if (isLocalEnv()) {
     console.log("NOT");
-    return;
+    return true;
   }
 
-  const response = await fetch(`https://api.spotify.com/v1/me/player/play`, {
-    method: "PUT",
-    body: JSON.stringify({ uris: [trackUri] }),
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-      "Content-Type": "application/json",
+  // TODO: this needs to be removed when spotify fixes their API
+  await playTrackWorkAround(trackUri, accessToken);
+  return;
+
+  // const activeDeviceId = await getActiveDeviceId(accessToken);
+  // const deviceParam = activeDeviceId ? `?device_id=${activeDeviceId}` : "";
+  const deviceParam = "";
+  // spotify:track:7HKez549fwJQDzx3zLjHKC
+
+  const response = await fetch(
+    `https://api.spotify.com/v1/me/player/play${deviceParam}`,
+    {
+      method: "PUT",
+      body: JSON.stringify({ uris: [trackUri] }),
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
+      },
     },
-  });
+  );
   // maybe check for error ?
-  return response.ok;
+  if (!response.ok) {
+    throw new Error(
+      `Failed to play track: ${response.status} ${response.statusText}`,
+    );
+  }
+  return true;
 }
 
 export async function getCurrentlyPlaying(accessToken: string) {
   console.log("getting currently playing");
-  if (window.location.hostname === "127.0.0.1") {
+  if (isLocalEnv()) {
     console.log("NOT");
     return null;
   }
@@ -314,10 +332,6 @@ export async function getCurrentlyPlaying(accessToken: string) {
       },
     },
   );
-  if (response.status === 204) {
-    // nothing is currently playing
-    return null;
-  }
   console.log(response);
   const data = await response.json();
   // if data.error
@@ -370,4 +384,65 @@ export async function transferPlayback(accessToken: string, deviceID: string) {
   });
   // maybe check for error ?
   return response.ok;
+}
+
+export async function getActiveDeviceId(accessToken: string) {
+  const deviceCheck = await fetch(
+    "https://api.spotify.com/v1/me/player/devices",
+    {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    },
+  );
+  const { devices } = await deviceCheck.json();
+  console.log(
+    "Spotify's active devices:",
+    devices.map((d: any) => `${d.name} (Active: ${d.is_active})`),
+  );
+
+  const activeDevice = devices.find((d: any) => d.is_active);
+  // TODO: error handling of some kind
+  return activeDevice?.id;
+}
+
+// At the time of writing this, playTrack is not working due to errors
+// on spotify's end
+// https://community.spotify.com/forum/en/discussion/7552922/web-api-me-player-play-returns-204-but-does-not-start-playback-and-clears-current-playback-desktop
+export async function playTrackWorkAround(
+  trackUri: string,
+  accessToken: string,
+) {
+  const trackId = /^spotify:track:([A-Za-z0-9]+)$/.exec(trackUri)?.[1];
+  const trackResponse = await fetch(
+    `https://api.spotify.com/v1/tracks/${trackId}`,
+    {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    },
+  );
+
+  const track = await trackResponse.json();
+
+  const playbackBody = track.album?.uri
+    ? {
+        context_uri: track.album.uri,
+        offset: { uri: track.uri || trackUri },
+        position_ms: 0,
+      }
+    : { uris: [trackUri] };
+
+  const response = await fetch(`https://api.spotify.com/v1/me/player/play`, {
+    method: "PUT",
+    body: JSON.stringify(playbackBody),
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      "Content-Type": "application/json",
+    },
+  });
+  console.log(response);
+  // maybe check for error ?
+  if (!response.ok) {
+    throw new Error(
+      `Failed to play track: ${response.status} ${response.statusText}`,
+    );
+  }
+  return true;
 }

@@ -38,7 +38,7 @@ function makeStatic() {
   document.body.className = "static";
 }
 
-function inputHandler(input) {
+function inputHandler(input: string) {
   if (input === "up") {
     if (konami === 0 || konami === 1) konami++;
     else if (konami === 2) konami = 2;
@@ -63,4 +63,11 @@ function inputHandler(input) {
 
 function normalize() {
   document.body.classList = "";
+}
+
+// this function is to determine if the environment is local
+// we use this to reduce Spotify and firebase api calls while doing local testing
+export function isLocalEnv() {
+  // return false;
+  return window.location.hostname === "127.0.0.1";
 }

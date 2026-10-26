@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import "./sass/GameBoard.css";
 import NumberInput from "./ui/NumberInput";
 import { AiFillCloseCircle } from "react-icons/ai";
@@ -60,7 +60,7 @@ export function PlayCard({
 }) {
   const token = useAtomValue(AccessToken);
   const [isAnswerVisible, setIsAnswerVisible] = useState(false);
-  const [startedPlaying, setStartedPlaying] = useState(false);
+  const startedPlaying = useRef(false);
   const [placingWager, setPlacingWager] = useState(isDailyDouble);
   const players = useAtomValue(PlayersAtom);
   const updatePlayerScore = useUpdatePlayerScore();
@@ -73,7 +73,9 @@ export function PlayCard({
   // start the music if not editing
   const playSong = () => {
     if (!val) return;
-    if (startedPlaying) return;
+    if (startedPlaying.current) return;
+
+    startedPlaying.current = true;
     // maybe learn how to use this:
     // 		https://developer.spotify.com/documentation/embeds/tutorials/using-the-iframe-api
     playTrack(val.uri, token).then(() => {
@@ -82,7 +84,6 @@ export function PlayCard({
       // This is done because apparently Spotify is too slow
       setTimeout(refreshWidget, 1000);
     });
-    setStartedPlaying(true);
   };
 
   const finalizeWager = () => {

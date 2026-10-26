@@ -6,13 +6,14 @@ import { useEffect, useState } from "react";
 import styles from "./sass/AppHeader.module.scss";
 import { useRefreshAccessToken, useUserData } from "../util/spotifyAPI";
 import { GrLogout } from "react-icons/gr";
+import { isLocalEnv } from "../util/konami";
 
 export default function AppHeader() {
   const navigate = useNavigate();
   const location = useLocation();
   const atLogin = location.pathname === "/";
 
-  const dev = window.location.hostname === "127.0.0.1";
+  const isLocal = isLocalEnv();
 
   const onClickHeader = () => {
     if (atLogin) {
@@ -24,7 +25,7 @@ export default function AppHeader() {
 
   return (
     <header className={styles.appHeader}>
-      {dev && (
+      {isLocal && (
         <button onClick={() => localStorage.clear()}>
           clear local storage
         </button>
