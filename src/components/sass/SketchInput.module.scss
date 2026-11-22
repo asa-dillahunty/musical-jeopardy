@@ -1,0 +1,58 @@
+@use "./../../variables.scss" as *;
+
+.sketchWrapper {
+  @include flex-default(column);
+  position: relative;
+
+  .buttonToolbar {
+    @include flex-default();
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    font-size: 2rem;
+    gap: 5px;
+
+    button {
+      @include flex-default();
+      @include tactile-button($jeopardy-yellow, white, 0.2rem);
+      font-size: 1.5rem;
+      padding: 0.75rem;
+    }
+  }
+
+  .submitButton {
+    @include tactile-button($jeopardy-yellow, white, 0.2rem);
+    position: absolute;
+    bottom: 5px;
+    font-size: 1rem;
+    padding: 0.5rem;
+  }
+
+  .buttonPositioner {
+    @include absolute-center();
+  }
+
+  .showCanvas {
+    @include tactile-button($jeopardy-yellow, white);
+    font-size: 2.25rem;
+    padding: 1rem;
+    font-weight: bold;
+
+    color: black;
+  }
+
+  .reloadButton {
+    @include tactile-button($jeopardy-yellow, white, 0.2rem);
+    @include flex-default();
+    font-size: 1.5rem;
+    color: black;
+    position: absolute;
+    top: 5px;
+    right: 5px;
+  }
+}
+
+.sketchCanvas {
+  width: 80vw;
+  height: 80vh;
+}

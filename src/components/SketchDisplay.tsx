@@ -1,4 +1,5 @@
-import "./sass/SketchInput.css";
+import { jeopardyBlue } from "../util/exportedStylingVariables";
+import styles from "./sass/SketchInput.module.scss";
 
 import { useRef, useState } from "react";
 import {
@@ -7,38 +8,47 @@ import {
   ReactSketchCanvasRef,
 } from "react-sketch-canvas";
 
-export default function SketchDisplay({ paths }: { paths?: CanvasPath[] }) {
+export default function SketchDisplay({
+  paths,
+  reloadVisible,
+}: {
+  paths?: CanvasPath[];
+  reloadVisible?: boolean;
+}) {
   const [hidden, setHidden] = useState(true);
-
-  const styles = {
-    border: "0.0625rem solid #9c9c9c",
-    borderRadius: "0.25rem",
-  };
-
   const canvasRef = useRef<ReactSketchCanvasRef>(null);
 
   const show = () => {
     if (!paths) return;
+    if (!canvasRef.current) return;
     setHidden(false);
-    canvasRef.current?.loadPaths(paths);
+    canvasRef.current.clearCanvas();
+    canvasRef.current.loadPaths(paths);
   };
 
   if (!paths) return <></>;
   return (
-    <div className="sketch-wrapper">
+    <div className={styles.sketchWrapper}>
       <ReactSketchCanvas
         ref={canvasRef}
-        className="sketch-canvas"
-        style={styles}
+        className={styles.sketchCanvas}
         width="600"
         height="400"
         strokeWidth={15}
         strokeColor="white"
-        canvasColor="rgb(0, 0, 137)"
+        canvasColor={jeopardyBlue}
+        readOnly
       />
       {hidden && (
-        <button className="show-canvas" onClick={show}>
-          Show
+        <div className={styles.buttonPositioner}>
+          <button className={styles.showCanvas} onClick={show}>
+            Show
+          </button>
+        </div>
+      )}
+      {reloadVisible && (
+        <button className={styles.reloadButton} onClick={show}>
+          Reload
         </button>
       )}
     </div>

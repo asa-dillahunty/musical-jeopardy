@@ -1,4 +1,4 @@
-import { konamiSetup } from "../util/konami";
+import { isLocalEnv, konamiSetup } from "../util/konami";
 import { useNavigate } from "react-router-dom";
 
 import styles from "./sass/Menu.module.scss";
@@ -14,6 +14,11 @@ function Menu() {
       <button className={styles.menuButton} onClick={() => navigate("/play")}>
         Play Game
       </button>
+      {isLocalEnv() && (
+        <button className={styles.menuButton} onClick={() => navigate("/test")}>
+          Test Page
+        </button>
+      )}
     </div>
   );
 }

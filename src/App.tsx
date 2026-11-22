@@ -10,6 +10,8 @@ import JoinParty from "./pages/JoinParty";
 import Menu from "./pages/Menu";
 import AppHeader from "./components/AppHeader";
 import ImportGame from "./pages/ImportGame";
+import { isLocalEnv } from "./util/konami";
+import TestPage from "./pages/TestPage";
 
 function App() {
   const location = useLocation();
@@ -35,6 +37,8 @@ function App() {
           <Route path="/join/:partyId" element={<FinalSubmission />} />
 
           <Route path="/import" element={<ImportGame />} />
+
+          {isLocalEnv() && <Route path="/test" element={<TestPage />} />}
         </Routes>
       </main>
     </div>
