@@ -3,25 +3,32 @@ import styles from "./sass/SketchInput.module.scss";
 import { useRef } from "react";
 import { FaRedo, FaUndo } from "react-icons/fa";
 import { FaEraser } from "react-icons/fa6";
-import {
-  CanvasPath,
-  ReactSketchCanvas,
-  ReactSketchCanvasRef,
-} from "react-sketch-canvas";
+import { ReactSketchCanvas, ReactSketchCanvasRef } from "react-sketch-canvas";
 import { jeopardyBlue } from "../util/exportedStylingVariables";
+import { SketchDisplayDTO } from "./SketchDisplay";
 
 export function SketchInput({
   onSubmit,
   disabled = false,
 }: {
-  onSubmit: (val: CanvasPath[]) => void;
+  onSubmit: (val: SketchDisplayDTO) => void;
   disabled?: boolean;
 }) {
+  const wrapperRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<ReactSketchCanvasRef>(null);
   const onFinishSketch = () => {
+    if (!wrapperRef.current) return;
     if (!canvasRef.current) return;
+
     canvasRef.current.exportPaths().then((val) => {
-      onSubmit(val);
+      // we need to get the dimensions of the displayed canvas and add it here:
+      console.log(wrapperRef.current.getBoundingClientRect().width);
+      console.log(wrapperRef.current.getBoundingClientRect().height);
+      const h = wrapperRef.current.getBoundingClientRect().height;
+      const w = wrapperRef.current.getBoundingClientRect().width;
+
+      console.log(val);
+      onSubmit({ height: h, width: w, paths: val });
     });
     // right now this just downloads the image.
     // eventually we want this to do something else
@@ -39,7 +46,7 @@ export function SketchInput({
   };
 
   return (
-    <div className={styles.sketchWrapper}>
+    <div ref={wrapperRef} className={styles.sketchWrapper}>
       <div className={styles.buttonToolbar}>
         <button
           onClick={() => canvasRef.current?.clearCanvas()}
@@ -57,8 +64,6 @@ export function SketchInput({
       <ReactSketchCanvas
         ref={canvasRef}
         className={styles.sketchCanvas}
-        width="600"
-        height="400"
         strokeWidth={15}
         strokeColor="white"
         canvasColor={jeopardyBlue}

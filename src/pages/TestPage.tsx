@@ -1,20 +1,19 @@
 import { useNavigate } from "react-router-dom";
 
 import styles from "./sass/TestPage.module.scss";
-import SketchDisplay from "../components/SketchDisplay";
+import SketchDisplay, { SketchDisplayDTO } from "../components/SketchDisplay";
 import { SketchInput } from "../components/SketchInput";
 import { useState } from "react";
-import { CanvasPath } from "react-sketch-canvas";
 
 function TestPage() {
   const navigate = useNavigate();
-  const [testCanvasPath, setTestCanvasPath] = useState<CanvasPath[]>([]);
-  const onFinishSketch = (testPath: CanvasPath[]) => {
-    setTestCanvasPath(testPath);
+  const [testSketch, setTestSketch] = useState<SketchDisplayDTO>(null);
+  const onFinishSketch = (testPath: SketchDisplayDTO) => {
+    setTestSketch(testPath);
   };
 
   return (
-    <div className={styles.menuContainer}>
+    <div className={styles.pageContainer}>
       <button className={styles.menuButton} onClick={() => navigate("/menu")}>
         Menu
       </button>
@@ -23,7 +22,7 @@ function TestPage() {
       </div>
 
       <div className={styles.sketchDisplayContainer}>
-        <SketchDisplay paths={testCanvasPath} reloadVisible={true} />
+        <SketchDisplay sketch={testSketch} reloadVisible={true} />
       </div>
     </div>
   );

@@ -1,10 +1,11 @@
 @use "./../../variables.scss" as *;
 
-.menuContainer {
+.pageContainer {
   @include flex-default(column);
 
   gap: 20px;
   padding: 20px;
+  margin-bottom: 10rem;
 }
 
 .menuButton {
@@ -25,6 +26,13 @@
   height: 720px;
   overflow: hidden;
 }
+
+// .sketchInputContainer {
+//   position: relative;
+//   height: 360px;
+//   width: 720px;
+//   overflow: hidden;
+// }
 
 .sketchDisplayContainer {
   position: relative;
