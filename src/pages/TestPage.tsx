@@ -7,7 +7,7 @@ import { useState } from "react";
 
 function TestPage() {
   const navigate = useNavigate();
-  const [testSketch, setTestSketch] = useState<SketchDisplayDTO>(null);
+  const [testSketch, setTestSketch] = useState<SketchDisplayDTO | undefined>();
   const onFinishSketch = (testPath: SketchDisplayDTO) => {
     setTestSketch(testPath);
   };

@@ -15,10 +15,10 @@ import { useSetAtom } from "jotai";
 import { NumPlayersAtom, PlayersAtom } from "../util/atoms";
 import { PlayersContainer } from "../components/players/PlayersContainer";
 import { PlayerType } from "../util/models";
-import { CanvasPath } from "react-sketch-canvas";
 import NumberInput from "../components/ui/NumberInput";
 import { SongDisplay } from "../components/SongSelect";
 import { WhoAreYou } from "../util/savedTracks";
+import { SketchDisplayDTO } from "../components/SketchDisplay";
 
 type Unsubscribe = () => void;
 
@@ -93,9 +93,9 @@ export default function FinalSubmission({}) {
     setPlayerReady(partyId, selectedPlayerIndex, true);
   };
 
-  const onFinishSketch = (paths: CanvasPath[]) => {
+  const onFinishSketch = (sketch: SketchDisplayDTO) => {
     setSubmitted(true);
-    setPlayerSketch(partyId, selectedPlayerIndex, paths);
+    setPlayerSketch(partyId, selectedPlayerIndex, sketch);
   };
 
   useEffect(() => {

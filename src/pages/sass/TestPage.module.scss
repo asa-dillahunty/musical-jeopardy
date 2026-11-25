@@ -20,19 +20,19 @@
   position: relative;
 }
 
-.sketchInputContainer {
-  position: relative;
-  width: 360px;
-  height: 720px;
-  overflow: hidden;
-}
-
 // .sketchInputContainer {
 //   position: relative;
-//   height: 360px;
-//   width: 720px;
+//   width: 360px;
+//   height: 720px;
 //   overflow: hidden;
 // }
+
+.sketchInputContainer {
+  position: relative;
+  height: 360px;
+  width: 720px;
+  overflow: hidden;
+}
 
 .sketchDisplayContainer {
   position: relative;

@@ -20,15 +20,13 @@ export function SketchInput({
     if (!wrapperRef.current) return;
     if (!canvasRef.current) return;
 
-    canvasRef.current.exportPaths().then((val) => {
-      // we need to get the dimensions of the displayed canvas and add it here:
-      console.log(wrapperRef.current.getBoundingClientRect().width);
-      console.log(wrapperRef.current.getBoundingClientRect().height);
-      const h = wrapperRef.current.getBoundingClientRect().height;
-      const w = wrapperRef.current.getBoundingClientRect().width;
+    const h = wrapperRef.current.getBoundingClientRect().height;
+    const w = wrapperRef.current.getBoundingClientRect().width;
 
-      console.log(val);
-      onSubmit({ height: h, width: w, paths: val });
+    canvasRef.current.exportPaths().then((val) => {
+      const sketch = { height: h, width: w, paths: val };
+      console.log(sketch);
+      onSubmit(sketch);
     });
     // right now this just downloads the image.
     // eventually we want this to do something else

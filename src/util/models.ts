@@ -1,4 +1,4 @@
-import { CanvasPath } from "react-sketch-canvas";
+import { SketchDisplayDTO } from "../components/SketchDisplay";
 
 export type PlayerType = {
   index: number;
@@ -10,7 +10,7 @@ export type PlayerType = {
   // the following are final jeopardy only
   ready?: boolean;
   wager?: number;
-  sketch?: CanvasPath[];
+  sketch?: SketchDisplayDTO;
 };
 
 export type Artist = { name: string };

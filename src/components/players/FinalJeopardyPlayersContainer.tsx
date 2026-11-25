@@ -67,7 +67,7 @@ function PlayerDisplayWithSketch({ player }: { player: PlayerType }) {
     >
       <ClickBlocker block={showSketch} custom>
         <div className={styles.modalWrapper}>
-          <SketchDisplay paths={player.sketch} />
+          <SketchDisplay sketch={player.sketch} />
           {showWager && (
             <div className={styles.wagerContainer}>
               <p className={styles.wagerAmount}>${player.wager}</p>

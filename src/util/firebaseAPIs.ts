@@ -23,7 +23,7 @@ import {
 import { getFunctions } from "firebase/functions";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { PlayerType } from "./models";
-import { CanvasPath } from "react-sketch-canvas";
+import { SketchDisplayDTO } from "../components/SketchDisplay";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -149,7 +149,7 @@ export const useGamesList = () => {
 export async function writePlayersData(
   partyId: string,
   players: PlayerType[],
-  numPlayers: number
+  numPlayers: number,
 ) {
   console.log("writing players data");
   // ensure partyId is all caps
@@ -183,14 +183,14 @@ export function usePartyPlayersListQuery(partyId: string) {
     queryKey: ["rtdb_party_players_list", partyId],
     queryFn: async () => getPlayersData(partyId),
     enabled: Boolean(
-      partyId !== undefined && partyId !== null && partyId !== ""
+      partyId !== undefined && partyId !== null && partyId !== "",
     ),
   });
 }
 
 export function subscribeToPlayersList(
   partyId: string,
-  callback: (player: PlayerType[]) => void
+  callback: (player: PlayerType[]) => void,
 ) {
   // ensure partyId is all caps
   partyId = partyId.toUpperCase();
@@ -205,7 +205,7 @@ export function subscribeToPlayersList(
 export function subscribeToPlayer(
   partyId: string,
   playerIndex: number,
-  callback: (player: PlayerType) => void
+  callback: (player: PlayerType) => void,
 ) {
   partyId = partyId.toUpperCase();
   const playerRef = ref(rtdb, `${partyId}/players/${playerIndex}`);
@@ -218,7 +218,7 @@ export function subscribeToPlayer(
 export async function setPlayerReady(
   partyId: string,
   playerIndex: number,
-  ready: boolean
+  ready: boolean,
 ) {
   partyId = partyId.toUpperCase();
   return set(ref(rtdb, `${partyId}/players/${playerIndex}/ready`), ready);
@@ -227,7 +227,7 @@ export async function setPlayerReady(
 export async function setPlayerWager(
   partyId: string,
   playerIndex: number,
-  wager: number
+  wager: number,
 ) {
   partyId = partyId.toUpperCase();
   return set(ref(rtdb, `${partyId}/players/${playerIndex}/wager`), wager);
@@ -236,7 +236,7 @@ export async function setPlayerWager(
 export async function setPlayerSketch(
   partyId: string,
   playerIndex: number,
-  sketch: CanvasPath[]
+  sketch: SketchDisplayDTO,
 ) {
   partyId = partyId.toUpperCase();
   return set(ref(rtdb, `${partyId}/players/${playerIndex}/sketch`), sketch);

@@ -48,8 +48,6 @@ export default function SketchDisplay({
 
     wrapperRef.current.style.scale =
       widthScale < heightScale ? widthScale.toString() : heightScale.toString();
-
-    // console.log(widthScale < heightScale, wrapperRef.current.style.scale);
   }, [wrapperRef.current, sketch]);
 
   // sketch display should fill it's parent as well as it can, then normalize the picture so that it can be displayed inside

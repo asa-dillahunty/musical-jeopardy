@@ -61,24 +61,9 @@
   overflow: hidden;
   position: relative;
   @include flex-default;
-  border: 1px solid black;
 }
 
 .sketchDisplayWrapper {
-  // transform-origin: center center;
   @include absolute-center();
   transform-origin: 0 0;
-  // animation: shrink 2s linear 0s infinite;
-}
-
-@keyframes shrink {
-  0% {
-    scale: 1;
-  }
-  50% {
-    scale: 0.5;
-  }
-  100% {
-    scale: 1;
-  }
 }
