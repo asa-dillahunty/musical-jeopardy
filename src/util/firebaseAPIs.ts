@@ -23,7 +23,7 @@ import {
 import { getFunctions } from "firebase/functions";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { PlayerType } from "./models";
-import { SketchDisplayDTO } from "../components/SketchDisplay";
+import type { SketchDisplayDTO } from "../components/SketchDisplay";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -160,6 +160,20 @@ export async function writePlayersData(
   });
 }
 
+type StoredPlayer = Omit<PlayerType, "sketch"> & {
+  sketch?: Omit<SketchDisplayDTO, "paths"> & {
+    paths?: SketchDisplayDTO["paths"];
+  };
+};
+
+function normalizePlayer({ sketch, ...player }: StoredPlayer): PlayerType {
+  if (!sketch) return player;
+  return {
+    ...player,
+    sketch: { ...sketch, paths: sketch.paths ?? [] },
+  };
+}
+
 export async function getPlayersData(partyId: string) {
   // ensure partyId is all caps
   partyId = partyId.toUpperCase();
@@ -167,8 +181,10 @@ export async function getPlayersData(partyId: string) {
   const dbRef = ref(rtdb);
   const snapshot = await get(child(dbRef, `${partyId}`));
   if (snapshot.exists()) {
-    console.log(snapshot.val());
-    return snapshot.val();
+    const party = snapshot.val();
+    return party.players
+      ? { ...party, players: party.players.map(normalizePlayer) }
+      : party;
   } else {
     console.log("No data available");
     return [];
@@ -197,8 +213,8 @@ export function subscribeToPlayersList(
 
   const playerRef = ref(rtdb, `${partyId}/players`);
   return onValue(playerRef, (snapshot) => {
-    const players = snapshot.val() as PlayerType[];
-    callback(players);
+    const players = snapshot.val() as StoredPlayer[] | null;
+    callback(players?.map(normalizePlayer) ?? []);
   });
 }
 
@@ -210,8 +226,8 @@ export function subscribeToPlayer(
   partyId = partyId.toUpperCase();
   const playerRef = ref(rtdb, `${partyId}/players/${playerIndex}`);
   return onValue(playerRef, (snapshot) => {
-    const player = snapshot.val() as PlayerType;
-    callback(player);
+    const player = snapshot.val() as StoredPlayer | null;
+    if (player) callback(normalizePlayer(player));
   });
 }
 

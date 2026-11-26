@@ -35,20 +35,25 @@ export default function SketchDisplay({
   };
 
   useEffect(() => {
-    if (!wrapperRef.current) return;
-    if (!boundaryRef.current) return;
-    if (!sketch) return;
-    wrapperRef.current.style.width = `${sketch.width}px`;
-    wrapperRef.current.style.height = `${sketch.height}px`;
+    const wrapper = wrapperRef.current;
+    const boundary = boundaryRef.current;
+    if (!wrapper || !boundary || !sketch) return;
 
-    const widthScale =
-      boundaryRef.current?.getBoundingClientRect().width / sketch.width;
-    const heightScale =
-      boundaryRef.current?.getBoundingClientRect().height / sketch.height;
+    wrapper.style.width = `${sketch.width}px`;
+    wrapper.style.height = `${sketch.height}px`;
 
-    wrapperRef.current.style.scale =
-      widthScale < heightScale ? widthScale.toString() : heightScale.toString();
-  }, [wrapperRef.current, sketch]);
+    const fitSketch = () => {
+      const { width, height } = boundary.getBoundingClientRect();
+      wrapper.style.scale = String(
+        Math.min(width / sketch.width, height / sketch.height),
+      );
+    };
+
+    fitSketch();
+    const observer = new ResizeObserver(fitSketch);
+    observer.observe(boundary);
+    return () => observer.disconnect();
+  }, [sketch]);
 
   // sketch display should fill it's parent as well as it can, then normalize the picture so that it can be displayed inside
   if (!sketch?.paths) return <></>;
