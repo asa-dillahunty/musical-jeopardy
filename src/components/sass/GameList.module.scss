@@ -1,0 +1,48 @@
+@use "../../variables.scss" as *;
+
+.gameList {
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.gameRow {
+  display: flex;
+  max-width: 300px;
+  margin: auto;
+  border: 2px solid black;
+  border-inline-width: 4px;
+  background-color: $jeopardy-blue;
+  color: $jeopardy-yellow;
+  font-weight: bold;
+  text-align: left;
+
+  &:first-child {
+    border-top-width: 4px;
+  }
+
+  &:last-child {
+    border-bottom-width: 4px;
+  }
+}
+
+.gameLink {
+  display: grid;
+  flex: 1;
+  align-content: center;
+  min-width: 0;
+  padding: 10px 15px;
+  color: inherit;
+  overflow-wrap: anywhere;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+
+  &:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: -3px;
+  }
+}

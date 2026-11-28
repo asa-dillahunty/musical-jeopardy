@@ -1,42 +1,37 @@
 import type { ReactNode } from "react";
-import { useNavigate } from "react-router-dom";
 
-import styles from "./sass/GameSelector.module.scss";
+import GameList, { type GameListEntry } from "../components/GameList";
+
+type CatalogGame = GameListEntry & { userId?: string };
 
 type GameSelectorProps = {
-  games: { id: string; name?: string; userID?: string }[];
+  games: CatalogGame[];
   userId: string | undefined;
-  renderMyGameAction?: (gameId: string) => ReactNode;
+  renderMyGameAction?: (game: GameListEntry) => ReactNode;
 };
+
+const getGameDestination = (gameId: string) => encodeURIComponent(gameId);
 
 export default function GameSelector({
   games,
   userId,
   renderMyGameAction,
 }: GameSelectorProps) {
-  const navigate = useNavigate();
-  const myGames = games.filter((game) => game.userID === userId);
-  const otherGames = games.filter((game) => game.userID !== userId);
+  const isMyGame = (game: CatalogGame) =>
+    Boolean(userId) && game.userId === userId;
+  const myGames = games.filter(isMyGame);
+  const otherGames = games.filter((game) => !isMyGame(game));
 
   return (
     <>
       <p>My Games</p>
-      <ul className={styles.gameSelectorList}>
-        {myGames.map((game, index) => (
-          <li key={index} onClick={() => navigate(game.id)}>
-            {game.name}
-            {renderMyGameAction?.(game.id)}
-          </li>
-        ))}
-      </ul>
+      <GameList
+        games={myGames}
+        getGameDestination={getGameDestination}
+        renderAction={renderMyGameAction}
+      />
       <p>Public Games</p>
-      <ul className={styles.gameSelectorList}>
-        {otherGames.map((game, index) => (
-          <li key={index} onClick={() => navigate(game.id)}>
-            {game.name}
-          </li>
-        ))}
-      </ul>
+      <GameList games={otherGames} getGameDestination={getGameDestination} />
     </>
   );
 }

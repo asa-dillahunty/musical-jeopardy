@@ -22,7 +22,7 @@ import {
 } from "firebase/database";
 import { getFunctions } from "firebase/functions";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { PlayerType } from "./models";
+import type { JeopardyGame, PlayerType } from "./models";
 import type { SketchDisplayDTO } from "../components/SketchDisplay";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -55,7 +55,7 @@ export function markEvent(eventIdentifier, eventParameters, eventCallOptions) {
   logEvent(analytics, eventIdentifier, eventParameters, eventCallOptions);
 }
 
-const createGame = async (game) => {
+const createGame = async (game: JeopardyGame) => {
   console.log("creating game", game);
   const docRef = await addDoc(gamesCollection, game);
   return docRef.id;
@@ -71,7 +71,7 @@ export const useCreateGame = () => {
   });
 };
 
-const editGame = async (updatedGame) => {
+const editGame = async (updatedGame: JeopardyGame) => {
   console.log("editing game", updatedGame.id, updatedGame);
   const gameDoc = doc(db, GAMES_COLLECTION, updatedGame.id);
   await updateDoc(gameDoc, updatedGame);
@@ -134,10 +134,15 @@ export const useGame = (id: string) => {
 const fetchGamesList = async () => {
   console.log("getting games");
   const querySnapshot = await getDocs(gamesCollection);
-  const gameList = querySnapshot.docs.map((doc) => ({
-    id: doc.id,
-    ...doc.data(),
-  }));
+  const gameList = querySnapshot.docs.map((doc) => {
+    const { name, userId } = doc.data();
+
+    return {
+      id: doc.id,
+      name,
+      userId,
+    };
+  });
   console.log(gameList);
   return gameList;
 };
