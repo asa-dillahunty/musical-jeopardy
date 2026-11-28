@@ -1,6 +1,6 @@
 import { useDeleteGame, useGamesList } from "../util/firebaseAPIs";
 import { FaRegTrashCan, FaWandMagicSparkles } from "react-icons/fa6";
-import { FaArrowLeft, FaPlus } from "react-icons/fa";
+import { FaArrowLeft, FaFileImport, FaPlus } from "react-icons/fa";
 import { queryGemini } from "../util/gemini";
 import ClickBlocker from "../components/ClickBlocker";
 import { useState } from "react";
@@ -89,17 +89,28 @@ export default function EditGameSelector() {
             />
           </div>
           <div className={styles.actions}>
-            <button type="button" className={`${selectorStyles.control} ${styles.primaryButton}`} onClick={askGemini}>
+            <button
+              type="button"
+              className={`${selectorStyles.control} ${styles.primaryButton}`}
+              onClick={askGemini}
+            >
               Generate Game
             </button>
-            <button type="button" className={`${selectorStyles.control} ${styles.secondaryButton}`} onClick={() => setOpenForm(false)}>
+            <button
+              type="button"
+              className={`${selectorStyles.control} ${styles.secondaryButton}`}
+              onClick={() => setOpenForm(false)}
+            >
               Cancel
             </button>
           </div>
         </div>
       </ClickBlocker>
       <ClickBlocker block={askingGemini} custom>
-        <div className={`${styles.overlay} ${styles.loadingOverlay}`} role="status">
+        <div
+          className={`${styles.overlay} ${styles.loadingOverlay}`}
+          role="status"
+        >
           <HiOutlineSparkles aria-hidden="true" />
           <p>Generating your game…</p>
         </div>
@@ -110,18 +121,33 @@ export default function EditGameSelector() {
       <header className={selectorStyles.header}>
         <h1 id="edit-games-title">Edit Games</h1>
         <div className={styles.actions}>
-          <button type="button" className={`${selectorStyles.control} ${styles.primaryButton}`} onClick={openNewGame}>
+          <button
+            type="button"
+            className={`${selectorStyles.control} ${styles.primaryButton}`}
+            onClick={openNewGame}
+          >
             <FaPlus aria-hidden="true" /> New Game
           </button>
-          <button type="button" className={`${selectorStyles.control} ${styles.secondaryButton}`} onClick={() => setOpenForm(true)}>
+          <button
+            type="button"
+            className={`${selectorStyles.control} ${styles.secondaryButton}`}
+            onClick={() => setOpenForm(true)}
+          >
             <FaWandMagicSparkles aria-hidden="true" /> Ask Gemini
           </button>
+          <Link className={selectorStyles.control} to="/import">
+            <FaFileImport aria-hidden="true" /> Import Board
+          </Link>
         </div>
       </header>
       {isLoading ? (
-        <p className={selectorStyles.status} role="status">Loading games…</p>
+        <p className={selectorStyles.status} role="status">
+          Loading games…
+        </p>
       ) : isError || !gameList ? (
-        <p className={selectorStyles.status} role="alert">Couldn’t load games. Contact the site owner.</p>
+        <p className={selectorStyles.status} role="alert">
+          Couldn’t load games. Contact the site owner.
+        </p>
       ) : (
         <GameSelector
           games={gameList}

@@ -263,8 +263,13 @@ export async function getSingleTrack(
   artist: string,
   accessToken: string,
 ) {
+  const query = new URLSearchParams({
+    q: `${songTitle} ${artist}`,
+    type: "track",
+    limit: "1",
+  });
   const response = await fetch(
-    `https://api.spotify.com/v1/search?q=${songTitle} ${artist}&type=track&limit=1`,
+    `https://api.spotify.com/v1/search?${query}`,
     {
       headers: {
         Authorization: `Bearer ${accessToken}`,

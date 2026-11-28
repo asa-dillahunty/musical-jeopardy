@@ -31,6 +31,11 @@
     transform: translate(4px, 4px);
     box-shadow: none;
   }
+
+  &:disabled {
+    transform: none;
+    box-shadow: 4px 4px 0 $ink;
+  }
 }
 
 .header {
