@@ -1,0 +1,48 @@
+@use "../../variables.scss" as *;
+@use "spotifySignIn" as spotify;
+
+.page {
+  width: min(calc(100% - 3rem), 56rem);
+  margin: clamp(2rem, 8vw, 6rem) auto;
+  color: $ink;
+}
+
+.marquee {
+  padding: clamp(1.55rem, 4vw, 2.75rem);
+  border: 3px solid $ink;
+  background:
+    radial-gradient(circle, $jeopardy-yellow 0 28%, transparent 31%) 0 0 / 1.35rem 1.35rem,
+    $jeopardy-blue;
+  box-shadow: 9px 9px 0 $ink;
+}
+
+.face {
+  padding: clamp(1.25rem, 6vw, 3.75rem) 1rem;
+  border: 3px solid $ink;
+  background: $jeopardy-yellow;
+
+  h1 {
+    margin: 0 0 1.35rem;
+    color: $jeopardy-blue;
+    font-family: Impact, "Arial Black", sans-serif;
+    font-size: clamp(2.35rem, 9vw, 7rem);
+    font-weight: 900;
+    line-height: 0.94;
+    letter-spacing: -0.045em;
+    text-transform: uppercase;
+  }
+}
+
+.spotify {
+  @include spotify.button($paper);
+}
+
+.help {
+  margin: 1.55rem 0 0;
+  line-height: 1.5;
+
+  a {
+    color: $jeopardy-blue;
+    font-weight: 700;
+  }
+}

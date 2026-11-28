@@ -1,5 +1,5 @@
 import { useAtomValue } from "jotai";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { AccessToken, AccessTokenExpiration } from "../util/atoms";
 import { useEffect, useState } from "react";
 
@@ -8,10 +8,17 @@ import { useRefreshAccessToken, useUserData } from "../util/spotifyAPI";
 import { GrLogout } from "react-icons/gr";
 import { isLocalEnv } from "../util/konami";
 
+const LAST_LOGIN_DRAFT = 20;
+
 export default function AppHeader() {
   const { pathname } = useLocation();
-  const atLogin = pathname === "/";
+  const navigate = useNavigate();
+  const draftNumber = Number(/^\/login([1-9]\d*)\/*$/i.exec(pathname)?.[1]);
+  const loginIndex = pathname === "/" ? 0 : draftNumber;
+  const atLogin = loginIndex >= 0 && loginIndex <= LAST_LOGIN_DRAFT;
   const isLocal = isLocalEnv();
+  const showLoginControls =
+    atLogin && (isLocal || window.location.hostname === "localhost");
 
   const wordmark = (
     <>
@@ -31,6 +38,26 @@ export default function AppHeader() {
         )}
 
         <div className={styles.headerTools}>
+          {showLoginControls && (
+            <nav className={styles.loginControls} aria-label="Login previews">
+              <button
+                type="button"
+                aria-label="Previous login preview"
+                disabled={loginIndex === 0}
+                onClick={() => navigate(loginIndex === 1 ? "/" : `/login${loginIndex - 1}`)}
+              >
+                ←
+              </button>
+              <button
+                type="button"
+                aria-label="Next login preview"
+                disabled={loginIndex === LAST_LOGIN_DRAFT}
+                onClick={() => navigate(`/login${loginIndex + 1}`)}
+              >
+                →
+              </button>
+            </nav>
+          )}
           {isLocal && (
             <button
               className={styles.clearStorage}

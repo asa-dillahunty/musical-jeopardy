@@ -1,0 +1,63 @@
+@use "../../variables.scss" as *;
+@use "spotifySignIn" as spotify;
+
+.page {
+  width: min(calc(100% - 2rem), 38rem);
+  margin: clamp(1.5rem, 5vw, 4rem) auto;
+  color: $ink;
+}
+
+.record {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  min-height: 16rem;
+  aspect-ratio: 1;
+  border: 3px solid $ink;
+  border-radius: 50%;
+  background: repeating-radial-gradient(circle, #1630ab 0 8px, $jeopardy-blue 9px 11px);
+  box-shadow: 7px 7px 0 $ink;
+}
+
+.label {
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  gap: 0.65rem;
+  width: min(82%, 24rem);
+  aspect-ratio: 1;
+  min-height: 12rem;
+  padding: 1rem;
+  border: 3px solid $ink;
+  border-radius: 50%;
+  background: $paper;
+
+  h1 {
+    margin: 0;
+    color: $jeopardy-blue;
+    font-size: clamp(2rem, 7vw, 4rem);
+    line-height: 1;
+    letter-spacing: -0.055em;
+  }
+}
+
+.spindle {
+  width: 0.7rem;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: $ink;
+}
+
+.spotify {
+  @include spotify.button;
+}
+
+.help {
+  margin: 1.5rem auto 0;
+  line-height: 1.5;
+
+  a {
+    color: $jeopardy-blue;
+    font-weight: 700;
+  }
+}

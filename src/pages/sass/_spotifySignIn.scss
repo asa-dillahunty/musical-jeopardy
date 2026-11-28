@@ -1,0 +1,32 @@
+@use "../../variables.scss" as *;
+
+@mixin button($background: #1ed760, $shadow: $ink) {
+  @include tactile-button($background, $shadow, 4px, 0);
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 44px;
+  max-width: 100%;
+  padding: 0.65rem 0.85rem;
+  border-width: 2px;
+  color: $ink;
+  font: inherit;
+  font-weight: 800;
+
+  img {
+    display: block;
+    width: 5rem;
+    max-width: 100%;
+  }
+
+  &:focus-visible {
+    outline: 3px solid currentColor;
+    outline-offset: 4px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
+}

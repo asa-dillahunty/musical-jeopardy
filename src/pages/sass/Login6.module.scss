@@ -1,0 +1,115 @@
+@use "../../variables.scss" as *;
+@use "spotifySignIn" as spotify;
+
+.deck {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+  width: min(calc(100% - 3rem), 56rem);
+  margin: clamp(2rem, 8vw, 6rem) auto;
+  border: 3px solid $ink;
+  background: $ink;
+  box-shadow: 9px 9px 0 $jeopardy-blue;
+  color: $paper;
+  text-align: left;
+}
+
+.turntable {
+  position: relative;
+  display: grid;
+  place-items: center;
+  padding: clamp(1.25rem, 5vw, 3.5rem);
+  background: $jeopardy-blue;
+}
+
+.record {
+  width: min(100%, 21rem);
+  aspect-ratio: 1;
+  border: 3px solid $paper;
+  border-radius: 50%;
+  background: radial-gradient(circle, $ink 0 3%, $jeopardy-yellow 3% 26%, transparent 26%),
+    repeating-radial-gradient(circle, $ink 0 5px, #454545 6px 8px);
+}
+
+.tonearm {
+  position: absolute;
+  top: 18%;
+  right: 12%;
+  width: 0.65rem;
+  height: 53%;
+  border: 2px solid $ink;
+  background: $paper;
+  transform: rotate(25deg);
+  transform-origin: top center;
+
+  &::before,
+  &::after {
+    position: absolute;
+    left: 50%;
+    border: 2px solid $ink;
+    background: $jeopardy-yellow;
+    content: "";
+    transform: translateX(-50%);
+  }
+
+  &::before {
+    top: -0.6rem;
+    width: 1.5rem;
+    aspect-ratio: 1;
+    border-radius: 50%;
+  }
+
+  &::after {
+    bottom: -0.4rem;
+    width: 0.9rem;
+    height: 1.1rem;
+  }
+}
+
+.controls {
+  align-self: center;
+  padding: clamp(1.25rem, 4vw, 3rem);
+
+  h1 {
+    margin: 0 0 1.35rem;
+    color: $jeopardy-yellow;
+    font-size: clamp(2.5rem, 6vw, 5rem);
+    line-height: 0.95;
+    letter-spacing: -0.06em;
+  }
+
+  p {
+    margin: 1.5rem 0 0;
+    line-height: 1.5;
+  }
+
+  a {
+    color: $jeopardy-yellow;
+  }
+}
+
+.spotify {
+  @include spotify.button;
+  box-shadow: 4px 4px 0 $paper;
+
+  &:hover {
+    box-shadow: none;
+  }
+
+  &:focus-visible {
+    outline-color: $paper;
+  }
+}
+
+@media (max-width: 40rem) {
+  .deck {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .record {
+    width: min(75%, 15rem);
+  }
+
+  .tonearm {
+    right: 23%;
+  }
+}

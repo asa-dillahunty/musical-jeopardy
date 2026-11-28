@@ -1,0 +1,84 @@
+@use "../../variables.scss" as *;
+@use "spotifySignIn" as spotify;
+
+.page {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  width: min(calc(100% - 3rem), 56rem);
+  margin: clamp(2rem, 8vw, 6rem) auto;
+  border: 3px solid $ink;
+  background: color-mix(in srgb, $jeopardy-blue 16%, $paper);
+  box-shadow: 9px 9px 0 $ink;
+  color: $ink;
+  text-align: left;
+}
+
+.artwork {
+  position: absolute;
+  z-index: -1;
+  top: 50%;
+  right: -18%;
+  width: 62%;
+  aspect-ratio: 1;
+  transform: translateY(-50%);
+  border: 3px solid $ink;
+  border-radius: 50%;
+  background:
+    radial-gradient(
+      circle,
+      $ink 0 3%,
+      $jeopardy-yellow 3% 27%,
+      transparent 27%
+    ),
+    repeating-radial-gradient(
+      circle,
+      black 0 7px,
+      color-mix(in srgb, black 80%, $paper) 8px 10px
+    );
+}
+
+.content {
+  width: 61%;
+  padding: clamp(1.5rem, 5vw, 4rem);
+
+  h1 {
+    margin: 0 0 1.4rem;
+    color: $jeopardy-blue;
+    font-family: Georgia, serif;
+    font-size: clamp(2.75rem, 7vw, 6.25rem);
+    font-style: italic;
+    line-height: 0.92;
+    letter-spacing: -0.075em;
+  }
+
+  p {
+    max-width: 33ch;
+    margin: 1.25rem 0 0;
+    line-height: 1.5;
+  }
+
+  a {
+    color: $jeopardy-blue;
+    font-weight: 700;
+  }
+}
+
+.spotify {
+  @include spotify.button($paper);
+}
+
+@media (max-width: 40rem) {
+  .artwork {
+    position: relative;
+    top: auto;
+    right: auto;
+    width: min(62%, 15rem);
+    margin: -2.5rem auto 0;
+    transform: none;
+  }
+
+  .content {
+    width: 100%;
+  }
+}

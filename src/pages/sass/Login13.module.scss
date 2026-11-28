@@ -1,0 +1,72 @@
+@use "../../variables.scss" as *;
+@use "spotifySignIn" as spotify;
+
+$acid: #d6fa56;
+
+.page {
+  display: grid;
+  justify-items: center;
+  width: min(calc(100% - 3rem), 50rem);
+  margin: clamp(2rem, 8vw, 6rem) auto;
+  color: $ink;
+}
+
+.poster {
+  display: grid;
+  justify-items: center;
+  gap: 0.9rem;
+  width: 100%;
+  padding: clamp(1.5rem, 6vw, 4rem) 1rem;
+  border: 3px solid $ink;
+  background: $acid;
+  box-shadow: 8px 8px 0 $ink;
+
+  h1 {
+    margin: 0;
+    font-family: "Courier New", monospace;
+    font-size: clamp(2.25rem, 8vw, 6rem);
+    line-height: 0.95;
+    letter-spacing: -0.085em;
+    text-transform: uppercase;
+  }
+}
+
+.wave {
+  width: min(76%, 21rem);
+  height: clamp(2.1rem, 7vw, 4.5rem);
+  background: repeating-linear-gradient(
+    90deg,
+    $ink 0 0.35rem,
+    transparent 0.35rem 0.65rem
+  );
+  clip-path: polygon(
+    0 45%, 8% 44%, 14% 18%, 24% 31%, 32% 9%, 41% 29%, 48% 0%,
+    56% 23%, 63% 10%, 70% 39%, 80% 14%, 91% 43%, 100% 46%,
+    100% 55%, 91% 59%, 80% 87%, 70% 62%, 63% 90%, 56% 79%, 48% 100%,
+    41% 73%, 32% 92%, 24% 70%, 14% 82%, 8% 57%, 0 55%
+  );
+}
+
+.signIn {
+  position: relative;
+  width: min(92%, 35rem);
+  margin-top: -0.65rem;
+  padding: 1.15rem;
+  border: 3px solid $ink;
+  background: $paper;
+  box-shadow: 5px 5px 0 $ink;
+
+  p {
+    margin: 1rem 0 0;
+    line-height: 1.5;
+  }
+
+  a {
+    color: $jeopardy-blue;
+    font-weight: 700;
+  }
+}
+
+.spotify {
+  @include spotify.button($acid);
+}

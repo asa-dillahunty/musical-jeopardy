@@ -1,0 +1,73 @@
+@use "../../variables.scss" as *;
+@use "spotifySignIn" as spotify;
+
+.page {
+  width: min(calc(100% - 3rem), 58rem);
+  margin: clamp(2rem, 7vw, 5rem) auto;
+  padding: clamp(1.25rem, 5vw, 3rem);
+  border: 3px solid $ink;
+  background: $paper;
+  box-shadow: 8px 8px 0 $ink;
+  color: $ink;
+  text-align: left;
+}
+
+.headline {
+  padding: clamp(0.85rem, 3vw, 1.75rem) 0;
+  border-block: 7px double $ink;
+
+  h1 {
+    margin: 0;
+    font-family: Georgia, serif;
+    font-size: clamp(2.75rem, 9vw, 7rem);
+    font-weight: 900;
+    line-height: 0.92;
+    letter-spacing: -0.065em;
+  }
+}
+
+.columns {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+  gap: clamp(1.25rem, 5vw, 3rem);
+  padding-top: 1.5rem;
+}
+
+.intro {
+  margin: 0;
+  font-family: Georgia, serif;
+  font-size: clamp(1.45rem, 3.5vw, 2.55rem);
+  line-height: 1.12;
+  letter-spacing: -0.03em;
+}
+
+.entry {
+  padding-inline-start: clamp(1.25rem, 4vw, 2.5rem);
+  border-inline-start: 2px solid $ink;
+}
+
+.spotify {
+  @include spotify.button(#c7d7ff);
+}
+
+.help {
+  margin: 1rem 0 0;
+  line-height: 1.5;
+
+  a {
+    color: $jeopardy-blue;
+    font-weight: 700;
+  }
+}
+
+@media (max-width: 38rem) {
+  .columns {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .entry {
+    padding: 1.25rem 0 0;
+    border-top: 2px solid $ink;
+    border-inline-start: 0;
+  }
+}

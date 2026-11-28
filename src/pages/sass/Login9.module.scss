@@ -1,0 +1,66 @@
+@use "../../variables.scss" as *;
+@use "spotifySignIn" as spotify;
+
+$coral: #ffc1ad;
+$turquoise: #a9ece6;
+
+.page {
+  width: min(calc(100% - 3rem), 39rem);
+  margin: clamp(1.75rem, 6vw, 4rem) auto;
+  padding: clamp(0.8rem, 3vw, 1.5rem);
+  border: 3px solid $ink;
+  border-radius: 5rem 5rem 0.75rem 0.75rem;
+  background: $coral;
+  box-shadow: 8px 8px 0 $ink;
+  color: $ink;
+}
+
+.window {
+  display: grid;
+  grid-template-rows: minmax(0, 1fr);
+  place-items: center;
+  overflow: hidden;
+  height: clamp(8.5rem, 28vw, 16rem);
+  border: 3px solid $ink;
+  border-radius: 3.75rem 3.75rem 0 0;
+  background: repeating-linear-gradient(90deg, $turquoise 0 18px, #92d9d2 18px 22px);
+}
+
+.record {
+  width: min(64%, 17rem);
+  aspect-ratio: 1;
+  border: 3px solid $ink;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle, $ink 0 3%, $coral 3% 28%, transparent 28%),
+    repeating-radial-gradient(circle, $ink 0 5px, #464646 6px 7px);
+}
+
+.controls {
+  margin-top: 0.7rem;
+  padding: clamp(1rem, 4vw, 1.75rem);
+  border: 3px solid $ink;
+  background: $paper;
+
+  h1 {
+    margin: 0 0 1rem;
+    font-size: clamp(2rem, 6vw, 3.5rem);
+    font-weight: 900;
+    line-height: 0.95;
+    letter-spacing: -0.06em;
+  }
+}
+
+.spotify {
+  @include spotify.button($turquoise);
+}
+
+.help {
+  margin: 0.9rem 0 0.15rem;
+  line-height: 1.5;
+
+  a {
+    color: inherit;
+    font-weight: 700;
+  }
+}

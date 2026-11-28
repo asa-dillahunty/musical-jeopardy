@@ -1,0 +1,106 @@
+@use "../../variables.scss" as *;
+@use "spotifySignIn" as spotify;
+
+$peach: #ffc99e;
+$rose: #ff8cc7;
+$plum: #461235;
+
+.page {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  width: min(calc(100% - 3rem), 55rem);
+  margin: clamp(2rem, 8vw, 6rem) auto;
+  border: 3px solid $ink;
+  background: $paper;
+  box-shadow: 9px 9px 0 $ink;
+  color: $ink;
+  text-align: left;
+}
+
+.copy {
+  align-self: center;
+  padding: clamp(1.25rem, 5vw, 3.5rem);
+
+  h1 {
+    margin: 0 0 1.3rem;
+    color: $plum;
+    font-size: clamp(3rem, 8vw, 6.5rem);
+    font-weight: 900;
+    line-height: 0.88;
+    letter-spacing: -0.075em;
+  }
+
+  p {
+    margin: 1.4rem 0 0;
+    line-height: 1.5;
+  }
+
+  a {
+    color: $plum;
+    font-weight: 700;
+  }
+}
+
+.art {
+  display: grid;
+  place-items: center;
+  min-height: 12rem;
+  padding: 1.5rem;
+  border-left: 3px solid $ink;
+  background: repeating-linear-gradient(-45deg, $peach 0 18px, #ffb883 18px 36px);
+}
+
+.cassette {
+  display: grid;
+  place-items: center;
+  width: min(90%, 18rem);
+  aspect-ratio: 1.62;
+  border: 3px solid $ink;
+  border-radius: 0.55rem;
+  background: linear-gradient($rose 0 63%, $plum 63% 100%);
+  box-shadow: 7px 7px 0 $ink;
+  transform: rotate(-9deg);
+}
+
+.reels {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 66%;
+  height: 33%;
+  margin-bottom: 11%;
+  padding: 0 8%;
+  border: 3px solid $ink;
+  border-radius: 99px;
+  background: $paper;
+
+  &::before,
+  &::after {
+    width: 25%;
+    aspect-ratio: 1;
+    border: 3px dashed $paper;
+    border-radius: 50%;
+    background: $plum;
+    content: "";
+  }
+}
+
+.spotify {
+  @include spotify.button($rose);
+}
+
+@media (max-width: 40rem) {
+  .page {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .art {
+    grid-row: 1;
+    border-left: 0;
+    border-bottom: 3px solid $ink;
+  }
+
+  .cassette {
+    width: min(70%, 13rem);
+  }
+}

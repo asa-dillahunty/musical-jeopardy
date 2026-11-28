@@ -1,0 +1,75 @@
+@use "../../variables.scss" as *;
+@use "spotifySignIn" as spotify;
+
+$mint: #83f9b0;
+
+.page {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+  align-items: center;
+  gap: clamp(1.5rem, 5vw, 4rem);
+  width: min(calc(100% - 3rem), 58rem);
+  margin: clamp(2rem, 8vw, 6rem) auto;
+  padding: clamp(1.25rem, 5vw, 3rem);
+  border: 3px solid $ink;
+  background: $jeopardy-blue;
+  box-shadow: 9px 9px 0 $ink;
+  color: $paper;
+  text-align: left;
+}
+
+.sleeve {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  aspect-ratio: 1;
+  border: 3px solid $ink;
+  background: repeating-linear-gradient(135deg, $mint 0 24px, #66df98 24px 48px);
+  box-shadow: 6px 6px 0 $ink;
+}
+
+.vinyl {
+  width: 78%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle, $ink 0 3%, $jeopardy-yellow 3% 29%, transparent 29%),
+    repeating-radial-gradient(circle, $ink 0 6px, #464646 7px 8px);
+}
+
+.content {
+  h1 {
+    margin: 0 0 1.35rem;
+    font-size: clamp(2.4rem, 6.5vw, 5.3rem);
+    font-weight: 900;
+    line-height: 0.95;
+    letter-spacing: -0.065em;
+  }
+
+  p {
+    margin: 1.25rem 0 0;
+    line-height: 1.5;
+  }
+
+  a {
+    color: $mint;
+  }
+}
+
+.spotify {
+  @include spotify.button($mint, $paper);
+
+  &:focus-visible {
+    outline-color: $paper;
+  }
+}
+
+@media (max-width: 40rem) {
+  .page {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .sleeve {
+    width: min(100%, 15rem);
+  }
+}
