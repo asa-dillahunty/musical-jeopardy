@@ -3,7 +3,8 @@ import Login from "./pages/Login";
 import { Route, Routes, useLocation } from "react-router-dom";
 import FinalSubmission from "./pages/FinalSubmission";
 import AccessTokenHandler from "./pages/AccessTokenHandler";
-import GameSelector from "./pages/GameSelector";
+import PlayGameSelector from "./pages/PlayGameSelector";
+import EditGameSelector from "./pages/EditGameSelector";
 import EditGame from "./pages/EditGame";
 import PlayGame from "./pages/PlayGame";
 import JoinParty from "./pages/JoinParty";
@@ -28,10 +29,10 @@ function App() {
           <Route path="/callback" element={<AccessTokenHandler />} />
           <Route path="/menu" element={<Menu />} />
 
-          <Route path="/play" element={<GameSelector />} />
+          <Route path="/play" element={<PlayGameSelector />} />
           <Route path="/play/:gameId" element={<PlayGame />} />
 
-          <Route path="/edit" element={<GameSelector editing />} />
+          <Route path="/edit" element={<EditGameSelector />} />
           <Route path="/edit/:gameId" element={<EditGame />} />
 
           <Route path="/join" element={<JoinParty />} />
