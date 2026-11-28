@@ -1,132 +1,181 @@
-@use "./../../variables.scss" as *;
+@use "../../variables.scss" as *;
+
 .appHeader {
-  @include flex-default(column);
-  // align-items: flex-start;
-  min-height: 10vh;
-
-  padding-left: 2rem;
-
-  // background-color: #282c34;
-  background-color: $jeopardy-blue;
-  border-bottom: 0.5rem solid white;
-
-  font-size: calc(10px + 2vmin);
-  font-weight: bold;
-  color: white;
-  color: $jeopardy-yellow;
-
-  position: relative;
+  border-bottom: 4px solid $ink;
+  background: $jeopardy-blue;
+  color: $paper;
+  box-shadow: inset 0 -6px 0 $jeopardy-yellow;
 }
 
-.headerTitle {
-  // text-shadow: 0.1rem 0.1rem 0 white;
-  &:hover {
-    cursor: pointer;
+.headerInner {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  gap: 0 1.5rem;
+  max-width: 100rem;
+  margin-inline: auto;
+  padding: 1rem clamp(1rem, 3vw, 2.5rem) calc(1rem + 6px);
+}
+
+.wordmark {
+  grid-column: 2;
+  min-width: 0;
+  color: $paper;
+  font-family: "Arial Black", system-ui, sans-serif;
+  font-size: clamp(1.625rem, 4.3vw, 3.85rem);
+  font-weight: 900;
+  letter-spacing: -0.06em;
+  line-height: 1;
+  overflow-wrap: anywhere;
+  text-decoration: none;
+  text-shadow: 3px 4px 0 $ink;
+  text-transform: uppercase;
+
+  span {
+    color: $jeopardy-yellow;
   }
 }
 
-.expirationClock {
-  position: absolute;
-  top: 1rem;
-  right: 1rem;
+a.wordmark:hover {
+  text-decoration: underline;
+  text-decoration-color: $jeopardy-yellow;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.14em;
+}
+
+.headerTools {
   display: flex;
   align-items: center;
-  background: rgba(33, 33, 33, 0.8);
-  padding: 0.5rem 1rem;
-  border-radius: 4px;
-  color: white;
-  font-size: 0.9rem;
+  grid-column: 3;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  min-width: 0;
 
-  opacity: 0;
-  animation: fadeInAndUp 2s ease-out 5s 1 forwards;
+  &:empty {
+    display: none;
+  }
+}
+
+.clearStorage,
+.expirationClock,
+.profileWrapper {
+  border: 2px solid rgb(255 250 240 / 65%);
+}
+
+.clearStorage {
+  min-height: 44px;
+  padding: 0.35rem 0.65rem;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: 0.8rem;
+  font-weight: 800;
+  cursor: pointer;
+
+  &:hover {
+    background: $paper;
+    color: $jeopardy-blue;
+  }
+}
+
+.expirationClock,
+.profileWrapper {
+  display: flex;
+  align-items: stretch;
+  min-width: 0;
+  max-width: 100%;
+  font-size: 0.875rem;
+  font-weight: 750;
+}
+
+.expirationText,
+.expirationTextUrgent,
+.profileName {
+  align-content: center;
+  padding: 0.45rem 0.75rem;
+  text-align: left;
+}
+
+.expirationText,
+.expirationTextUrgent {
+  font-variant-numeric: tabular-nums;
 }
 
 .expirationTextUrgent {
-  color: red;
-  margin-right: 0.75rem;
+  color: #ffb4a9;
 }
 
-.expirationText {
-  margin-right: 0.75rem;
-}
-
-.expirationRefresh {
+.expirationRefresh,
+.logoutButton {
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0.35rem 0.65rem;
+  border: 0;
+  border-left: 2px solid rgb(255 250 240 / 65%);
   background: transparent;
-  border: 1px solid white;
-  border-radius: 3px;
-  padding: 0.25rem 0.5rem;
-  color: white;
+  color: inherit;
+  font: inherit;
   cursor: pointer;
-  transition: background 0.2s;
 
   &:hover {
-    background: rgba(255, 255, 255, 0.2);
+    background: $paper;
+    color: $jeopardy-blue;
   }
 }
 
-.profileWrapper {
-  position: absolute;
-  top: 1rem;
-  right: 1rem;
-  height: calc(100% - 2rem);
-  box-sizing: border-box;
-  border: 0.1rem solid white;
-  // overflow: hidden;
-  border-radius: 0.4rem;
-
-  .logoutButton {
-    @include flex-default;
-    position: absolute;
-    top: 0;
-    left: 0;
-    opacity: 0.01;
-    background-color: black;
-    border-radius: 0.4rem;
-
-    height: 100%;
-    width: 100%;
-
-    transition: opacity 0.7s;
-    cursor: pointer;
-
-    &:hover {
-      opacity: 1;
-    }
-
-    svg {
-      font-size: 2rem;
-    }
-  }
-
-  .profilePicture {
-    height: 100%;
-    border-radius: 0.4rem;
-  }
-
-  .profileName {
-    position: absolute;
-    top: -0.9rem;
-    left: 0;
-    transform: translateX(calc(-100% + 1rem));
-
-    font-size: 1rem;
-    background-color: black;
-    box-sizing: border-box;
-    border: 0.1rem solid white;
-
-    white-space: nowrap;
-    padding: 0.3rem 3rem;
-    border-radius: 0.4rem;
-  }
+.logoutButton {
+  font-size: 1.1rem;
 }
 
-@keyframes fadeInAndUp {
-  from {
-    opacity: 0;
-    transform: translateY(300%);
+.profilePicture {
+  align-self: center;
+  width: 44px;
+  height: 44px;
+  border-right: 2px solid rgb(255 250 240 / 65%);
+  object-fit: cover;
+}
+
+.profileName {
+  max-width: 14rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  background-color: $paper;
+  color: $ink;
+}
+
+.appHeader :focus-visible {
+  outline: 2px solid $jeopardy-yellow;
+  outline-offset: 3px;
+}
+
+.expirationRefresh:focus-visible,
+.logoutButton:focus-visible {
+  outline-offset: -4px;
+}
+
+.expirationRefresh:hover:focus-visible,
+.logoutButton:hover:focus-visible {
+  outline-color: $jeopardy-blue;
+}
+
+@media (max-width: 62rem) {
+  .headerInner {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: 0.85rem;
   }
-  to {
-    opacity: 1;
-    transform: translateY(0);
+
+  .wordmark,
+  .headerTools {
+    grid-column: 1;
+    justify-self: center;
+  }
+
+  .headerTools {
+    justify-content: center;
   }
 }

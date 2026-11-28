@@ -1,5 +1,5 @@
 import { useAtomValue } from "jotai";
-import { useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { AccessToken, AccessTokenExpiration } from "../util/atoms";
 import { useEffect, useState } from "react";
 
@@ -9,32 +9,40 @@ import { GrLogout } from "react-icons/gr";
 import { isLocalEnv } from "../util/konami";
 
 export default function AppHeader() {
-  const navigate = useNavigate();
-  const location = useLocation();
-  const atLogin = location.pathname === "/";
-
+  const { pathname } = useLocation();
+  const atLogin = pathname === "/";
   const isLocal = isLocalEnv();
 
-  const onClickHeader = () => {
-    if (atLogin) {
-      // we don't want to do anything here. The user is not logged in
-    } else {
-      navigate("/menu");
-    }
-  };
+  const wordmark = (
+    <>
+      Musical <span>Jeopardy</span>
+    </>
+  );
 
   return (
     <header className={styles.appHeader}>
-      {isLocal && (
-        <button onClick={() => localStorage.clear()}>
-          clear local storage
-        </button>
-      )}
-      <span onClick={onClickHeader} className={styles.headerTitle}>
-        MUSICAL JEOPARDY
-      </span>
+      <div className={styles.headerInner}>
+        {atLogin ? (
+          <div className={styles.wordmark}>{wordmark}</div>
+        ) : (
+          <Link to="/menu" className={styles.wordmark}>
+            {wordmark}
+          </Link>
+        )}
 
-      {!atLogin && <TokenStatus />}
+        <div className={styles.headerTools}>
+          {isLocal && (
+            <button
+              className={styles.clearStorage}
+              type="button"
+              onClick={() => localStorage.clear()}
+            >
+              Clear local storage
+            </button>
+          )}
+          {!atLogin && <TokenStatus />}
+        </div>
+      </div>
     </header>
   );
 }
@@ -42,7 +50,6 @@ export default function AppHeader() {
 function TokenStatus() {
   const expiration = useAtomValue(AccessTokenExpiration);
   const token = useAtomValue(AccessToken);
-  const navigate = useNavigate();
   //   const [expiration, setExpiration] = useState(Date.now() + 10000);
   //   const [expiration, setExpiration] = useState(Date.now() + 5 * 60 * 1000 + 5);
   const refreshToken = useRefreshAccessToken();
@@ -102,16 +109,20 @@ function TokenStatus() {
         <div className={styles.profileWrapper}>
           {/* TODO: make this button actually log the user out and/or clear the related cache */}
           {/* TODO: make this trigger an "Are you sure?" popup */}
-          <div className={styles.logoutButton} onClick={() => navigate("/")}>
-            <GrLogout />
-          </div>
           <img
             src={userData.images[0].url}
-            alt="profile picture"
+            alt=""
             className={styles.profilePicture}
             onError={(curr) => (curr.currentTarget.style.display = "none")}
           />
           <span className={styles.profileName}>{userData.display_name}</span>
+          <Link
+            to="/"
+            className={styles.logoutButton}
+            aria-label="Return to sign-in"
+          >
+            <GrLogout aria-hidden="true" />
+          </Link>
         </div>
       );
     }
@@ -121,7 +132,11 @@ function TokenStatus() {
   return (
     <div className={styles.expirationClock}>
       <ExpirationText />
-      <button className={styles.expirationRefresh} onClick={refreshToken}>
+      <button
+        className={styles.expirationRefresh}
+        type="button"
+        onClick={refreshToken}
+      >
         Refresh
       </button>
     </div>
