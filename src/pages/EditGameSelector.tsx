@@ -3,7 +3,7 @@ import { FaRegTrashCan, FaWandMagicSparkles } from "react-icons/fa6";
 import { FaPlus } from "react-icons/fa";
 import { queryGemini } from "../util/gemini";
 import ClickBlocker from "../components/ClickBlocker";
-import { useState, type MouseEvent } from "react";
+import { useState } from "react";
 import { HiOutlineSparkles } from "react-icons/hi";
 import NumberInput from "../components/ui/NumberInput";
 import { useAtomValue } from "jotai";
@@ -31,8 +31,7 @@ export default function EditGameSelector() {
 
   const openNewGame = () => navigate("new");
 
-  const handleDeleteGame = (e: MouseEvent<SVGElement>, gameId: string) => {
-    e.stopPropagation();
+  const handleDeleteGame = (gameId: string) => {
     if (!window.confirm("Confirm Delete?")) return;
     deleteGameMutation.mutateAsync(gameId);
   };
@@ -115,8 +114,15 @@ export default function EditGameSelector() {
       <GameSelector
         games={gameList}
         userId={userId}
-        renderMyGameAction={(gameId) => (
-          <FaRegTrashCan onClick={(e) => handleDeleteGame(e, gameId)} />
+        renderMyGameAction={(game) => (
+          <button
+            className={styles.deleteGameButton}
+            type="button"
+            aria-label={`Delete ${game.name || "untitled game"}`}
+            onClick={() => handleDeleteGame(game.id)}
+          >
+            <FaRegTrashCan aria-hidden="true" />
+          </button>
         )}
       />
       <button id={styles.newGameButton} onClick={openNewGame}>

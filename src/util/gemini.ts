@@ -104,7 +104,7 @@ export async function createBoardFromJSON(
   numBoards,
   numCategories,
   numSongs,
-  userID,
+  userId,
   accessToken,
 ) {
   const newGame = getNewGame();
@@ -149,11 +149,11 @@ export async function createBoardFromJSON(
 
   await Promise.all(songPromises);
 
-  newGame.userID = userID;
+  newGame.userId = userId;
   return newGame;
 }
 
-export async function queryGemini(token: string, userID: string, options) {
+export async function queryGemini(token: string, userId: string, options) {
   const { numBoards, cols, rows } = options;
   console.log("Querying Gemini", options);
   // const cols = 3;
@@ -184,7 +184,7 @@ export async function queryGemini(token: string, userID: string, options) {
       numBoards,
       cols,
       rows,
-      userID,
+      userId,
       token,
     );
     storeGame(newGame);
