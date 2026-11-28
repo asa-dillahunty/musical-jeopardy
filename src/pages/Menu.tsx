@@ -1,25 +1,39 @@
-import { isLocalEnv, konamiSetup } from "../util/konami";
-import { useNavigate } from "react-router-dom";
+import { isLocalEnv } from "../util/konami";
+import { FaListAlt, FaPlay } from "react-icons/fa";
+import { Link } from "react-router-dom";
 
 import styles from "./sass/Menu.module.scss";
 
 function Menu() {
-  const navigate = useNavigate();
-
   return (
-    <div className={styles.menuContainer}>
-      <button className={styles.menuButton} onClick={() => navigate("/edit")}>
-        Build/Edit Board
-      </button>
-      <button className={styles.menuButton} onClick={() => navigate("/play")}>
-        Play Game
-      </button>
-      {isLocalEnv() && (
-        <button className={styles.menuButton} onClick={() => navigate("/test")}>
-          Test Page
-        </button>
-      )}
-    </div>
+    <section className={styles.menu} aria-labelledby="main-menu-title">
+      <h1 id="main-menu-title">Main Menu</h1>
+      <nav aria-labelledby="main-menu-title">
+        <div className={styles.tiles}>
+          <Link className={styles.playTile} to="/play">
+            <span className={styles.tileTop} aria-hidden="true">
+              <FaPlay />
+              <span>→</span>
+            </span>
+            <span className={styles.tileLabel}>Play Game</span>
+            <span>Pick a board and host a round.</span>
+          </Link>
+          <Link className={styles.buildTile} to="/edit">
+            <span className={styles.tileTop} aria-hidden="true">
+              <FaListAlt />
+              <span>→</span>
+            </span>
+            <span className={styles.tileLabel}>Build/Edit Board</span>
+            <span>Create a board or edit an existing one.</span>
+          </Link>
+        </div>
+        {isLocalEnv() && (
+          <Link className={styles.testLink} to="/test">
+            Test Page <span aria-hidden="true">→</span>
+          </Link>
+        )}
+      </nav>
+    </section>
   );
 }
 

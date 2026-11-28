@@ -1,25 +1,97 @@
-@use "./../../variables.scss" as *;
+@use "../../variables.scss" as *;
 
-.menuContainer {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
+.menu {
+  width: min(100%, 60rem);
+  margin-inline: auto;
+  padding: clamp(2rem, 7vw, 5rem) clamp(1.5rem, 5vw, 4rem);
+  color: $ink;
+  text-align: left;
 
-  gap: 20px;
-  padding: 20px;
+  h1 {
+    margin: 0 0 clamp(1.25rem, 4vw, 2.5rem);
+    font-size: clamp(2.75rem, 8vw, 6rem);
+    font-weight: 900;
+    letter-spacing: -0.065em;
+    line-height: 1;
+  }
+
+  a:focus-visible {
+    outline: 3px solid $jeopardy-blue;
+    outline-offset: 6px;
+  }
 }
 
-.menuButton {
-  @include tactile-button($jeopardy-blue, white);
+.tiles {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(1.25rem, 4vw, 2rem);
+}
 
+.playTile,
+.buildTile {
+  @include tactile-button($jeopardy-yellow, $ink, 8px, 0);
   display: flex;
-  justify-content: center;
-  align-items: center;
-  color: white;
-  font-size: 36px;
-  font-weight: bold;
+  flex-direction: column;
+  gap: 0.5rem;
+  min-height: 14rem;
+  padding: clamp(1.25rem, 4vw, 2rem);
+  border-width: 3px;
+  color: $ink;
+  line-height: 1.4;
   text-decoration: none;
+}
 
-  position: relative;
+.buildTile {
+  background-color: $jeopardy-blue;
+  color: $paper;
+}
+
+.tileTop {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: auto;
+  padding-bottom: 1.25rem;
+  font-size: 1.75rem;
+  line-height: 1;
+}
+
+.tileLabel {
+  font-size: clamp(1.5rem, 4vw, 2.75rem);
+  font-weight: 900;
+  letter-spacing: -0.045em;
+  line-height: 1;
+}
+
+.testLink {
+  @include tactile-button($paper, $ink, 4px, 0);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-height: 44px;
+  margin-top: 1.75rem;
+  padding: 0.5rem 0.9rem;
+  border-width: 2px;
+  color: $ink;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+@media (max-width: 36rem) {
+  .tiles {
+    grid-template-columns: 1fr;
+  }
+
+  .playTile,
+  .buildTile {
+    min-height: 11rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .playTile,
+  .buildTile,
+  .testLink {
+    transition: none;
+  }
 }
