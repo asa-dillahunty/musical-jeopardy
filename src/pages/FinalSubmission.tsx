@@ -129,10 +129,18 @@ export default function FinalSubmission({}) {
   if (currentPlayer?.ready) {
     return (
       <div className={styles.container}>
-        <button onClick={deselectPlayer} disabled={submitted}>
-          Back
-        </button>
-        <SketchInput onSubmit={onFinishSketch} disabled={submitted} />
+        <div className={styles.buttonPositioner}>
+          <button
+            onClick={deselectPlayer}
+            disabled={submitted}
+            className={styles.backButton}
+          >
+            Back
+          </button>
+        </div>
+        <div className={styles.sketchInputContainer}>
+          <SketchInput onSubmit={onFinishSketch} disabled={submitted} />
+        </div>
       </div>
     );
   }

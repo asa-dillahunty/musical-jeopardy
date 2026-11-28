@@ -12,6 +12,7 @@ import AppHeader from "./components/AppHeader";
 import ImportGame from "./pages/ImportGame";
 import { isLocalEnv } from "./util/konami";
 import TestPage from "./pages/TestPage";
+import LostPage from "./pages/LostPage";
 
 function App() {
   const location = useLocation();
@@ -39,6 +40,7 @@ function App() {
           <Route path="/import" element={<ImportGame />} />
 
           {isLocalEnv() && <Route path="/test" element={<TestPage />} />}
+          <Route path="*" element={<LostPage />} />
         </Routes>
       </main>
     </div>
