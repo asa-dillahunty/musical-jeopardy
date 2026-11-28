@@ -1,6 +1,6 @@
 import { useDeleteGame, useGamesList } from "../util/firebaseAPIs";
 import { FaRegTrashCan, FaWandMagicSparkles } from "react-icons/fa6";
-import { FaPlus } from "react-icons/fa";
+import { FaArrowLeft, FaPlus } from "react-icons/fa";
 import { queryGemini } from "../util/gemini";
 import ClickBlocker from "../components/ClickBlocker";
 import { useState } from "react";
@@ -9,11 +9,11 @@ import NumberInput from "../components/ui/NumberInput";
 import { useAtomValue } from "jotai";
 import { AccessToken } from "../util/atoms";
 import { useUserId } from "../util/spotifyAPI";
-import { useNavigate } from "react-router-dom";
-import BackButton from "../components/ui/BackButton";
+import { Link, useNavigate } from "react-router-dom";
 import GameSelector from "./GameSelector";
 
-import styles from "./sass/GameSelector.module.scss";
+import styles from "./sass/EditGameSelector.module.scss";
+import selectorStyles from "./sass/GameSelector.module.scss";
 
 export default function EditGameSelector() {
   const token = useAtomValue(AccessToken);
@@ -60,17 +60,11 @@ export default function EditGameSelector() {
       });
   };
 
-  if (isLoading) {
-    return <p>Loading</p>;
-  }
-  if (isError || !gameList) {
-    return <p>Some error. Contact site owner.</p>;
-  }
-
   return (
-    <section className={styles.selectionSection}>
+    <section className={selectorStyles.page} aria-labelledby="edit-games-title">
       <ClickBlocker block={openForm} custom>
-        <div className={styles.formWrapper}>
+        <div className={styles.overlay}>
+          <h2>Ask Gemini</h2>
           <div className={styles.valueContainer}>
             <NumberInput
               label={"Number of Boards"}
@@ -94,45 +88,56 @@ export default function EditGameSelector() {
               minVal={3}
             />
           </div>
-          <button onClick={askGemini}>Submit</button>
-          <button onClick={() => setOpenForm(false)}>Cancel</button>
+          <div className={styles.actions}>
+            <button type="button" className={`${selectorStyles.control} ${styles.primaryButton}`} onClick={askGemini}>
+              Generate Game
+            </button>
+            <button type="button" className={`${selectorStyles.control} ${styles.secondaryButton}`} onClick={() => setOpenForm(false)}>
+              Cancel
+            </button>
+          </div>
         </div>
       </ClickBlocker>
       <ClickBlocker block={askingGemini} custom>
-        <span className={styles.loadingGeminiMessage}>
-          <div className={styles.sparkleWrapper}>
-            <HiOutlineSparkles />
-          </div>
-          <div className={styles.textWrapper}>
-            <h3>Asking Gemini!</h3>
-            <p>(It's not very smart)</p>
-          </div>
-        </span>
+        <div className={`${styles.overlay} ${styles.loadingOverlay}`} role="status">
+          <HiOutlineSparkles aria-hidden="true" />
+          <p>Generating your game…</p>
+        </div>
       </ClickBlocker>
-      <h2>Select a Game to Edit!</h2>
-      <BackButton path="/menu" />
-      <GameSelector
-        games={gameList}
-        userId={userId}
-        renderMyGameAction={(game) => (
-          <button
-            className={styles.deleteGameButton}
-            type="button"
-            aria-label={`Delete ${game.name || "untitled game"}`}
-            onClick={() => handleDeleteGame(game.id)}
-          >
-            <FaRegTrashCan aria-hidden="true" />
+      <Link className={selectorStyles.control} to="/menu">
+        <FaArrowLeft aria-hidden="true" /> Main Menu
+      </Link>
+      <header className={selectorStyles.header}>
+        <h1 id="edit-games-title">Edit Games</h1>
+        <div className={styles.actions}>
+          <button type="button" className={`${selectorStyles.control} ${styles.primaryButton}`} onClick={openNewGame}>
+            <FaPlus aria-hidden="true" /> New Game
           </button>
-        )}
-      />
-      <button id={styles.newGameButton} onClick={openNewGame}>
-        New Game
-        <FaPlus />
-      </button>
-      <button id={styles.askGeminiButton} onClick={() => setOpenForm(true)}>
-        Ask Gemini
-        <FaWandMagicSparkles />
-      </button>
+          <button type="button" className={`${selectorStyles.control} ${styles.secondaryButton}`} onClick={() => setOpenForm(true)}>
+            <FaWandMagicSparkles aria-hidden="true" /> Ask Gemini
+          </button>
+        </div>
+      </header>
+      {isLoading ? (
+        <p className={selectorStyles.status} role="status">Loading games…</p>
+      ) : isError || !gameList ? (
+        <p className={selectorStyles.status} role="alert">Couldn’t load games. Contact the site owner.</p>
+      ) : (
+        <GameSelector
+          games={gameList}
+          userId={userId}
+          renderMyGameAction={(game) => (
+            <button
+              className={styles.deleteGameButton}
+              type="button"
+              aria-label={`Delete ${game.name || "untitled game"}`}
+              onClick={() => handleDeleteGame(game.id)}
+            >
+              <FaRegTrashCan aria-hidden="true" />
+            </button>
+          )}
+        />
+      )}
     </section>
   );
 }

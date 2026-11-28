@@ -1,97 +1,142 @@
 @use "../../variables.scss" as *;
 
-.deleteGameButton {
-  display: grid;
-  flex: 0 0 44px;
-  place-items: center;
+.page {
+  width: min(100%, 68rem);
+  margin-inline: auto;
+  padding: clamp(1.5rem, 5vw, 3.5rem) clamp(1.25rem, 5vw, 4rem) 4rem;
+  color: $ink;
+  text-align: left;
+
+  :is(a, button):focus-visible {
+    outline: 3px solid $jeopardy-blue;
+    outline-offset: 4px;
+  }
+}
+
+.control {
+  @include tactile-button(var(--selector-control-background, #{$paper}), $ink, 4px, 0);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.625rem;
   min-height: 44px;
-  padding: 0;
-  border: 0;
-  background: transparent;
-  color: inherit;
+  padding: 0.625rem 0.875rem;
+  border-width: 2px;
+  color: var(--selector-control-color, #{$ink});
   font: inherit;
-  cursor: pointer;
+  font-weight: 800;
+  text-decoration: none;
 
-  &:hover {
-    background: $jeopardy-yellow;
-    color: $jeopardy-blue;
-  }
-
-  &:focus-visible {
-    outline: 2px solid currentColor;
-    outline-offset: -3px;
+  &:active {
+    transform: translate(4px, 4px);
+    box-shadow: none;
   }
 }
 
-#newGameButton,
-#askGeminiButton {
-  @include tactile-button($jeopardy-blue, white, 0.2rem);
-  @include flex-default(row);
+.header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  justify-content: space-between;
+  gap: 1.25rem 2rem;
+  margin: clamp(1.5rem, 4vw, 2.75rem) 0 clamp(1.25rem, 4vw, 2rem);
+  padding-bottom: clamp(1.25rem, 4vw, 2rem);
+  border-bottom: 3px solid $ink;
 
-  color: white;
-  font-weight: bold;
-
-  margin-top: 1rem;
-  gap: 8px;
-
-  &:hover {
-    opacity: 0.8;
-  }
-}
-
-section.selectionSection {
-  @include flex-default(column);
-  padding-bottom: 30px;
-}
-
-.formWrapper {
-  background-color: antiquewhite;
-  padding: 32px;
-  border-radius: 15px;
-
-  & > div {
-    @include flex-default(row);
-  }
-
-  & > button {
-    &:nth-child(even) {
-      @include tactile-button($jeopardy-blue, black, 0.2rem);
-      color: white;
-    }
-    &:nth-child(odd) {
-      @include tactile-button($jeopardy-yellow, black, 0.2rem);
-      color: black;
-    }
-    margin: 2rem 1rem 0 1rem;
-  }
-}
-
-.loadingGeminiMessage {
-  @include flex-default(row);
-
-  color: white;
-  background-color: var(--jeopardy-blue);
-
-  padding: 32px;
-  border-radius: 15px;
-  gap: 32px;
-
-  .sparkleWrapper {
-    font-size: 90px;
-    animation: spin 1s ease-in 0s infinite;
-  }
-
-  .textWrapper {
-    @include flex-default(column);
-  }
-
-  h3 {
-    font-size: 64px;
+  h1 {
     margin: 0;
+    font-size: clamp(2.75rem, 8vw, 6rem);
+    font-weight: 900;
+    letter-spacing: -0.065em;
+    line-height: 1;
+  }
+}
+
+.catalog {
+  display: grid;
+  width: 100%;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: start;
+  gap: clamp(1.25rem, 4vw, 2rem);
+}
+
+.panel,
+.status {
+  border: 3px solid $ink;
+  background-color: $paper;
+  box-shadow: 6px 6px 0 $ink;
+}
+
+.panel {
+  h2 {
+    margin: 0;
+    padding: 0.875rem 1.125rem;
+    border-bottom: 3px solid $ink;
+    background-color: $jeopardy-yellow;
+    font-size: clamp(1.5rem, 4vw, 2rem);
+    font-weight: 900;
+    letter-spacing: -0.04em;
+    line-height: 1.15;
   }
 
-  p {
-    font-size: 24px;
-    margin: 0;
+  & + section h2 {
+    background-color: $jeopardy-blue;
+    color: $paper;
+  }
+}
+
+.catalog .panel li {
+  max-width: none;
+  margin: 0;
+  border: 0;
+  background-color: $paper;
+  color: $ink;
+
+  & + li {
+    border-top: 2px solid $ink;
+  }
+
+  > a {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    min-height: 52px;
+    padding: 0.75rem 1.125rem;
+
+    &::after {
+      flex: 0 0 0.5rem;
+      height: 0.5rem;
+      border: solid currentColor;
+      border-width: 2px 2px 0 0;
+      transform: rotate(45deg);
+      content: "";
+    }
+
+    &:hover {
+      background-color: $jeopardy-yellow;
+    }
+  }
+
+  :is(a, button):focus-visible {
+    outline-offset: -4px;
+  }
+}
+
+.emptyMessage,
+.status {
+  margin: 0;
+  padding: 1rem 1.125rem;
+}
+
+@media (max-width: 38rem) {
+  .catalog {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .control {
+    transition: none;
   }
 }

@@ -2,6 +2,8 @@ import type { ReactNode } from "react";
 
 import GameList, { type GameListEntry } from "../components/GameList";
 
+import styles from "./sass/GameSelector.module.scss";
+
 type CatalogGame = GameListEntry & { userId?: string };
 
 type GameSelectorProps = {
@@ -23,15 +25,27 @@ export default function GameSelector({
   const otherGames = games.filter((game) => !isMyGame(game));
 
   return (
-    <>
-      <p>My Games</p>
-      <GameList
-        games={myGames}
-        getGameDestination={getGameDestination}
-        renderAction={renderMyGameAction}
-      />
-      <p>Public Games</p>
-      <GameList games={otherGames} getGameDestination={getGameDestination} />
-    </>
+    <div className={styles.catalog}>
+      <section className={styles.panel}>
+        <h2>My Games</h2>
+        {myGames.length > 0 ? (
+          <GameList
+            games={myGames}
+            getGameDestination={getGameDestination}
+            renderAction={renderMyGameAction}
+          />
+        ) : (
+          <p className={styles.emptyMessage}>You haven’t created any games yet.</p>
+        )}
+      </section>
+      <section className={styles.panel}>
+        <h2>Public Games</h2>
+        {otherGames.length > 0 ? (
+          <GameList games={otherGames} getGameDestination={getGameDestination} />
+        ) : (
+          <p className={styles.emptyMessage}>No public games available.</p>
+        )}
+      </section>
+    </div>
   );
 }
