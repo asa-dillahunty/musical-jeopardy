@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { FaArrowRight, FaMusic } from "react-icons/fa";
 import { Link } from "react-router-dom";
 
 import styles from "./sass/GameList.module.scss";
@@ -22,9 +23,13 @@ export default function GameList({
   return (
     <ul className={styles.gameList}>
       {games.map((game) => (
-        <li key={game.id} className={styles.gameRow}>
+        <li key={game.id} className={styles.gameTile}>
           <Link className={styles.gameLink} to={getGameDestination(game.id)}>
-            {game.name || "Untitled game"}
+            <span className={styles.tileIcons} aria-hidden="true">
+              <FaMusic />
+              <FaArrowRight />
+            </span>
+            <span>{game.name || "Untitled game"}</span>
           </Link>
           {renderAction?.(game)}
         </li>

@@ -61,7 +61,10 @@ export default function EditGameSelector() {
   };
 
   return (
-    <section className={selectorStyles.page} aria-labelledby="edit-games-title">
+    <section
+      className={`${selectorStyles.page} ${selectorStyles.selectorPage} ${styles.editPage}`}
+      aria-labelledby="edit-games-title"
+    >
       <ClickBlocker block={openForm} custom>
         <div className={styles.overlay}>
           <h2>Ask Gemini</h2>
@@ -115,30 +118,34 @@ export default function EditGameSelector() {
           <p>Generating your game…</p>
         </div>
       </ClickBlocker>
-      <Link className={selectorStyles.control} to="/menu">
+      <Link className={selectorStyles.backLink} to="/menu">
         <FaArrowLeft aria-hidden="true" /> Main Menu
       </Link>
-      <header className={selectorStyles.header}>
-        <h1 id="edit-games-title">Edit Games</h1>
-        <div className={styles.actions}>
-          <button
-            type="button"
-            className={`${selectorStyles.control} ${styles.primaryButton}`}
-            onClick={openNewGame}
-          >
-            <FaPlus aria-hidden="true" /> New Game
-          </button>
-          <button
-            type="button"
-            className={`${selectorStyles.control} ${styles.secondaryButton}`}
-            onClick={() => setOpenForm(true)}
-          >
-            <FaWandMagicSparkles aria-hidden="true" /> Ask Gemini
-          </button>
-          <Link className={selectorStyles.control} to="/import">
-            <FaFileImport aria-hidden="true" /> Import Board
-          </Link>
+      <header className={selectorStyles.marquee}>
+        <div className={selectorStyles.marqueeContent}>
+          <h1 id="edit-games-title">Edit Games</h1>
+          <p>Build a new board or open an existing one to edit.</p>
+          <div className={`${styles.actions} ${styles.marqueeActions}`}>
+            <button
+              type="button"
+              className={`${selectorStyles.control} ${styles.primaryButton}`}
+              onClick={openNewGame}
+            >
+              <FaPlus aria-hidden="true" /> New Game
+            </button>
+            <button
+              type="button"
+              className={`${selectorStyles.control} ${styles.secondaryButton}`}
+              onClick={() => setOpenForm(true)}
+            >
+              <FaWandMagicSparkles aria-hidden="true" /> Ask Gemini
+            </button>
+            <Link className={selectorStyles.control} to="/import">
+              <FaFileImport aria-hidden="true" /> Import Board
+            </Link>
+          </div>
         </div>
+        <div className={selectorStyles.recordSleeve} aria-hidden="true" />
       </header>
       {isLoading ? (
         <p className={selectorStyles.status} role="status">

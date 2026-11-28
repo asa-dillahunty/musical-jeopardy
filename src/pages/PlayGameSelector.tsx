@@ -12,12 +12,19 @@ export default function PlayGameSelector() {
   const { data: gameList, isLoading, isError } = useGamesList();
 
   return (
-    <section className={styles.page} aria-labelledby="play-games-title">
-      <Link className={styles.control} to="/menu">
+    <section
+      className={`${styles.page} ${styles.selectorPage}`}
+      aria-labelledby="play-games-title"
+    >
+      <Link className={styles.backLink} to="/menu">
         <FaArrowLeft aria-hidden="true" /> Main Menu
       </Link>
-      <header className={styles.header}>
-        <h1 id="play-games-title">Play Games</h1>
+      <header className={styles.marquee}>
+        <div className={styles.marqueeContent}>
+          <h1 id="play-games-title">Play Games</h1>
+          <p>Pick a board and host a round of Musical Jeopardy.</p>
+        </div>
+        <div className={styles.recordSleeve} aria-hidden="true" />
       </header>
       {isLoading ? (
         <p className={styles.status} role="status">Loading games…</p>

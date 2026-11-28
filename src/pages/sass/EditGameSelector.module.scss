@@ -1,12 +1,15 @@
 @use "../../variables.scss" as *;
 
+.editPage {
+  --selector-accent: #d9c2ff;
+}
+
 .primaryButton {
   --selector-control-background: #{$jeopardy-yellow};
 }
 
 .secondaryButton {
-  --selector-control-background: #{$jeopardy-blue};
-  --selector-control-color: #{$paper};
+  --selector-control-background: #d9c2ff;
 }
 
 .actions {
@@ -15,20 +18,18 @@
   gap: 0.875rem;
 }
 
-.overlay {
-  border: 3px solid $ink;
-  background-color: $paper;
-  box-shadow: 6px 6px 0 $ink;
+.marqueeActions {
+  margin-top: 1.25rem;
 }
 
 .deleteGameButton {
   display: grid;
-  flex: 0 0 48px;
+  flex: 0 0 44px;
   place-items: center;
   padding: 0;
   border: 0;
   border-left: 2px solid $ink;
-  background-color: transparent;
+  background-color: $paper;
   color: $ink;
   font: inherit;
   cursor: pointer;
@@ -41,6 +42,9 @@
 .overlay {
   width: min(calc(100% - 2rem), 28rem);
   padding: clamp(1rem, 5vw, 1.75rem);
+  border: 3px solid $ink;
+  background-color: $paper;
+  box-shadow: 6px 6px 0 $ink;
 
   h2 {
     margin: 0 0 1rem;

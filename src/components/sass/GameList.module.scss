@@ -1,48 +1,51 @@
 @use "../../variables.scss" as *;
 
 .gameList {
-  max-width: 100%;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 14rem), 1fr));
+  gap: 0.875rem;
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
-.gameRow {
+.gameTile {
   display: flex;
-  max-width: 300px;
-  margin: auto;
-  border: 2px solid black;
-  border-inline-width: 4px;
-  background-color: $jeopardy-blue;
-  color: $jeopardy-yellow;
-  font-weight: bold;
-  text-align: left;
-
-  &:first-child {
-    border-top-width: 4px;
-  }
-
-  &:last-child {
-    border-bottom-width: 4px;
-  }
+  min-width: 0;
+  border: 2px solid $ink;
+  background-color: var(--game-tile-background, #{$paper});
+  color: $ink;
+  box-shadow: 4px 4px 0 $ink;
 }
 
 .gameLink {
-  display: grid;
+  display: flex;
   flex: 1;
-  align-content: center;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 0.75rem;
   min-width: 0;
-  padding: 10px 15px;
+  min-height: 6rem;
+  padding: 0.75rem 0.875rem;
   color: inherit;
+  font-weight: 850;
+  line-height: 1.25;
   overflow-wrap: anywhere;
   text-decoration: none;
 
   &:hover {
-    text-decoration: underline;
+    background-color: var(--game-tile-hover, #{$jeopardy-yellow});
   }
+}
 
-  &:focus-visible {
-    outline: 2px solid currentColor;
-    outline-offset: -3px;
-  }
+.tileIcons {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+  color: $jeopardy-blue;
+  font-size: 0.875rem;
+}
+
+.gameTile :is(a, button):focus-visible {
+  outline-offset: -4px;
 }

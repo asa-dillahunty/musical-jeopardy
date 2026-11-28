@@ -57,74 +57,162 @@
   }
 }
 
-.catalog {
-  display: grid;
-  width: 100%;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  align-items: start;
-  gap: clamp(1.25rem, 4vw, 2rem);
+.selectorPage {
+  --marquee-accent: var(--selector-accent, #{$jeopardy-yellow});
+
+  width: min(100%, 76rem);
+  padding-top: clamp(1.25rem, 3vw, 2.25rem);
 }
 
-.panel,
-.status {
+.backLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 44px;
+  color: $ink;
+  font-weight: 800;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
+}
+
+.marquee {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 30%);
+  align-items: center;
+  gap: clamp(1rem, 3vw, 2.5rem);
+  margin: 0.5rem 0 clamp(1.75rem, 4vw, 3rem);
+  padding: clamp(1.25rem, 4vw, 3rem);
   border: 3px solid $ink;
-  background-color: $paper;
-  box-shadow: 6px 6px 0 $ink;
+  background:
+    radial-gradient(circle at center, rgb(255 250 240 / 15%) 1px, transparent 1.5px)
+      right top / 12px 12px,
+    #12123e;
+  color: $paper;
+  box-shadow: 7px 7px 0 $ink;
+
+  :is(a, button):focus-visible {
+    outline-color: $paper;
+  }
+}
+
+.marqueeContent {
+  min-width: 0;
+
+  h1 {
+    margin: 0;
+    color: var(--marquee-accent);
+    font-size: clamp(2.5rem, 7vw, 5.5rem);
+    font-weight: 950;
+    letter-spacing: -0.065em;
+    line-height: 0.94;
+    overflow-wrap: anywhere;
+    text-transform: uppercase;
+  }
+
+  p {
+    margin: 0.875rem 0 0;
+    max-width: 34ch;
+    font-size: clamp(1rem, 2vw, 1.2rem);
+    line-height: 1.4;
+  }
+}
+
+.recordSleeve {
+  position: relative;
+  width: min(100%, 16rem);
+  aspect-ratio: 1.52;
+  justify-self: center;
+  transform: rotate(-9deg);
+
+  &::before,
+  &::after {
+    position: absolute;
+    inset-block: 0;
+    aspect-ratio: 1;
+    border: 2px solid $ink;
+    content: "";
+  }
+
+  &::before {
+    right: 0;
+    border-radius: 50%;
+    background:
+      radial-gradient(
+        circle,
+        $ink 0 3%,
+        var(--marquee-accent) 3% 25%,
+        transparent 25%
+      ),
+      repeating-radial-gradient(circle, #181821 0 4px, #333343 5px 6px);
+  }
+
+  &::after {
+    left: 0;
+    background:
+      radial-gradient(circle, $paper 0 5%, $ink 5.5% 14%, transparent 14.5%),
+      repeating-linear-gradient(
+        135deg,
+        var(--marquee-accent) 0 8px,
+        $paper 8px 16px
+      );
+    box-shadow: 4px 4px 0 $ink;
+  }
+}
+
+.catalog {
+  display: grid;
+  gap: clamp(1.5rem, 4vw, 2.25rem);
 }
 
 .panel {
-  h2 {
-    margin: 0;
-    padding: 0.875rem 1.125rem;
-    border-bottom: 3px solid $ink;
-    background-color: $jeopardy-yellow;
-    font-size: clamp(1.5rem, 4vw, 2rem);
-    font-weight: 900;
-    letter-spacing: -0.04em;
-    line-height: 1.15;
-  }
-
-  & + section h2 {
-    background-color: $jeopardy-blue;
-    color: $paper;
-  }
+  --panel-band: #dce1ff;
+  --game-tile-background: #f2f3ff;
+  --game-tile-hover: #dce1ff;
+  min-width: 0;
 }
 
-.catalog .panel li {
-  max-width: none;
-  margin: 0;
-  border: 0;
-  background-color: $paper;
-  color: $ink;
+.personalPanel {
+  --panel-band: var(--marquee-accent);
+  --game-tile-background: #{$paper};
+  --game-tile-hover: var(--marquee-accent);
+}
 
-  & + li {
-    border-top: 2px solid $ink;
-  }
+.panelHeading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem 1rem;
+  margin-bottom: 0.875rem;
+  padding: 0.625rem 1rem;
+  border: 2px solid $ink;
+  background: var(--panel-band);
+  box-shadow: 3px 3px 0 $ink;
 
-  > a {
+  h2 {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
-    min-height: 52px;
-    padding: 0.75rem 1.125rem;
-
-    &::after {
-      flex: 0 0 0.5rem;
-      height: 0.5rem;
-      border: solid currentColor;
-      border-width: 2px 2px 0 0;
-      transform: rotate(45deg);
-      content: "";
-    }
-
-    &:hover {
-      background-color: $jeopardy-yellow;
-    }
+    gap: 0.625rem;
+    margin: 0;
+    font-size: clamp(1.25rem, 3vw, 1.625rem);
+    font-weight: 900;
+    letter-spacing: -0.035em;
+    line-height: 1.1;
   }
 
-  :is(a, button):focus-visible {
-    outline-offset: -4px;
+  svg {
+    flex: none;
+    font-size: 0.8em;
+  }
+
+  span {
+    font-size: 0.875rem;
+    font-weight: 750;
+    font-variant-numeric: tabular-nums;
   }
 }
 
@@ -132,11 +220,21 @@
 .status {
   margin: 0;
   padding: 1rem 1.125rem;
+  border: 2px solid $ink;
+  background-color: $paper;
 }
 
-@media (max-width: 38rem) {
-  .catalog {
-    grid-template-columns: 1fr;
+.status {
+  box-shadow: 4px 4px 0 $ink;
+}
+
+@media (max-width: 40rem) {
+  .marquee {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .recordSleeve {
+    display: none;
   }
 }
 

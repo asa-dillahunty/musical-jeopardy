@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { FaGlobe, FaRecordVinyl } from "react-icons/fa";
 
 import GameList, { type GameListEntry } from "../components/GameList";
 
@@ -26,8 +27,15 @@ export default function GameSelector({
 
   return (
     <div className={styles.catalog}>
-      <section className={styles.panel}>
-        <h2>My Games</h2>
+      <section className={`${styles.panel} ${styles.personalPanel}`}>
+        <div className={styles.panelHeading}>
+          <h2>
+            <FaRecordVinyl aria-hidden="true" /> My Games
+          </h2>
+          <span>
+            {myGames.length} {myGames.length === 1 ? "board" : "boards"}
+          </span>
+        </div>
         {myGames.length > 0 ? (
           <GameList
             games={myGames}
@@ -39,7 +47,14 @@ export default function GameSelector({
         )}
       </section>
       <section className={styles.panel}>
-        <h2>Public Games</h2>
+        <div className={styles.panelHeading}>
+          <h2>
+            <FaGlobe aria-hidden="true" /> Public Games
+          </h2>
+          <span>
+            {otherGames.length} {otherGames.length === 1 ? "board" : "boards"}
+          </span>
+        </div>
         {otherGames.length > 0 ? (
           <GameList games={otherGames} getGameDestination={getGameDestination} />
         ) : (
